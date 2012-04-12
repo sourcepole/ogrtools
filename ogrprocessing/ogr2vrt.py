@@ -1,194 +1,196 @@
-#!/usr/bin/env python
-###############################################################################
-# $Id: tigerpoly.py 13104 2007-11-26 21:23:48Z hobu $
-#
-# Project:  OGR Python samples
-# Purpose:  Create OGR VRT from source datasource
-# Author:   Frank Warmerdam, warmerdam@pobox.com
-#
-###############################################################################
-# Copyright (c) 2009, Frank Warmerdam <warmerdam@pobox.com>
-# 
-# Permission is hereby granted, free of charge, to any person obtaining a
-# copy of this software and associated documentation files (the "Software"),
-# to deal in the Software without restriction, including without limitation
-# the rights to use, copy, modify, merge, publish, distribute, sublicense,
-# and/or sell copies of the Software, and to permit persons to whom the
-# Software is furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included
-# in all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-# DEALINGS IN THE SOFTWARE.
-###############################################################################
-
-try:
-    from osgeo import osr, ogr, gdal
-except ImportError:
-    import osr, ogr, gdal
-
+from sextante.core.GeoAlgorithm import GeoAlgorithm
+from sextante.outputs.OutputHTML import OutputHTML
+from sextante.parameters.ParameterVector import ParameterVector
+from sextante.parameters.ParameterBoolean import ParameterBoolean
+from sextante.core.Sextante import Sextante
+from sextante.core.QGisLayers import QGisLayers
+from qgis.core import *
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 import string
+import re
+import cgi
 import sys
+import ogr
+import gdal
 
-#############################################################################
+class Ogr2Vrt(GeoAlgorithm):
 
-def GeomType2Name( type ):
-    if type == ogr.wkbUnknown:
-        return 'wkbUnknown'
-    elif type == ogr.wkbPoint:
-        return 'wkbPoint'
-    elif type == ogr.wkbLineString:
-        return 'wkbLineString'
-    elif type == ogr.wkbPolygon:
-        return 'wkbPolygon'
-    elif type == ogr.wkbMultiPoint:
-        return 'wkbMultiPoint'
-    elif type == ogr.wkbMultiLineString:
-        return 'wkbMultiLineString'
-    elif type == ogr.wkbMultiPolygon:
-        return 'wkbMultiPolygon'
-    elif type == ogr.wkbGeometryCollection:
-        return 'wkbGeometryCollection'
-    elif type == ogr.wkbNone:
-        return 'wkbNone'
-    elif type == ogr.wkbLinearRing:
-        return 'wkbLinearRing'
-    else:
-        return 'wkbUnknown'
+    #constants used to refer to parameters and outputs.
+    #They will be used when calling the algorithm from another algorithm,
+    #or when calling SEXTANTE from the QGIS console.
+    OUTPUT = "OUTPUT"
+    INPUT_LAYER = "INPUT_LAYER"
 
-#############################################################################
-def Esc(x):
-    return gdal.EscapeString( x, gdal.CPLES_XML )
+    def defineCharacteristics(self):
+        self.name = "Generate VRT"
+        self.group = "VRT"
 
-#############################################################################
-def Usage():
-    print('Usage: ogr2vrt.py [-relative] [-schema] ')
-    print('                  in_datasource out_vrtfile [layers]')
-    print('')
-    sys.exit(1)
+        #we add the input vector layer. It can have any kind of geometry
+        #It is a mandatory (not optional) one, hence the False argument
+        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
 
-#############################################################################
-# Argument processing.
+        self.addOutput(OutputHTML(self.OUTPUT, "VRT"))
 
-infile = None
-outfile = None
-layer_list = []
-relative = "0"
-schema=0
 
-argv = gdal.GeneralCmdLineProcessor( sys.argv )
-if argv is None:
-    sys.exit( 0 )
-        
-i = 1
-while i < len(argv):
-    arg = argv[i]
+    def ogrConnectionString(self, layer):
+        ogrstr = None
 
-    if arg == '-relative':
-        relative = "1"
-
-    elif arg == '-schema':
-        schema = 1
-
-    elif infile is None:
-        infile = arg
-
-    elif outfile is None:
-        outfile = arg
-
-    else:
-        layer_list.append( arg )
-
-    i = i + 1
-
-if outfile is None:
-    Usage()
-
-#############################################################################
-# Open the datasource to read.
-
-src_ds = ogr.Open( infile, update = 0 )
-
-if schema:
-    infile = '@dummy@'
-
-if len(layer_list) == 0:
-    for layer in src_ds:
-        layer_list.append( layer.GetLayerDefn().GetName() )
-
-#############################################################################
-# Start the VRT file.
-
-vrt = '<OGRVRTDataSource>\n'
-
-#############################################################################
-#	Process each source layer.
-
-for name in layer_list:
-    layer = src_ds.GetLayerByName(name)
-    layerdef = layer.GetLayerDefn()
-
-    vrt += '  <OGRVRTLayer name="%s">\n' % Esc(name)
-    vrt += '    <SrcDataSource relativeToVRT="%s" shared="%d">%s</SrcDataSource>\n' \
-           % (relative,not schema,Esc(infile))
-    if schema:
-        vrt += '    <SrcLayer>@dummy@</SrcLayer>\n' 
-    else:
-        vrt += '    <SrcLayer>%s</SrcLayer>\n' % Esc(name)
-    vrt += '    <GeometryType>%s</GeometryType>\n' \
-           % GeomType2Name(layerdef.GetGeomType())
-    srs = layer.GetSpatialRef()
-    if srs is not None:
-        vrt += '    <LayerSRS>%s</LayerSRS>\n' \
-               % (Esc(srs.ExportToWkt()))
-    
-    # Process all the fields.
-    for fld_index in range(layerdef.GetFieldCount()):
-        src_fd = layerdef.GetFieldDefn( fld_index )
-        if src_fd.GetType() == ogr.OFTInteger:
-            type = 'Integer'
-        elif src_fd.GetType() == ogr.OFTString:
-            type = 'String'
-        elif src_fd.GetType() == ogr.OFTReal:
-            type = 'Real'
-        elif src_fd.GetType() == ogr.OFTStringList:
-            type = 'StringList'
-        elif src_fd.GetType() == ogr.OFTIntegerList:
-            type = 'IntegerList'
-        elif src_fd.GetType() == ogr.OFTRealList:
-            type = 'RealList'
-        elif src_fd.GetType() == ogr.OFTBinary:
-            type = 'Binary'
-        elif src_fd.GetType() == ogr.OFTDate:
-            type = 'Date'
-        elif src_fd.GetType() == ogr.OFTTime:
-            type = 'Time'
-        elif src_fd.GetType() == ogr.OFTDateTime:
-            type = 'DateTime'
+        provider = layer.dataProvider().name()
+        qDebug("inputLayer provider '%s'" % provider)
+        #qDebug("inputLayer layer '%s'" % layer.providerKey())
+        qDebug("inputLayer.source '%s'" % layer.source())
+        if provider == 'spatialite':
+            #dbname='/geodata/osm_ch.sqlite' table="places" (Geometry) sql=
+            regex = re.compile("dbname='(.+)'")
+            r = regex.search(str(layer.source()))
+            ogrstr = r.groups()[0]
+        elif provider == 'postgres':
+            #dbname='ktryjh_iuuqef' host=spacialdb.com port=9999 user='ktryjh_iuuqef' password='xyqwer' sslmode=disable key='gid' estimatedmetadata=true srid=4326 type=MULTIPOLYGON table="t4" (geom) sql=
+            s = re.sub(''' sslmode=.+''', '', str(layer.source()))
+            ogrstr = 'PG:%s' % s
         else:
-            type = 'String'
+            ogrstr = str(layer.source())
+        return ogrstr
 
-        vrt += '    <Field name="%s" type="%s"' \
-               % (Esc(src_fd.GetName()), type)
-        if not schema:
-            vrt += ' src="%s"' % Esc(src_fd.GetName())
-        if src_fd.GetWidth() > 0:
-            vrt += ' width="%d"' % src_fd.GetWidth()
-        if src_fd.GetPrecision() > 0:
-            vrt += ' precision="%d"' % src_fd.GetPrecision()
-        vrt += '/>\n'
+    def processAlgorithm(self, progress):
+        '''Here is where the processing itself takes place'''
+
+        input = self.getParameterValue(self.INPUT_LAYER)
+        inputLayer = QGisLayers.getObjectFromUri(input, False)
+        ogrLayer = self.ogrConnectionString(inputLayer)
+
+        output = self.getOutputValue(self.OUTPUT)
+
+        vrt = self.gen_vrt( ogrLayer )
+        qDebug(vrt)
+
+        f = open(output, "w")
+        f.write("<pre>" + cgi.escape(vrt) + "</pre>")
+        f.close()
+
+    def drivers(self):
+        list = []
+        for iDriver in range(ogr.GetDriverCount()):
+            list.append("%s" % ogr.GetDriver(iDriver).GetName())
+        return list
+
+    def GeomType2Name(self, type ):
+        if type == ogr.wkbUnknown:
+            return 'wkbUnknown'
+        elif type == ogr.wkbPoint:
+            return 'wkbPoint'
+        elif type == ogr.wkbLineString:
+            return 'wkbLineString'
+        elif type == ogr.wkbPolygon:
+            return 'wkbPolygon'
+        elif type == ogr.wkbMultiPoint:
+            return 'wkbMultiPoint'
+        elif type == ogr.wkbMultiLineString:
+            return 'wkbMultiLineString'
+        elif type == ogr.wkbMultiPolygon:
+            return 'wkbMultiPolygon'
+        elif type == ogr.wkbGeometryCollection:
+            return 'wkbGeometryCollection'
+        elif type == ogr.wkbNone:
+            return 'wkbNone'
+        elif type == ogr.wkbLinearRing:
+            return 'wkbLinearRing'
+        else:
+            return 'wkbUnknown'
+
+    #############################################################################
+    def Esc(self, x):
+        return gdal.EscapeString( x, gdal.CPLES_XML )
+
+    def gen_vrt(self, infile):
+        outfile = None
+        layer_list = []
+        relative = "0"
+        schema=0
+
+        #############################################################################
+        # Open the datasource to read.
+
+        src_ds = ogr.Open( infile, update = 0 )
+
+        if src_ds is None:
+            self.out( "FAILURE:\n"
+                    "Unable to open datasource `%s' with the following drivers." % pszDataSource )
+            self.out( string.join(map(lambda d: "->"+d, self.drivers()), '\n') )
+            return
+
+        if schema:
+            infile = '@dummy@'
+
+        if len(layer_list) == 0:
+            for layer in src_ds:
+                layer_list.append( layer.GetLayerDefn().GetName() )
+
+        #############################################################################
+        # Start the VRT file.
+
+        vrt = '<OGRVRTDataSource>\n'
+
+        #############################################################################
+        #	Process each source layer.
+
+        for name in layer_list:
+            layer = src_ds.GetLayerByName(name)
+            layerdef = layer.GetLayerDefn()
+
+            vrt += '  <OGRVRTLayer name="%s">\n' % self.Esc(name)
+            vrt += '    <SrcDataSource relativeToVRT="%s" shared="%d">%s</SrcDataSource>\n' \
+                   % (relative,not schema,self.Esc(infile))
+            if schema:
+                vrt += '    <SrcLayer>@dummy@</SrcLayer>\n'
+            else:
+                vrt += '    <SrcLayer>%s</SrcLayer>\n' % self.Esc(name)
+            vrt += '    <GeometryType>%s</GeometryType>\n' \
+                   % self.GeomType2Name(layerdef.GetGeomType())
+            srs = layer.GetSpatialRef()
+            if srs is not None:
+                vrt += '    <LayerSRS>%s</LayerSRS>\n' \
+                       % (self.Esc(srs.ExportToWkt()))
+
+            # Process all the fields.
+            for fld_index in range(layerdef.GetFieldCount()):
+                src_fd = layerdef.GetFieldDefn( fld_index )
+                if src_fd.GetType() == ogr.OFTInteger:
+                    type = 'Integer'
+                elif src_fd.GetType() == ogr.OFTString:
+                    type = 'String'
+                elif src_fd.GetType() == ogr.OFTReal:
+                    type = 'Real'
+                elif src_fd.GetType() == ogr.OFTStringList:
+                    type = 'StringList'
+                elif src_fd.GetType() == ogr.OFTIntegerList:
+                    type = 'IntegerList'
+                elif src_fd.GetType() == ogr.OFTRealList:
+                    type = 'RealList'
+                elif src_fd.GetType() == ogr.OFTBinary:
+                    type = 'Binary'
+                elif src_fd.GetType() == ogr.OFTDate:
+                    type = 'Date'
+                elif src_fd.GetType() == ogr.OFTTime:
+                    type = 'Time'
+                elif src_fd.GetType() == ogr.OFTDateTime:
+                    type = 'DateTime'
+                else:
+                    type = 'String'
+
+                vrt += '    <Field name="%s" type="%s"' \
+                       % (self.Esc(src_fd.GetName()), type)
+                if not schema:
+                    vrt += ' src="%s"' % self.Esc(src_fd.GetName())
+                if src_fd.GetWidth() > 0:
+                    vrt += ' width="%d"' % src_fd.GetWidth()
+                if src_fd.GetPrecision() > 0:
+                    vrt += ' precision="%d"' % src_fd.GetPrecision()
+                vrt += '/>\n'
+
+            vrt += '  </OGRVRTLayer>\n'
+
+        vrt += '</OGRVRTDataSource>\n' 
         
-    vrt += '  </OGRVRTLayer>\n'
-
-vrt += '</OGRVRTDataSource>\n' 
-
-#############################################################################
-# Write vrt
-
-open(outfile,'w').write(vrt)
+        return vrt
