@@ -31,7 +31,7 @@ from ogrprocessingplugindialog import OgrProcessingPluginDialog
 import os, sys
 import inspect
 from sextante.core.Sextante import Sextante
-from sextanteexampleprovider.ExampleAlgorithmProvider import ExampleAlgorithmProvider
+from ogralgorithmprovider import OgrAlgorithmProvider
 
 cmd_folder = os.path.split(inspect.getfile( inspect.currentframe() ))[0]
 if cmd_folder not in sys.path:
@@ -60,7 +60,7 @@ class OgrProcessingPlugin:
             if qVersion() > '4.3.3':
                 QCoreApplication.installTranslator(self.translator)
 
-        self.provider = ExampleAlgorithmProvider()
+        self.provider = OgrAlgorithmProvider()
    
 
     def initGui(self):
