@@ -3,10 +3,12 @@ from sextante.outputs.OutputHTML import OutputHTML
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterBoolean import ParameterBoolean
 from sextante.core.Sextante import Sextante
+from sextante.core.QGisLayers import QGisLayers
 from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import string
+import re
 import ogr
 
 class OgrInfo(GeoAlgorithm):
@@ -28,13 +30,36 @@ class OgrInfo(GeoAlgorithm):
         self.addOutput(OutputHTML(self.OUTPUT, "Layer information"))
 
 
+    def ogrConnectionString(self, layer):
+        ogrstr = None
+
+        provider = layer.dataProvider().name()
+        qDebug("inputLayer provider '%s'" % provider)
+        #qDebug("inputLayer layer '%s'" % layer.providerKey())
+        qDebug("inputLayer.source '%s'" % layer.source())
+        if provider == 'spatialite':
+            #dbname='/geodata/osm_ch.sqlite' table="places" (Geometry) sql=
+            regex = re.compile("dbname='(.+)'")
+            r = regex.search(str(layer.source()))
+            ogrstr = r.groups()[0]
+        elif provider == 'postgres':
+            #dbname='ktryjh_iuuqef' host=spacialdb.com port=9999 user='ktryjh_iuuqef' password='xyqwer' sslmode=disable key='gid' estimatedmetadata=true srid=4326 type=MULTIPOLYGON table="t4" (geom) sql=
+            s = re.sub(''' sslmode=.+''', '', str(layer.source()))
+            ogrstr = 'PG:%s' % s
+        else:
+            ogrstr = str(layer.source())
+        return ogrstr
+
     def processAlgorithm(self, progress):
         '''Here is where the processing itself takes place'''
 
-        inputFilename = self.getParameterValue(self.INPUT_LAYER)
+        input = self.getParameterValue(self.INPUT_LAYER)
+        inputLayer = QGisLayers.getObjectFromUri(input, False)
+        ogrLayer = self.ogrConnectionString(inputLayer)
+
         output = self.getOutputValue(self.OUTPUT)
 
-        self.ogrinfo( inputFilename )
+        self.ogrinfo( ogrLayer )
 
         f = open(output, "w")
         f.write("<pre>" + self.info + "</pre>")
