@@ -6,6 +6,7 @@ from sextante.core.Sextante import Sextante
 from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+import string
 import ogr
 
 class OgrInfo(GeoAlgorithm):
@@ -40,10 +41,10 @@ class OgrInfo(GeoAlgorithm):
         f.close()
 
     def drivers(self):
-        out = ''
+        list = []
         for iDriver in range(ogr.GetDriverCount()):
-            out = out + "%s\n" % ogr.GetDriver(iDriver).GetName()
-        return out
+            list.append("%s" % ogr.GetDriver(iDriver).GetName())
+        return list
 
     def out(self, text):
         self.info = self.info + text + '\n'
@@ -53,7 +54,14 @@ class OgrInfo(GeoAlgorithm):
         bSummaryOnly = True
         self.info = ''
 
+        qDebug("Opening data source '%s'" % pszDataSource)
         poDS = ogr.Open( pszDataSource, False )
+
+        if poDS is None:
+            self.out( "FAILURE:\n"
+                    "Unable to open datasource `%s' with the following drivers." % pszDataSource )
+            self.out( string.join(map(lambda d: "->"+d, self.drivers()), '\n') )
+            return
 
         poDriver = poDS.GetDriver()
 
