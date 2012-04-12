@@ -4,6 +4,7 @@ from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterBoolean import ParameterBoolean
 from sextante.core.Sextante import Sextante
 from sextante.core.QGisLayers import QGisLayers
+from ogralgorithm import OgrAlgorithm
 from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -14,7 +15,7 @@ import sys
 import ogr
 import gdal
 
-class Ogr2Vrt(GeoAlgorithm):
+class Ogr2Vrt(OgrAlgorithm):
 
     #constants used to refer to parameters and outputs.
     #They will be used when calling the algorithm from another algorithm,
@@ -33,26 +34,6 @@ class Ogr2Vrt(GeoAlgorithm):
         self.addOutput(OutputHTML(self.OUTPUT, "VRT"))
 
 
-    def ogrConnectionString(self, layer):
-        ogrstr = None
-
-        provider = layer.dataProvider().name()
-        qDebug("inputLayer provider '%s'" % provider)
-        #qDebug("inputLayer layer '%s'" % layer.providerKey())
-        qDebug("inputLayer.source '%s'" % layer.source())
-        if provider == 'spatialite':
-            #dbname='/geodata/osm_ch.sqlite' table="places" (Geometry) sql=
-            regex = re.compile("dbname='(.+)'")
-            r = regex.search(str(layer.source()))
-            ogrstr = r.groups()[0]
-        elif provider == 'postgres':
-            #dbname='ktryjh_iuuqef' host=spacialdb.com port=9999 user='ktryjh_iuuqef' password='xyqwer' sslmode=disable key='gid' estimatedmetadata=true srid=4326 type=MULTIPOLYGON table="t4" (geom) sql=
-            s = re.sub(''' sslmode=.+''', '', str(layer.source()))
-            ogrstr = 'PG:%s' % s
-        else:
-            ogrstr = str(layer.source())
-        return ogrstr
-
     def processAlgorithm(self, progress):
         '''Here is where the processing itself takes place'''
 
@@ -63,17 +44,13 @@ class Ogr2Vrt(GeoAlgorithm):
         output = self.getOutputValue(self.OUTPUT)
 
         vrt = self.gen_vrt( ogrLayer )
+        if vrt == None:
+            vrt = self.failure(ogrLayer)
         qDebug(vrt)
 
         f = open(output, "w")
         f.write("<pre>" + cgi.escape(vrt) + "</pre>")
         f.close()
-
-    def drivers(self):
-        list = []
-        for iDriver in range(ogr.GetDriverCount()):
-            list.append("%s" % ogr.GetDriver(iDriver).GetName())
-        return list
 
     def GeomType2Name(self, type ):
         if type == ogr.wkbUnknown:
@@ -115,10 +92,7 @@ class Ogr2Vrt(GeoAlgorithm):
         src_ds = ogr.Open( infile, update = 0 )
 
         if src_ds is None:
-            self.out( "FAILURE:\n"
-                    "Unable to open datasource `%s' with the following drivers." % pszDataSource )
-            self.out( string.join(map(lambda d: "->"+d, self.drivers()), '\n') )
-            return
+            return None
 
         if schema:
             infile = '@dummy@'
