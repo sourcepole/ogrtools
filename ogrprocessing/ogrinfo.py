@@ -36,8 +36,7 @@ class OgrInfo(GeoAlgorithm):
         self.ogrinfo( inputFilename )
 
         f = open(output, "w")
-        for s in [inputFilename]:
-            f.write("<pre>" + str(s) + "</pre>")
+        f.write("<pre>" + self.info + "</pre>")
         f.close()
 
     def drivers(self):
@@ -46,23 +45,27 @@ class OgrInfo(GeoAlgorithm):
             out = out + "%s\n" % ogr.GetDriver(iDriver).GetName()
         return out
 
+    def out(self, text):
+        self.info = self.info + text + '\n'
+
     def ogrinfo(self, pszDataSource):
         bVerbose = True
         bSummaryOnly = True
+        self.info = ''
 
         poDS = ogr.Open( pszDataSource, False )
 
         poDriver = poDS.GetDriver()
 
         if bVerbose:
-            print( "INFO: Open of `%s'\n"
+            self.out( "INFO: Open of `%s'\n"
                     "      using driver `%s' successful." % (pszDataSource, poDriver.GetName()) )
 
         poDS_Name = poDS.GetName()
         if str(type(pszDataSource)) == "<type 'unicode'>" and str(type(poDS_Name)) == "<type 'str'>":
             poDS_Name = unicode(poDS_Name, "utf8")
         if bVerbose and pszDataSource != poDS_Name:
-            print( "INFO: Internal data source name `%s'\n"
+            self.out( "INFO: Internal data source name `%s'\n"
                     "      different from user name `%s'." % (poDS_Name, pszDataSource ))
         #/* -------------------------------------------------------------------- */ 
         #/*      Process each data source layer.                                 */ 
@@ -71,7 +74,7 @@ class OgrInfo(GeoAlgorithm):
             poLayer = poDS.GetLayer(iLayer)
 
             if poLayer is None:
-                print( "FAILURE: Couldn't fetch advertised layer %d!" % iLayer )
+                self.out( "FAILURE: Couldn't fetch advertised layer %d!" % iLayer )
                 return 1
 
             self.ReportOnLayer( poLayer )
@@ -86,7 +89,7 @@ class OgrInfo(GeoAlgorithm):
     #/* -------------------------------------------------------------------- */
         if pszWHERE is not None:
             if poLayer.SetAttributeFilter( pszWHERE ) != 0:
-                print("FAILURE: SetAttributeFilter(%s) failed." % pszWHERE)
+                self.out("FAILURE: SetAttributeFilter(%s) failed." % pszWHERE)
                 return
 
         if poSpatialFilter is not None:
@@ -95,36 +98,36 @@ class OgrInfo(GeoAlgorithm):
     #/* -------------------------------------------------------------------- */
     #/*      Report various overall information.                             */
     #/* -------------------------------------------------------------------- */
-        print( "" )
+        self.out( "" )
         
-        print( "Layer name: %s" % poDefn.GetName() )
+        self.out( "Layer name: %s" % poDefn.GetName() )
 
         if bVerbose:
-            print( "Geometry: %s" % ogr.GeometryTypeToName( poDefn.GetGeomType() ) )
+            self.out( "Geometry: %s" % ogr.GeometryTypeToName( poDefn.GetGeomType() ) )
             
-            print( "Feature Count: %d" % poLayer.GetFeatureCount() )
+            self.out( "Feature Count: %d" % poLayer.GetFeatureCount() )
             
             oExt = poLayer.GetExtent(True, can_return_null = True)
             if oExt is not None:
-                print("Extent: (%f, %f) - (%f, %f)" % (oExt[0], oExt[1], oExt[2], oExt[3]))
+                self.out("Extent: (%f, %f) - (%f, %f)" % (oExt[0], oExt[1], oExt[2], oExt[3]))
 
             if poLayer.GetSpatialRef() is None:
                 pszWKT = "(unknown)"
             else:
                 pszWKT = poLayer.GetSpatialRef().ExportToPrettyWkt()
 
-            print( "Layer SRS WKT:\n%s" % pszWKT )
+            self.out( "Layer SRS WKT:\n%s" % pszWKT )
         
             if len(poLayer.GetFIDColumn()) > 0:
-                print( "FID Column = %s" % poLayer.GetFIDColumn() )
+                self.out( "FID Column = %s" % poLayer.GetFIDColumn() )
         
             if len(poLayer.GetGeometryColumn()) > 0:
-                print( "Geometry Column = %s" % poLayer.GetGeometryColumn() )
+                self.out( "Geometry Column = %s" % poLayer.GetGeometryColumn() )
 
             for iAttr in range(poDefn.GetFieldCount()):
                 poField = poDefn.GetFieldDefn( iAttr )
                 
-                print( "%s: %s (%d.%d)" % ( \
+                self.out( "%s: %s (%d.%d)" % ( \
                         poField.GetNameRef(), \
                         poField.GetFieldTypeName( poField.GetType() ), \
                         poField.GetWidth(), \
