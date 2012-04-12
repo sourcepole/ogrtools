@@ -1,6 +1,7 @@
 from sextante.core.AlgorithmProvider import AlgorithmProvider
 from sextanteexampleprovider.ExampleAlgorithm import ExampleAlgorithm
 from sextante.core.SextanteConfig import Setting, SextanteConfig
+from ogrinfo import OgrInfo
 
 class OgrAlgorithmProvider(AlgorithmProvider):
 
@@ -8,7 +9,7 @@ class OgrAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        self.alglist = [ExampleAlgorithm()]
+        self.alglist = [ExampleAlgorithm(), OgrInfo()]
         for alg in self.alglist:
             alg.provider = self
 
