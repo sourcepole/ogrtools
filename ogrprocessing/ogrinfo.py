@@ -35,8 +35,7 @@ class OgrInfo(OgrAlgorithm):
         '''Here is where the processing itself takes place'''
 
         input = self.getParameterValue(self.INPUT_LAYER)
-        inputLayer = QGisLayers.getObjectFromUri(input, False)
-        ogrLayer = self.ogrConnectionString(inputLayer)
+        ogrLayer = self.ogrConnectionString(input)
 
         output = self.getOutputValue(self.OUTPUT)
 

@@ -1,7 +1,4 @@
 from sextante.core.GeoAlgorithm import GeoAlgorithm
-from sextante.outputs.OutputHTML import OutputHTML
-from sextante.parameters.ParameterVector import ParameterVector
-from sextante.parameters.ParameterBoolean import ParameterBoolean
 from sextante.core.Sextante import Sextante
 from sextante.core.QGisLayers import QGisLayers
 from qgis.core import *
@@ -13,9 +10,12 @@ import ogr
 
 class OgrAlgorithm(GeoAlgorithm):
 
-    def ogrConnectionString(self, layer):
+    def ogrConnectionString(self, uri):
         ogrstr = None
 
+        layer = QGisLayers.getObjectFromUri(uri, False)
+        if layer == None:
+            return uri;
         provider = layer.dataProvider().name()
         qDebug("inputLayer provider '%s'" % provider)
         #qDebug("inputLayer layer '%s'" % layer.providerKey())
