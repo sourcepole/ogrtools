@@ -4,6 +4,7 @@ from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterString import ParameterString
 from sextante.parameters.ParameterBoolean import ParameterBoolean
 from sextante.core.Sextante import Sextante
+from sextante.core.SextanteLog import SextanteLog
 from sextante.core.QGisLayers import QGisLayers
 from ogralgorithm import OgrAlgorithm
 from qgis.core import *
@@ -44,39 +45,43 @@ class Ogr2Ogr(OgrAlgorithm):
         #we add the input vector layer. It can have any kind of geometry
         #It is a mandatory (not optional) one, hence the False argument
         self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
-        self.addParameter(ParameterString(self.DEST_DS, "Output DS", "/tmp/out.sqlite"))
+        #self.addParameter(ParameterString(self.DEST_DS, "Output DS", "/tmp/out.sqlite"))
         self.addParameter(ParameterString(self.DEST_FORMAT, "Destination Format", "SQLite"))
         self.addParameter(ParameterString(self.DEST_DSCO, "Creation Options", "SPATIALITE=YES"))
 
-        #self.addOutput(OutputVector(self.OUTPUT_LAYER, "Output layer"))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, "Output layer"))
 
     def processAlgorithm(self, progress):
         '''Here is where the processing itself takes place'''
 
         input = self.getParameterValue(self.INPUT_LAYER)
         ogrLayer = self.ogrConnectionString(input)
+        output = self.getOutputValue(self.OUTPUT_LAYER)
 
-        #output = self.getOutputValue(self.OUTPUT_LAYER)
-
-        dst_ds = self.getParameterValue(self.INPUT_LAYER)
+        #dst_ds = self.getParameterValue(self.DEST_DS)
+        dst_ds = self.ogrConnectionString(output)
         dst_format = self.getParameterValue(self.DEST_FORMAT)
-        ogr_dsco = [self.getParameterValue(self.DEST_DSCO)]
+        ogr_dsco = [self.getParameterValue(self.DEST_DSCO)] #TODO: split
         #dst_ds = "PG:dbname='glarus_np' options='-c client_encoding=LATIN9'"
         #dst_format ="PostgreSQL"
 
-        qDebug("Opening data source '%s'" % input)
-        poDS = ogr.Open( input, False )
-
+        qDebug("Opening data source '%s'" % ogrLayer)
+        poDS = ogr.Open( ogrLayer, False )
         if poDS is None:
-            qDebug(self.failure(input))
+            SextanteLog.addToLog(SextanteLog.LOG_ERROR, self.failure(ogrLayer))
             return
 
         srs = osr.SpatialReference()
         srs.ImportFromEPSG( 21781 )
-        if dst_format == "SQLite":
+        qDebug("Creating output '%s'" % dst_ds)
+        if dst_format == "SQLite" and os.path.isfile(dst_ds):
             os.remove(dst_ds)
+        qDebug("Using driver '%s'" % dst_format)
         driver = ogr.GetDriverByName(dst_format)
         poDstDS = driver.CreateDataSource(dst_ds, options = ogr_dsco)
+        if poDstDS is None:
+            SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Error creating %s" % dst_ds)
+            return
         #self.ogrtransform(poDS,  poDstDS,  bOverwrite = True,  poOutputSRS = srs,  poSourceSRS = srs)
         self.ogrtransform(poDS, poDstDS, bOverwrite = True)
 
@@ -113,6 +118,7 @@ class Ogr2Ogr(OgrAlgorithm):
                     bExplodeCollections = False,
                     pszZField = None):
 
+        qDebug("ogrtransform")
         for iLayer in range(poSrcDS.GetLayerCount()): #TODO: use papszLayers
           poSrcLayer = poSrcDS.GetLayer(iLayer)
           qDebug(poSrcLayer.GetLayerDefn().GetName())
@@ -165,7 +171,7 @@ def LoadGeometry( pszDS, pszSQL, pszLyr, pszWhere):
         poLyr = poDS.GetLayer(0)
 
     if poLyr is None:
-        print("Failed to identify source layer from datasource.")
+        qDebug("Failed to identify source layer from datasource.")
         poDS.Destroy()
         return None
 
@@ -188,7 +194,7 @@ def LoadGeometry( pszDS, pszSQL, pszLyr, pszWhere):
                     poGeom.AddGeometry(poSrcGeom.GetGeometryRef(iGeom) )
 
             else:
-                print("ERROR: Geometry not of polygon type." )
+                qDebug("ERROR: Geometry not of polygon type." )
                 if pszSQL is not None:
                     poDS.ReleaseResultSet( poLyr )
                 poDS.Destroy()
@@ -267,7 +273,7 @@ def TranslateLayer( poSrcDS, poSrcLayer, poDstDS, papszLCO, pszNewLayerName, \
             poSourceSRS = poSrcLayer.GetSpatialRef()
 
         if poSourceSRS is None:
-            print("Can't transform coordinates, source layer has no\n" + \
+            qDebug("Can't transform coordinates, source layer has no\n" + \
                     "coordinate system.  Use -s_srs to set one." )
             return False
 
@@ -278,16 +284,16 @@ def TranslateLayer( poSrcDS, poSrcLayer, poDstDS, papszLCO, pszNewLayerName, \
         if poCT is None:
             pszWKT = None
 
-            print("Failed to create coordinate transformation between the\n" + \
+            qDebug("Failed to create coordinate transformation between the\n" + \
                 "following coordinate systems.  This may be because they\n" + \
                 "are not transformable, or because projection services\n" + \
                 "(PROJ.4 DLL/.so) could not be loaded." )
 
             pszWKT = poSourceSRS.ExportToPrettyWkt( 0 )
-            print( "Source:\n" + pszWKT )
+            qDebug( "Source:\n" + pszWKT )
 
             pszWKT = poOutputSRS.ExportToPrettyWkt( 0 )
-            print( "Target:\n" + pszWKT )
+            qDebug( "Target:\n" + pszWKT )
             return False
 
 #/* -------------------------------------------------------------------- */
@@ -333,7 +339,7 @@ def TranslateLayer( poSrcDS, poSrcLayer, poDstDS, papszLCO, pszNewLayerName, \
 #/* -------------------------------------------------------------------- */
     if poDstLayer is not None and bOverwrite:
         if poDstDS.DeleteLayer( iLayer ) != 0:
-            print("DeleteLayer() failed when overwrite requested." )
+            qDebug("DeleteLayer() failed when overwrite requested." )
             return False
 
         poDstLayer = None
@@ -360,7 +366,7 @@ def TranslateLayer( poSrcDS, poSrcLayer, poDstDS, papszLCO, pszNewLayerName, \
                 eGType = eGType | ogr.wkb25DBit
 
         if poDstDS.TestCapability( ogr.ODsCCreateLayer ) == False:
-            print("Layer " + pszNewLayerName + "not found, and CreateLayer not supported by driver.")
+            qDebug("Layer " + pszNewLayerName + "not found, and CreateLayer not supported by driver.")
             return False
 
         gdal.ErrorReset()
@@ -377,12 +383,12 @@ def TranslateLayer( poSrcDS, poSrcLayer, poDstDS, papszLCO, pszNewLayerName, \
 #/*      Otherwise we will append to it, if append was requested.        */
 #/* -------------------------------------------------------------------- */
     elif not bAppend:
-        print("FAILED: Layer " + pszNewLayerName + "already exists, and -append not specified.\n" + \
+        qDebug("FAILED: Layer " + pszNewLayerName + "already exists, and -append not specified.\n" + \
                             "        Consider using -append, or -overwrite.")
         return False
     else:
         if len(papszLCO) > 0:
-            print("WARNING: Layer creation options ignored since an existing layer is\n" + \
+            qDebug("WARNING: Layer creation options ignored since an existing layer is\n" + \
                     "         being appended to." )
 
 #/* -------------------------------------------------------------------- */
@@ -435,13 +441,13 @@ def TranslateLayer( poSrcDS, poSrcLayer, poDstDS, papszLCO, pszNewLayerName, \
                     #/* Sanity check : if it fails, the driver is buggy */
                     if poDstFDefn is not None and \
                         poDstFDefn.GetFieldCount() != nDstFieldCount + 1:
-                        print("The output driver has claimed to have added the %s field, but it did not!" %  oFieldDefn.GetNameRef() )
+                        qDebug("The output driver has claimed to have added the %s field, but it did not!" %  oFieldDefn.GetNameRef() )
                     else:
                         panMap[iSrcField] = nDstFieldCount
                         nDstFieldCount = nDstFieldCount + 1
 
             else:
-                print("Field '" + papszSelFields[iField] + "' not found in source layer.")
+                qDebug("Field '" + papszSelFields[iField] + "' not found in source layer.")
                 if not bSkipFailures:
                     return False
 
@@ -506,7 +512,7 @@ def TranslateLayer( poSrcDS, poSrcLayer, poDstDS, papszLCO, pszNewLayerName, \
                 #/* Sanity check : if it fails, the driver is buggy */
                 if poDstFDefn is not None and \
                     poDstFDefn.GetFieldCount() != nDstFieldCount + 1:
-                    print("The output driver has claimed to have added the %s field, but it did not!" %  oFieldDefn.GetNameRef() )
+                    qDebug("The output driver has claimed to have added the %s field, but it did not!" %  oFieldDefn.GetNameRef() )
                 else:
                     panMap[iField] = nDstFieldCount
                     nDstFieldCount = nDstFieldCount + 1
@@ -515,7 +521,7 @@ def TranslateLayer( poSrcDS, poSrcLayer, poDstDS, papszLCO, pszNewLayerName, \
         #/* For an existing layer, build the map by fetching the index in the destination */
         #/* layer for each source field */
         if poDstFDefn is None:
-            print( "poDstFDefn == NULL.\n" )
+            qDebug( "poDstFDefn == NULL.\n" )
             return False
 
         for iField in range(nSrcFieldCount):
@@ -586,7 +592,7 @@ def TranslateLayer( poSrcDS, poSrcLayer, poDstDS, papszLCO, pszNewLayerName, \
                 if nGroupTransactions > 0:
                     poDstLayer.CommitTransaction()
 
-                print("Unable to translate feature %d from layer %s" % (poFeature.GetFID() , poSrcFDefn.GetName() ))
+                qDebug("Unable to translate feature %d from layer %s" % (poFeature.GetFID() , poSrcFDefn.GetName() ))
 
                 return False
 
@@ -637,7 +643,7 @@ def TranslateLayer( poSrcDS, poSrcLayer, poDstDS, papszLCO, pszNewLayerName, \
                         if nGroupTransactions > 0:
                             poDstLayer.CommitTransaction()
 
-                        print("Failed to reproject feature %d (geometry probably out of source or destination SRS)." % poFeature.GetFID())
+                        qDebug("Failed to reproject feature %d (geometry probably out of source or destination SRS)." % poFeature.GetFID())
                         if not bSkipFailures:
                             return False
 

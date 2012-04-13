@@ -41,6 +41,8 @@ class OgrAlgorithmProvider(AlgorithmProvider):
         '''We return the default icon'''
         return AlgorithmProvider.getIcon(self)
 
+    def getSupportedOutputVectorLayerExtensions(self):
+        return ["sqlite", "shp"]
 
     def _loadAlgorithms(self):
         '''Here we fill the list of algorithms in self.algs.
