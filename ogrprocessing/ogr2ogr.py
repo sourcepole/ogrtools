@@ -1,119 +1,21 @@
-#!/usr/bin/env python
-#/******************************************************************************
-# * $Id$
-# *
-# * Project:  OpenGIS Simple Features Reference Implementation
-# * Purpose:  Python port of a simple client for translating between formats.
-# * Author:   Even Rouault, <even dot rouault at mines dash paris dot org>
-# *
-# * Port from ogr2ogr.cpp whose author is Frank Warmerdam
-# *
-# ******************************************************************************
-# * Copyright (c) 2010, Even Rouault
-# * Copyright (c) 1999, Frank Warmerdam
-# *
-# * Permission is hereby granted, free of charge, to any person obtaining a
-# * copy of this software and associated documentation files (the "Software"),
-# * to deal in the Software without restriction, including without limitation
-# * the rights to use, copy, modify, merge, publish, distribute, sublicense,
-# * and/or sell copies of the Software, and to permit persons to whom the
-# * Software is furnished to do so, subject to the following conditions:
-# *
-# * The above copyright notice and this permission notice shall be included
-# * in all copies or substantial portions of the Software.
-# *
-# * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-# * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-# * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-# * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-# * DEALINGS IN THE SOFTWARE.
-# ****************************************************************************/
-
-# Note : this is the most direct port of ogr2ogr.cpp possible
-# It could be made much more Python'ish !
-
-import sys
+from sextante.core.GeoAlgorithm import GeoAlgorithm
+from sextante.outputs.OutputVector import OutputVector
+from sextante.parameters.ParameterVector import ParameterVector
+from sextante.parameters.ParameterString import ParameterString
+from sextante.parameters.ParameterBoolean import ParameterBoolean
+from sextante.core.Sextante import Sextante
+from sextante.core.QGisLayers import QGisLayers
+from ogralgorithm import OgrAlgorithm
+from qgis.core import *
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
+import string
+import re
 import os
-import stat
+import ogr
+import gdal
+import osr
 
-try:
-    from osgeo import gdal
-    from osgeo import ogr
-    from osgeo import osr
-except:
-    import gdal
-    import ogr
-    import osr
-
-###############################################################################
-
-class ScaledProgressObject:
-    def __init__(self, min, max, cbk, cbk_data = None):
-        self.min = min
-        self.max = max
-        self.cbk = cbk
-        self.cbk_data = cbk_data
-
-###############################################################################
-
-def ScaledProgressFunc(pct, msg, data):
-    if data.cbk is None:
-        return True
-    return data.cbk(data.min + pct * (data.max - data.min), msg, data.cbk_data)
-
-###############################################################################
-
-def EQUAL(a, b):
-    return a.lower() == b.lower()
-
-###############################################################################
-# Redefinition of GDALTermProgress, so that autotest/pyscripts/test_ogr2ogr_py.py
-# can check that the progress bar is displayed
-
-nLastTick = -1
-
-def TermProgress( dfComplete, pszMessage, pProgressArg ):
-
-    global nLastTick;
-    nThisTick = (int) (dfComplete * 40.0);
-
-    if nThisTick < 0:
-        nThisTick = 0
-    if nThisTick > 40:
-        nThisTick = 40
-
-    # Have we started a new progress run?  
-    if nThisTick < nLastTick and nLastTick >= 39:
-        nLastTick = -1;
-
-    if nThisTick <= nLastTick:
-        return True
-
-    while nThisTick > nLastTick:
-        nLastTick = nLastTick + 1
-        if (nLastTick % 4) == 0:
-            sys.stdout.write('%d' % ((nLastTick / 4) * 10))
-        else:
-            sys.stdout.write('.')
-
-    if nThisTick == 40:
-        print(" - done." )
-    else:
-        sys.stdout.flush()
-
-    return True
-
-
-#/************************************************************************/
-#/*                                main()                                */
-#/************************************************************************/
-
-bSkipFailures = False
-nGroupTransactions = 200
-bPreserveFID = False
-nFIDToFetch = ogr.NullFID
 
 class Enum(set):
     def __getattr__(self, name):
@@ -123,729 +25,115 @@ class Enum(set):
 
 GeomOperation = Enum(["NONE", "SEGMENTIZE", "SIMPLIFY_PRESERVE_TOPOLOGY"])
 
-def main(args = None, progress_func = TermProgress, progress_data = None):
-    
-    global bSkipFailures
-    global nGroupTransactions
-    global bPreserveFID
-    global nFIDToFetch
-    
-    pszFormat = "ESRI Shapefile"
-    pszDataSource = None
-    pszDestDataSource = None
-    papszLayers = []
-    papszDSCO = []
-    papszLCO = []
-    bTransform = False
-    bAppend = False
-    bUpdate = False
-    bOverwrite = False
-    pszOutputSRSDef = None
-    pszSourceSRSDef = None
-    poOutputSRS = None
-    poSourceSRS = None
-    pszNewLayerName = None
-    pszWHERE = None
-    poSpatialFilter = None
-    pszSelect = None
-    papszSelFields = None
-    pszSQLStatement = None
-    eGType = -2
-    eGeomOp = GeomOperation.NONE
-    dfGeomOpParam = 0
-    papszFieldTypesToString = []
-    bDisplayProgress = False
-    pfnProgress = None
-    pProgressData = None
-    bClipSrc = False
-    poClipSrc = None
-    pszClipSrcDS = None
-    pszClipSrcSQL = None
-    pszClipSrcLayer = None
-    pszClipSrcWhere = None
-    poClipDst = None
-    pszClipDstDS = None
-    pszClipDstSQL = None
-    pszClipDstLayer = None
-    pszClipDstWhere = None
-    pszSrcEncoding = None
-    pszDstEncoding = None
-    bExplodeCollections = False
-    pszZField = None
 
-    if args is None:
-        args = sys.argv
-
-    args = ogr.GeneralCmdLineProcessor( args )
-
-#/* -------------------------------------------------------------------- */
-#/*      Processing command line arguments.                              */
-#/* -------------------------------------------------------------------- */
-    if args is None:
-        return False
-
-    nArgc = len(args)
-
-    iArg = 1
-    while iArg < nArgc:
-        if EQUAL(args[iArg],"-f") and iArg < nArgc-1:
-            iArg = iArg + 1
-            pszFormat = args[iArg]
-
-        elif EQUAL(args[iArg],"-dsco") and iArg < nArgc-1:
-            iArg = iArg + 1
-            papszDSCO.append(args[iArg] )
-
-        elif EQUAL(args[iArg],"-lco") and iArg < nArgc-1:
-            iArg = iArg + 1
-            papszLCO.append(args[iArg] )
-
-        elif EQUAL(args[iArg],"-preserve_fid"):
-            bPreserveFID = True
-
-        elif len(args[iArg]) >= 5 and EQUAL(args[iArg][0:5], "-skip"):
-            bSkipFailures = True
-            nGroupTransactions = 1 # /* #2409 */
-
-        elif EQUAL(args[iArg],"-append"):
-            bAppend = True
-            bUpdate = True
-
-        elif EQUAL(args[iArg],"-overwrite"):
-            bOverwrite = True
-            bUpdate = True
-
-        elif EQUAL(args[iArg],"-update"):
-            bUpdate = True
-
-        elif EQUAL(args[iArg],"-fid") and iArg < nArgc-1:
-            iArg = iArg + 1
-            nFIDToFetch = int(args[iArg])
-
-        elif EQUAL(args[iArg],"-sql") and iArg < nArgc-1:
-            iArg = iArg + 1
-            pszSQLStatement = args[iArg]
-
-        elif EQUAL(args[iArg],"-nln") and iArg < nArgc-1:
-            iArg = iArg + 1
-            pszNewLayerName = args[iArg]
-
-        elif EQUAL(args[iArg],"-nlt") and iArg < nArgc-1:
-
-            if EQUAL(args[iArg+1],"NONE"):
-                eGType = ogr.wkbNone
-            elif EQUAL(args[iArg+1],"GEOMETRY"):
-                eGType = ogr.wkbUnknown
-            elif EQUAL(args[iArg+1],"POINT"):
-                eGType = ogr.wkbPoint
-            elif EQUAL(args[iArg+1],"LINESTRING"):
-                eGType = ogr.wkbLineString
-            elif EQUAL(args[iArg+1],"POLYGON"):
-                eGType = ogr.wkbPolygon
-            elif EQUAL(args[iArg+1],"GEOMETRYCOLLECTION"):
-                eGType = ogr.wkbGeometryCollection
-            elif EQUAL(args[iArg+1],"MULTIPOINT"):
-                eGType = ogr.wkbMultiPoint
-            elif EQUAL(args[iArg+1],"MULTILINESTRING"):
-                eGType = ogr.wkbMultiLineString
-            elif EQUAL(args[iArg+1],"MULTIPOLYGON"):
-                eGType = ogr.wkbMultiPolygon
-            elif EQUAL(args[iArg+1],"GEOMETRY25D"):
-                eGType = ogr.wkbUnknown | ogr.wkb25DBit
-            elif EQUAL(args[iArg+1],"POINT25D"):
-                eGType = ogr.wkbPoint25D
-            elif EQUAL(args[iArg+1],"LINESTRING25D"):
-                eGType = ogr.wkbLineString25D
-            elif EQUAL(args[iArg+1],"POLYGON25D"):
-                eGType = ogr.wkbPolygon25D
-            elif EQUAL(args[iArg+1],"GEOMETRYCOLLECTION25D"):
-                eGType = ogr.wkbGeometryCollection25D
-            elif EQUAL(args[iArg+1],"MULTIPOINT25D"):
-                eGType = ogr.wkbMultiPoint25D
-            elif EQUAL(args[iArg+1],"MULTILINESTRING25D"):
-                eGType = ogr.wkbMultiLineString25D
-            elif EQUAL(args[iArg+1],"MULTIPOLYGON25D"):
-                eGType = ogr.wkbMultiPolygon25D
-            else:
-                print("-nlt %s: type not recognised." % args[iArg+1])
-                return False
-
-            iArg = iArg + 1
-
-        elif (EQUAL(args[iArg],"-tg") or \
-                EQUAL(args[iArg],"-gt")) and iArg < nArgc-1:
-            iArg = iArg + 1
-            nGroupTransactions = int(args[iArg])
-
-        elif EQUAL(args[iArg],"-s_srs") and iArg < nArgc-1:
-            iArg = iArg + 1
-            pszSourceSRSDef = args[iArg]
-
-        elif EQUAL(args[iArg],"-a_srs") and iArg < nArgc-1:
-            iArg = iArg + 1
-            pszOutputSRSDef = args[iArg]
-
-        elif EQUAL(args[iArg],"-t_srs") and iArg < nArgc-1:
-            iArg = iArg + 1
-            pszOutputSRSDef = args[iArg]
-            bTransform = True
-
-        elif EQUAL(args[iArg],"-spat") and iArg + 4 < nArgc:
-            oRing = ogr.Geometry(ogr.wkbLinearRing)
-
-            oRing.AddPoint_2D( float(args[iArg+1]), float(args[iArg+2]) )
-            oRing.AddPoint_2D( float(args[iArg+1]), float(args[iArg+4]) )
-            oRing.AddPoint_2D( float(args[iArg+3]), float(args[iArg+4]) )
-            oRing.AddPoint_2D( float(args[iArg+3]), float(args[iArg+2]) )
-            oRing.AddPoint_2D( float(args[iArg+1]), float(args[iArg+2]) )
-
-            poSpatialFilter = ogr.Geometry(ogr.wkbPolygon)
-            poSpatialFilter.AddGeometry(oRing)
-            iArg = iArg + 4
-
-        elif EQUAL(args[iArg],"-where") and iArg < nArgc-1:
-            iArg = iArg + 1
-            pszWHERE = args[++iArg]
-
-        elif EQUAL(args[iArg],"-select") and iArg < nArgc-1:
-            iArg = iArg + 1
-            pszSelect = args[iArg]
-            if pszSelect.find(',') != -1:
-                papszSelFields = pszSelect.split(',')
-            else:
-                papszSelFields = pszSelect.split(' ')
-            if papszSelFields[0] == '':
-                papszSelFields = []
-
-        elif EQUAL(args[iArg],"-simplify") and iArg < nArgc-1:
-            iArg = iArg + 1
-            eGeomOp = GeomOperation.SIMPLIFY_PRESERVE_TOPOLOGY
-            dfGeomOpParam = float(args[iArg])
-
-        elif EQUAL(args[iArg],"-segmentize") and iArg < nArgc-1:
-            iArg = iArg + 1
-            eGeomOp = GeomOperation.SEGMENTIZE
-            dfGeomOpParam = float(args[iArg])
-
-        elif EQUAL(args[iArg],"-fieldTypeToString") and iArg < nArgc-1:
-            iArg = iArg + 1
-            pszFieldTypeToString = args[iArg]
-            if pszFieldTypeToString.find(',') != -1:
-                tokens = pszFieldTypeToString.split(',')
-            else:
-                tokens = pszFieldTypeToString.split(' ')
-
-            for token in tokens:
-                if EQUAL(token,"Integer") or \
-                    EQUAL(token,"Real") or \
-                    EQUAL(token,"String") or \
-                    EQUAL(token,"Date") or \
-                    EQUAL(token,"Time") or \
-                    EQUAL(token,"DateTime") or \
-                    EQUAL(token,"Binary") or \
-                    EQUAL(token,"IntegerList") or \
-                    EQUAL(token,"RealList") or \
-                    EQUAL(token,"StringList"):
-
-                    papszFieldTypesToString.append(token)
-
-                elif EQUAL(token,"All"):
-                    papszFieldTypesToString = [ 'All' ]
-                    break
-
-                else:
-                    print("Unhandled type for fieldtypeasstring option : %s " % token)
-                    return Usage()
-
-        elif EQUAL(args[iArg],"-progress"):
-            bDisplayProgress = True
-
-        #/*elif EQUAL(args[iArg],"-wrapdateline") )
-        #{
-        #    bWrapDateline = True;
-        #}
-        #*/
-        elif EQUAL(args[iArg],"-clipsrc") and iArg < nArgc-1:
-
-            bClipSrc = True
-            if IsNumber(args[iArg+1]) and iArg < nArgc - 4:
-                oRing = ogr.Geometry(ogr.wkbLinearRing)
-
-                oRing.AddPoint_2D( float(args[iArg+1]), float(args[iArg+2]) )
-                oRing.AddPoint_2D( float(args[iArg+1]), float(args[iArg+4]) )
-                oRing.AddPoint_2D( float(args[iArg+3]), float(args[iArg+4]) )
-                oRing.AddPoint_2D( float(args[iArg+3]), float(args[iArg+2]) )
-                oRing.AddPoint_2D( float(args[iArg+1]), float(args[iArg+2]) )
-
-                poClipSrc = ogr.Geometry(ogr.wkbPolygon)
-                poClipSrc.AddGeometry(oRing)
-                iArg = iArg + 4
-
-            elif (len(args[iArg+1]) >= 7 and EQUAL(args[iArg+1][0:7],"POLYGON") ) or \
-                  (len(args[iArg+1]) >= 12 and EQUAL(args[iArg+1][0:12],"MULTIPOLYGON") ) :
-                poClipSrc = ogr.CreateGeometryFromWkt(args[iArg+1])
-                if poClipSrc is None:
-                    print("FAILURE: Invalid geometry. Must be a valid POLYGON or MULTIPOLYGON WKT\n")
-                    return Usage()
-
-                iArg = iArg + 1
-
-            elif EQUAL(args[iArg+1],"spat_extent"):
-                iArg = iArg + 1
-
-            else:
-                pszClipSrcDS = args[iArg+1]
-                iArg = iArg + 1
-
-        elif EQUAL(args[iArg],"-clipsrcsql") and iArg < nArgc-1:
-            pszClipSrcSQL = args[iArg+1]
-            iArg = iArg + 1
-
-        elif EQUAL(args[iArg],"-clipsrclayer") and iArg < nArgc-1:
-            pszClipSrcLayer = args[iArg+1]
-            iArg = iArg + 1
-
-        elif EQUAL(args[iArg],"-clipsrcwhere") and iArg < nArgc-1:
-            pszClipSrcWhere = args[iArg+1]
-            iArg = iArg + 1
-
-        elif EQUAL(args[iArg],"-clipdst") and iArg < nArgc-1:
-
-            if IsNumber(args[iArg+1]) and iArg < nArgc - 4:
-                oRing = ogr.Geometry(ogr.wkbLinearRing)
-
-                oRing.AddPoint_2D( float(args[iArg+1]), float(args[iArg+2]) )
-                oRing.AddPoint_2D( float(args[iArg+1]), float(args[iArg+4]) )
-                oRing.AddPoint_2D( float(args[iArg+3]), float(args[iArg+4]) )
-                oRing.AddPoint_2D( float(args[iArg+3]), float(args[iArg+2]) )
-                oRing.AddPoint_2D( float(args[iArg+1]), float(args[iArg+2]) )
-
-                poClipDst = ogr.Geometry(ogr.wkbPolygon)
-                poClipDst.AddGeometry(oRing)
-                iArg = iArg + 4
-
-            elif (len(args[iArg+1]) >= 7 and EQUAL(args[iArg+1][0:7],"POLYGON") ) or \
-                  (len(args[iArg+1]) >= 12 and EQUAL(args[iArg+1][0:12],"MULTIPOLYGON") ) :
-                poClipDst = ogr.CreateGeometryFromWkt(args[iArg+1])
-                if poClipDst is None:
-                    print("FAILURE: Invalid geometry. Must be a valid POLYGON or MULTIPOLYGON WKT\n")
-                    return Usage()
-
-                iArg = iArg + 1
-
-            elif EQUAL(args[iArg+1],"spat_extent"):
-                iArg = iArg + 1
-
-            else:
-                pszClipDstDS = args[iArg+1]
-                iArg = iArg + 1
-
-        elif EQUAL(args[iArg],"-clipdstsql") and iArg < nArgc-1:
-            pszClipDstSQL = args[iArg+1]
-            iArg = iArg + 1
-
-        elif EQUAL(args[iArg],"-clipdstlayer") and iArg < nArgc-1:
-            pszClipDstLayer = args[iArg+1]
-            iArg = iArg + 1
-
-        elif EQUAL(args[iArg],"-clipdstwhere") and iArg < nArgc-1:
-            pszClipDstWhere = args[iArg+1]
-            iArg = iArg + 1
-
-        elif EQUAL(args[iArg],"-explodecollections"):
-            bExplodeCollections = True
-
-        elif EQUAL(args[iArg],"-zfield") and iArg < nArgc-1:
-            pszZField = args[iArg+1]
-            iArg = iArg + 1
-
-        elif args[iArg][0] == '-':
-            return Usage()
-
-        elif pszDestDataSource is None:
-            pszDestDataSource = args[iArg]
-        elif pszDataSource is None:
-            pszDataSource = args[iArg]
-        else:
-            papszLayers.append (args[iArg] )
-
-        iArg = iArg + 1
-
-    if pszDataSource is None:
-        return Usage()
-
-    if bPreserveFID and bExplodeCollections:
-        print("FAILURE: cannot use -preserve_fid and -explodecollections at the same time\n\n")
-        return Usage()
-
-    if bClipSrc and pszClipSrcDS is not None:
-        poClipSrc = LoadGeometry(pszClipSrcDS, pszClipSrcSQL, pszClipSrcLayer, pszClipSrcWhere)
-        if poClipSrc is None:
-            print("FAILURE: cannot load source clip geometry\n" )
-            return Usage()
-
-    elif bClipSrc and poClipSrc is None:
-        if poSpatialFilter is not None:
-            poClipSrc = poSpatialFilter.Clone()
-        if poClipSrc is None:
-            print("FAILURE: -clipsrc must be used with -spat option or a\n" + \
-                  "bounding box, WKT string or datasource must be specified\n")
-            return Usage()
-
-    if pszClipDstDS is not None:
-        poClipDst = LoadGeometry(pszClipDstDS, pszClipDstSQL, pszClipDstLayer, pszClipDstWhere)
-        if poClipDst is None:
-            print("FAILURE: cannot load dest clip geometry\n" )
-            return Usage()
-
-#/* -------------------------------------------------------------------- */
-#/*      Open data source.                                               */
-#/* -------------------------------------------------------------------- */
-    poDS = ogr.Open( pszDataSource, False )
-
-#/* -------------------------------------------------------------------- */
-#/*      Report failure                                                  */
-#/* -------------------------------------------------------------------- */
-    if poDS is None:
-        print("FAILURE:\n" + \
-                "Unable to open datasource `%s' with the following drivers." % pszDataSource)
-
-        for iDriver in range(ogr.GetDriverCount()):
-            print("  ->  " + ogr.GetDriver(iDriver).GetName() )
-
-        return False
-
-#/* -------------------------------------------------------------------- */
-#/*      Try opening the output datasource as an existing, writable      */
-#/* -------------------------------------------------------------------- */
-    poODS = None
-    poDriver = None
-
-    if bUpdate:
-        poODS = ogr.Open( pszDestDataSource, True )
-        if poODS is None:
-
-            if bOverwrite or bAppend:
-                poODS = ogr.Open( pszDestDataSource, False )
-                if poODS is None:
-                    # /* ok the datasource doesn't exist at all */
-                    bUpdate = False
-                else:
-                    poODS.delete()
-                    poODS = None
-
-            if bUpdate:
-                print("FAILURE:\n" +
-                        "Unable to open existing output datasource `%s'." % pszDestDataSource)
-                return False
-
-        elif len(papszDSCO) > 0:
-            print("WARNING: Datasource creation options ignored since an existing datasource\n" + \
-                    "         being updated." )
-
-        if poODS is not None:
-            poDriver = poODS.GetDriver()
-
-#/* -------------------------------------------------------------------- */
-#/*      Find the output driver.                                         */
-#/* -------------------------------------------------------------------- */
-    if not bUpdate:
-        poDriver = ogr.GetDriverByName(pszFormat)
-        if poDriver is None:
-            print("Unable to find driver `%s'." % pszFormat)
-            print( "The following drivers are available:" )
-
-            for iDriver in range(ogr.GetDriverCount()):
-                print("  ->  %s" % ogr.GetDriver(iDriver).GetName() )
-
-            return False
-
-        if poDriver.TestCapability( ogr.ODrCCreateDataSource ) == False:
-            print( "%s driver does not support data source creation." % pszFormat)
-            return False
-
-#/* -------------------------------------------------------------------- */
-#/*      Special case to improve user experience when translating        */
-#/*      a datasource with multiple layers into a shapefile. If the      */
-#/*      user gives a target datasource with .shp and it does not exist, */
-#/*      the shapefile driver will try to create a file, but this is not */
-#/*      appropriate because here we have several layers, so create      */
-#/*      a directory instead.                                            */
-#/* -------------------------------------------------------------------- */
-        if EQUAL(poDriver.GetName(), "ESRI Shapefile") and \
-           pszSQLStatement is None and \
-           (len(papszLayers) > 1 or \
-            (len(papszLayers) == 0 and poDS.GetLayerCount() > 1)) and \
-            pszNewLayerName is None and \
-            EQUAL(os.path.splitext(pszDestDataSource)[1], ".SHP") :
-
-            try:
-                os.stat(pszDestDataSource)
-            except:
-                try:
-                    # decimal 493 = octal 0755. Python 3 needs 0o755, but
-                    # this syntax is only supported by Python >= 2.6
-                    os.mkdir(pszDestDataSource, 493)
-                except:
-                    print("Failed to create directory %s\n"
-                          "for shapefile datastore.\n" % pszDestDataSource )
-                    return False
-
-#/* -------------------------------------------------------------------- */
-#/*      Create the output data source.                                  */
-#/* -------------------------------------------------------------------- */
-        poODS = poDriver.CreateDataSource( pszDestDataSource, options = papszDSCO )
-        if poODS is None:
-            print( "%s driver failed to create %s" % (pszFormat, pszDestDataSource ))
-            return False
-
-#/* -------------------------------------------------------------------- */
-#/*      Parse the output SRS definition if possible.                    */
-#/* -------------------------------------------------------------------- */
-    if pszOutputSRSDef is not None:
-        poOutputSRS = osr.SpatialReference()
-        if poOutputSRS.SetFromUserInput( pszOutputSRSDef ) != 0:
-            print( "Failed to process SRS definition: %s" % pszOutputSRSDef )
-            return False
-
-#/* -------------------------------------------------------------------- */
-#/*      Parse the source SRS definition if possible.                    */
-#/* -------------------------------------------------------------------- */
-    if pszSourceSRSDef is not None:
-        poSourceSRS = osr.SpatialReference()
-        if poSourceSRS.SetFromUserInput( pszSourceSRSDef ) != 0:
-            print( "Failed to process SRS definition: %s" % pszSourceSRSDef )
-            return False
-
-#/* -------------------------------------------------------------------- */
-#/*      Special case for -sql clause.  No source layers required.       */
-#/* -------------------------------------------------------------------- */
-    if pszSQLStatement is not None:
-        if pszWHERE is not None:
-            print( "-where clause ignored in combination with -sql." )
-        if len(papszLayers) > 0:
-            print( "layer names ignored in combination with -sql." )
-
-        poResultSet = poDS.ExecuteSQL( pszSQLStatement, poSpatialFilter, \
-                                        None )
-
-        if poResultSet is not None:
-            nCountLayerFeatures = 0
-            if bDisplayProgress:
-                if not poResultSet.TestCapability(ogr.OLCFastFeatureCount):
-                    print( "Progress turned off as fast feature count is not available.")
-                    bDisplayProgress = False
-
-                else:
-                    nCountLayerFeatures = poResultSet.GetFeatureCount()
-                    pfnProgress = progress_func
-                    pProgressData = progress_data
-
-#/* -------------------------------------------------------------------- */
-#/*      Special case to improve user experience when translating into   */
-#/*      single file shapefile and source has only one layer, and that   */
-#/*      the layer name isn't specified                                  */
-#/* -------------------------------------------------------------------- */
-            if EQUAL(poDriver.GetName(), "ESRI Shapefile") and \
-                pszNewLayerName is None:
-                try:
-                    mode = os.stat(pszDestDataSource).st_mode
-                    if (mode & stat.S_IFDIR) == 0:
-                        pszNewLayerName = os.path.splitext(os.path.basename(pszDestDataSource))[0]
-                except:
-                    pass
-
-            if not TranslateLayer( poDS, poResultSet, poODS, papszLCO, \
-                                pszNewLayerName, bTransform, poOutputSRS, \
-                                poSourceSRS, papszSelFields, bAppend, eGType, \
-                                bOverwrite, eGeomOp, dfGeomOpParam, papszFieldTypesToString, \
-                                nCountLayerFeatures, poClipSrc, poClipDst, bExplodeCollections, \
-                                pszZField, pszWHERE, pfnProgress, pProgressData ):
-                print(
-                        "Terminating translation prematurely after failed\n" + \
-                        "translation from sql statement." )
-
-                return False
-
-            poDS.ReleaseResultSet( poResultSet )
-
-    else:
-
-        nLayerCount = 0
-        papoLayers = []
-
-#/* -------------------------------------------------------------------- */
-#/*      Process each data source layer.                                 */
-#/* -------------------------------------------------------------------- */
-        if len(papszLayers) == 0:
-            nLayerCount = poDS.GetLayerCount()
-            papoLayers = [None for i in range(nLayerCount)]
-            iLayer = 0
-
-            for iLayer in range(nLayerCount):
-                poLayer = poDS.GetLayer(iLayer)
-
-                if poLayer is None:
-                    print("FAILURE: Couldn't fetch advertised layer %d!" % iLayer)
-                    return False
-
-                papoLayers[iLayer] = poLayer
-                iLayer = iLayer + 1
-
-#/* -------------------------------------------------------------------- */
-#/*      Process specified data source layers.                           */
-#/* -------------------------------------------------------------------- */
-        else:
-            nLayerCount = len(papszLayers)
-            papoLayers = [None for i in range(nLayerCount)]
-            iLayer = 0
-
-            for layername in papszLayers:
-                poLayer = poDS.GetLayerByName(layername)
-
-                if poLayer is None:
-                    print("FAILURE: Couldn't fetch advertised layer %s!" % layername)
-                    return False
-
-                papoLayers[iLayer] = poLayer
-                iLayer = iLayer + 1
-
-        panLayerCountFeatures = [0 for i in range(nLayerCount)]
-        nCountLayersFeatures = 0
-        nAccCountFeatures = 0
-
-        #/* First pass to apply filters and count all features if necessary */
-        for iLayer in range(nLayerCount):
-            poLayer = papoLayers[iLayer]
-
-            if pszWHERE is not None:
-                if poLayer.SetAttributeFilter( pszWHERE ) != 0:
-                    print("FAILURE: SetAttributeFilter(%s) failed." % pszWHERE)
-                    if not bSkipFailures:
-                        return False
-
-            if poSpatialFilter is not None:
-                poLayer.SetSpatialFilter( poSpatialFilter )
-
-            if bDisplayProgress:
-                if not poLayer.TestCapability(ogr.OLCFastFeatureCount):
-                    print("Progress turned off as fast feature count is not available.")
-                    bDisplayProgress = False
-                else:
-                    panLayerCountFeatures[iLayer] = poLayer.GetFeatureCount()
-                    nCountLayersFeatures += panLayerCountFeatures[iLayer]
-
-        #/* Second pass to do the real job */
-        for iLayer in range(nLayerCount):
-            poLayer = papoLayers[iLayer]
-
-            if bDisplayProgress:
-                pfnProgress = ScaledProgressFunc
-                pProgressData = ScaledProgressObject( \
-                        nAccCountFeatures * 1.0 / nCountLayersFeatures, \
-                        (nAccCountFeatures + panLayerCountFeatures[iLayer]) * 1.0 / nCountLayersFeatures, \
-                        progress_func, progress_data)
-
-            nAccCountFeatures += panLayerCountFeatures[iLayer]
-
-#/* -------------------------------------------------------------------- */
-#/*      Special case to improve user experience when translating into   */
-#/*      single file shapefile and source has only one layer, and that   */
-#/*      the layer name isn't specified                                  */
-#/* -------------------------------------------------------------------- */
-            if EQUAL(poDriver.GetName(), "ESRI Shapefile") and \
-                nLayerCount == 1 and pszNewLayerName is None:
-                try:
-                    mode = os.stat(pszDestDataSource).st_mode
-                    if (mode & stat.S_IFDIR) == 0:
-                        pszNewLayerName = os.path.splitext(os.path.basename(pszDestDataSource))[0]
-                except:
-                    pass
-
-            if not TranslateLayer( poDS, poLayer, poODS, papszLCO,  \
-                                pszNewLayerName, bTransform, poOutputSRS, \
-                                poSourceSRS, papszSelFields, bAppend, eGType, \
-                                bOverwrite, eGeomOp, dfGeomOpParam, papszFieldTypesToString, \
-                                panLayerCountFeatures[iLayer], poClipSrc, poClipDst, bExplodeCollections, \
-                                pszZField, pszWHERE, pfnProgress, pProgressData)  \
-                and not bSkipFailures:
-                print(
-                        "Terminating translation prematurely after failed\n" + \
-                        "translation of layer " + poLayer.GetLayerDefn().GetName() + " (use -skipfailures to skip errors)")
-
-                return False
-
-#/* -------------------------------------------------------------------- */
-#/*      Close down.                                                     */
-#/* -------------------------------------------------------------------- */
-    #/* We must explicetely destroy the output dataset in order the file */
-    #/* to be properly closed ! */
-    poODS.Destroy()
-    poDS.Destroy()
-
-    return True
-
-#/************************************************************************/
-#/*                               Usage()                                */
-#/************************************************************************/
-
-def Usage():
-
-    print( "Usage: ogr2ogr [--help-general] [-skipfailures] [-append] [-update] [-gt n]\n" + \
-            "               [-select field_list] [-where restricted_where] \n" + \
-            "               [-progress] [-sql <sql statement>] \n" + \
-            "               [-spat xmin ymin xmax ymax] [-preserve_fid] [-fid FID]\n" + \
-            "               [-a_srs srs_def] [-t_srs srs_def] [-s_srs srs_def]\n" + \
-            "               [-f format_name] [-overwrite] [[-dsco NAME=VALUE] ...]\n" + \
-            "               [-simplify tolerance]\n" + \
-            #// "               [-segmentize max_dist] [-fieldTypeToString All|(type1[,type2]*)]\n" + \
-            "               [-fieldTypeToString All|(type1[,type2]*)] [-explodecollections] \n" + \
-            "               dst_datasource_name src_datasource_name\n" + \
-            "               [-lco NAME=VALUE] [-nln name] [-nlt type] [layer [layer ...]]\n" + \
-            "\n" + \
-            " -f format_name: output file format name, possible values are:")
-
-    for iDriver in range(ogr.GetDriverCount()):
-        poDriver = ogr.GetDriver(iDriver)
-
-        if poDriver.TestCapability( ogr.ODrCCreateDataSource ):
-            print( "     -f \"" + poDriver.GetName() + "\"" )
-
-    print( " -append: Append to existing layer instead of creating new if it exists\n" + \
-            " -overwrite: delete the output layer and recreate it empty\n" + \
-            " -update: Open existing output datasource in update mode\n" + \
-            " -progress: Display progress on terminal. Only works if input layers have the \"fast feature count\" capability\n" + \
-            " -select field_list: Comma-delimited list of fields from input layer to\n" + \
-            "                     copy to the new layer (defaults to all)\n" + \
-            " -where restricted_where: Attribute query (like SQL WHERE)\n" + \
-            " -sql statement: Execute given SQL statement and save result.\n" + \
-            " -skipfailures: skip features or layers that fail to convert\n" + \
-            " -gt n: group n features per transaction (default 200)\n" + \
-            " -spat xmin ymin xmax ymax: spatial query extents\n" + \
-            " -simplify tolerance: distance tolerance for simplification.\n" + \
-            #//" -segmentize max_dist: maximum distance between 2 nodes.\n" + \
-            #//"                       Used to create intermediate points\n" + \
-            " -dsco NAME=VALUE: Dataset creation option (format specific)\n" + \
-            " -lco  NAME=VALUE: Layer creation option (format specific)\n" + \
-            " -nln name: Assign an alternate name to the new layer\n" + \
-            " -nlt type: Force a geometry type for new layer.  One of NONE, GEOMETRY,\n" + \
-            "      POINT, LINESTRING, POLYGON, GEOMETRYCOLLECTION, MULTIPOINT,\n" + \
-            "      MULTIPOLYGON, or MULTILINESTRING.  Add \"25D\" for 3D layers.\n" + \
-            "      Default is type of source layer.\n" + \
-            " -fieldTypeToString type1,...: Converts fields of specified types to\n" + \
-            "      fields of type string in the new layer. Valid types are : \n" + \
-            "      Integer, Real, String, Date, Time, DateTime, Binary, IntegerList, RealList,\n" + \
-            "      StringList. Special value All can be used to convert all fields to strings.")
-
-    print(" -a_srs srs_def: Assign an output SRS\n" + \
-        " -t_srs srs_def: Reproject/transform to this SRS on output\n" + \
-        " -s_srs srs_def: Override source SRS\n" + \
-        "\n" + \
-        " Srs_def can be a full WKT definition (hard to escape properly),\n" + \
-        " or a well known definition (ie. EPSG:4326) or a file with a WKT\n" + \
-        " definition." )
-
-    return False
+class Ogr2Ogr(OgrAlgorithm):
+
+    #constants used to refer to parameters and outputs.
+    #They will be used when calling the algorithm from another algorithm,
+    #or when calling SEXTANTE from the QGIS console.
+    OUTPUT_LAYER = "OUTPUT_LAYER"
+    INPUT_LAYER = "INPUT_LAYER"
+    DEST_DS = "DEST_DS"
+    DEST_FORMAT = "DEST_FORMAT"
+    DEST_DSCO = "DEST_DSCO"
+
+    def defineCharacteristics(self):
+        self.name = "ogr2ogr"
+        self.group = "Transformation"
+
+        #we add the input vector layer. It can have any kind of geometry
+        #It is a mandatory (not optional) one, hence the False argument
+        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
+        self.addParameter(ParameterString(self.DEST_DS, "Output DS", "/tmp/out.sqlite"))
+        self.addParameter(ParameterString(self.DEST_FORMAT, "Destination Format", "SQLite"))
+        self.addParameter(ParameterString(self.DEST_DSCO, "Creation Options", "SPATIALITE=YES"))
+
+        #self.addOutput(OutputVector(self.OUTPUT_LAYER, "Output layer"))
+
+    def processAlgorithm(self, progress):
+        '''Here is where the processing itself takes place'''
+
+        input = self.getParameterValue(self.INPUT_LAYER)
+        ogrLayer = self.ogrConnectionString(input)
+
+        #output = self.getOutputValue(self.OUTPUT_LAYER)
+
+        dst_ds = self.getParameterValue(self.INPUT_LAYER)
+        dst_format = self.getParameterValue(self.DEST_FORMAT)
+        ogr_dsco = [self.getParameterValue(self.DEST_DSCO)]
+        #dst_ds = "PG:dbname='glarus_np' options='-c client_encoding=LATIN9'"
+        #dst_format ="PostgreSQL"
+
+        qDebug("Opening data source '%s'" % input)
+        poDS = ogr.Open( input, False )
+
+        if poDS is None:
+            qDebug(self.failure(input))
+            return
+
+        srs = osr.SpatialReference()
+        srs.ImportFromEPSG( 21781 )
+        if dst_format == "SQLite":
+            os.remove(dst_ds)
+        driver = ogr.GetDriverByName(dst_format)
+        poDstDS = driver.CreateDataSource(dst_ds, options = ogr_dsco)
+        #self.ogrtransform(poDS,  poDstDS,  bOverwrite = True,  poOutputSRS = srs,  poSourceSRS = srs)
+        self.ogrtransform(poDS, poDstDS, bOverwrite = True)
+
+    def vrtsource(self, vrt, vars):
+        vrt_templ = Template(open(vrt).read())
+        vrt_xml = vrt_templ.substitute(vars)
+        gdal.FileFromMemBuffer('/vsimem/input.vrt', vrt_xml)
+        poSrcDS = ogr.Open('/vsimem/input.vrt')
+        return poSrcDS
+
+    def ogrtransform(self, 
+                     poSrcDS,
+                    poDstDS,
+                    papszLayers = [],
+                    papszLCO = [],
+                    bTransform = False,
+                    bAppend = False,
+                    bUpdate = False,
+                    bOverwrite = False,
+                    poOutputSRS = None,
+                    poSourceSRS = None,
+                    pszNewLayerName = None,
+                    pszWHERE = None,
+                    papszSelFields = None,
+                    eGType = -2,
+                    eGeomOp = GeomOperation.NONE,
+                    dfGeomOpParam = 0,
+                    papszFieldTypesToString = [],
+                    pfnProgress = None,
+                    pProgressData = None,
+                    nCountLayerFeatures = 0,
+                    poClipSrc = None,
+                    poClipDst = None,
+                    bExplodeCollections = False,
+                    pszZField = None):
+
+        for iLayer in range(poSrcDS.GetLayerCount()): #TODO: use papszLayers
+          poSrcLayer = poSrcDS.GetLayer(iLayer)
+          qDebug(poSrcLayer.GetLayerDefn().GetName())
+          #TODO: poDstDS.GetLayerByName for VRT layer fails if name is not lower case
+
+          TranslateLayer( poSrcDS, poSrcLayer, poDstDS, papszLCO, pszNewLayerName, \
+                        bTransform,  poOutputSRS, poSourceSRS, papszSelFields, \
+                        bAppend, eGType, bOverwrite, eGeomOp, dfGeomOpParam, \
+                        papszFieldTypesToString, nCountLayerFeatures, \
+                        poClipSrc, poClipDst, bExplodeCollections, pszZField, pszWHERE, \
+                        pfnProgress, pProgressData)
+
+
+# --------------------------------------------------
+# From ogr2ogr.py implementation included in GDAL/OGR
+# --------------------------------------------------
+
+bSkipFailures = False
+nGroupTransactions = 200
+bPreserveFID = False
+nFIDToFetch = ogr.NullFID
 
 def CSLFindString(v, mystr):
     i = 0
@@ -1393,15 +681,3 @@ def TranslateLayer( poSrcDS, poSrcLayer, poDstDS, papszLCO, pszNewLayerName, \
         poDstLayer.CommitTransaction()
 
     return True
-
-if __name__ == '__main__':
-    version_num = int(gdal.VersionInfo('VERSION_NUM'))
-    if version_num < 1800: # because of ogr.GetFieldTypeName
-        print('ERROR: Python bindings of GDAL 1.8.0 or later required')
-        sys.exit(1)
-
-    if not main(sys.argv):
-        sys.exit(1)
-    else:
-        sys.exit(0)
-
