@@ -25,7 +25,9 @@ def name():
 def description():
     return "Vector transformation based on OGR library"
 def version():
-    return "Version 0.1"
+    return "0.1.0"
+def experimental():
+    return True
 def icon():
     return "icon.png"
 def qgisMinimumVersion():

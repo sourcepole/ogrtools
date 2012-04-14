@@ -35,7 +35,7 @@ PY_FILES = ogrprocessingplugin.py ogrprocessingplugindialog.py __init__.py
 
 EXTRAS = icon.png 
 
-UI_FILES = ui_ogrprocessingplugin.py
+UI_FILES = #ui_ogrprocessingplugin.py
 
 RESOURCE_FILES = resources_rc.py
 
