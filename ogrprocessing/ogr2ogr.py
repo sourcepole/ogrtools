@@ -46,8 +46,8 @@ class Ogr2Ogr(OgrAlgorithm):
         #It is a mandatory (not optional) one, hence the False argument
         self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
         #self.addParameter(ParameterString(self.DEST_DS, "Output DS", "/tmp/out.sqlite"))
-        self.addParameter(ParameterString(self.DEST_FORMAT, "Destination Format", "SQLite"))
-        self.addParameter(ParameterString(self.DEST_DSCO, "Creation Options", "SPATIALITE=YES"))
+        self.addParameter(ParameterString(self.DEST_FORMAT, "Destination Format", "ESRI Shapefile")) #SQLite
+        self.addParameter(ParameterString(self.DEST_DSCO, "Creation Options", "")) #SPATIALITE=YES
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, "Output layer"))
 

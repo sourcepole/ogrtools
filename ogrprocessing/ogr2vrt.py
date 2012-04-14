@@ -3,6 +3,7 @@ from sextante.outputs.OutputHTML import OutputHTML
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterBoolean import ParameterBoolean
 from sextante.core.Sextante import Sextante
+from sextante.core.SextanteLog import SextanteLog
 from sextante.core.QGisLayers import QGisLayers
 from ogralgorithm import OgrAlgorithm
 from qgis.core import *
