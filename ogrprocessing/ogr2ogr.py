@@ -126,18 +126,49 @@ class Ogr2Ogr(OgrAlgorithm):
                     bExplodeCollections = False,
                     pszZField = None):
 
-        qDebug("ogrtransform")
-        for iLayer in range(poSrcDS.GetLayerCount()): #TODO: use papszLayers
-          poSrcLayer = poSrcDS.GetLayer(iLayer)
+        # Process each data source layer
+        if len(papszLayers) == 0:
+            nLayerCount = poSrcDS.GetLayerCount()
+            papoLayers = [None for i in range(nLayerCount)]
+            iLayer = 0
+
+            for iLayer in range(nLayerCount):
+                poLayer = poSrcDS.GetLayer(iLayer)
+
+                if poLayer is None:
+                    SextanteLog.addToLog(SextanteLog.LOG_ERROR, "FAILURE: Couldn't fetch advertised layer %d!" % iLayer)
+                    return False
+
+                papoLayers[iLayer] = poLayer
+                iLayer = iLayer + 1
+
+        # Process specified data source layers
+        else:
+            nLayerCount = len(papszLayers)
+            papoLayers = [None for i in range(nLayerCount)]
+            iLayer = 0
+
+            for layername in papszLayers:
+                poLayer = poSrcDS.GetLayerByName(layername)
+
+                if poLayer is None:
+                    SextanteLog.addToLog(SextanteLog.LOG_ERROR, "FAILURE: Couldn't fetch advertised layer %s!" % layername)
+                    return False
+
+                papoLayers[iLayer] = poLayer
+                iLayer = iLayer + 1
+
+        for poSrcLayer in papoLayers:
           qDebug(poSrcLayer.GetLayerDefn().GetName())
           #TODO: poDstDS.GetLayerByName for VRT layer fails if name is not lower case
 
-          TranslateLayer( poSrcDS, poSrcLayer, poDstDS, papszLCO, pszNewLayerName, \
+          ok = TranslateLayer( poSrcDS, poSrcLayer, poDstDS, papszLCO, pszNewLayerName, \
                         bTransform, poOutputSRS, poSourceSRS, papszSelFields, \
                         bAppend, eGType, bOverwrite, eGeomOp, dfGeomOpParam, \
                         papszFieldTypesToString, nCountLayerFeatures, \
                         poClipSrc, poClipDst, bExplodeCollections, pszZField, pszWHERE, \
                         pfnProgress, pProgressData)
+        return True
 
 
 class Ogr2OgrVrt(Ogr2Ogr):
