@@ -2,17 +2,17 @@ from sextante.core.AlgorithmProvider import AlgorithmProvider
 from sextante.core.SextanteConfig import Setting, SextanteConfig
 from ogrinfo import OgrInfo
 from ogr2vrt import Ogr2Vrt
-from ogr2ogr import Ogr2Ogr
+from ogr2ogr import Ogr2Ogr, Ogr2OgrVrt
 from ogrsql import OgrSql
 
 
 class OgrAlgorithmProvider(AlgorithmProvider):
 
-    MY_DUMMY_SETTING = "MY_DUMMY_SETTING"
+    #MY_DUMMY_SETTING = "MY_DUMMY_SETTING"
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        self.alglist = [OgrInfo(), Ogr2Vrt(), Ogr2Ogr(),  OgrSql()]
+        self.alglist = [OgrInfo(), Ogr2Vrt(), Ogr2Ogr(), Ogr2OgrVrt(), OgrSql()]
         for alg in self.alglist:
             alg.provider = self
 
@@ -22,14 +22,14 @@ class OgrAlgorithmProvider(AlgorithmProvider):
         automatically adding a setting for activating or deactivating the
         algorithms in the provider'''
         AlgorithmProvider.initializeSettings(self)
-        SextanteConfig.addSetting(Setting("Example algorithms", OgrAlgorithmProvider.MY_DUMMY_SETTING, "Example setting", "Default value"))
+        #SextanteConfig.addSetting(Setting("Example algorithms", OgrAlgorithmProvider.MY_DUMMY_SETTING, "Example setting", "Default value"))
         '''To get the parameter of a setting parameter, use SextanteConfig.getSetting(name_of_parameter)'''
 
     def unload(self):
         '''Setting should be removed here, so they do not appear anymore
         when the plugin is unloaded'''
         AlgorithmProvider.unload(self)
-        SextanteConfig.removeSetting( OgrAlgorithmProvider.MY_DUMMY_SETTING)
+        #SextanteConfig.removeSetting( OgrAlgorithmProvider.MY_DUMMY_SETTING)
 
 
     def getName(self):
@@ -43,7 +43,7 @@ class OgrAlgorithmProvider(AlgorithmProvider):
         return AlgorithmProvider.getIcon(self)
 
     def getSupportedOutputVectorLayerExtensions(self):
-        return ["sqlite", "shp"]
+        return ["shp", "sqlite"]
 
     def _loadAlgorithms(self):
         '''Here we fill the list of algorithms in self.algs.

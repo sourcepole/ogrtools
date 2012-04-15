@@ -22,7 +22,7 @@ class OgrInfo(OgrAlgorithm):
     INPUT_LAYER = "INPUT_LAYER"
 
     def defineCharacteristics(self):
-        self.name = "Information"
+        self.name = "ogrinfo"
         self.group = "Miscellaneous"
 
         #we add the input vector layer. It can have any kind of geometry

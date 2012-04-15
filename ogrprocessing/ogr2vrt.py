@@ -26,7 +26,7 @@ class Ogr2Vrt(OgrAlgorithm):
 
     def defineCharacteristics(self):
         self.name = "Generate VRT"
-        self.group = "VRT"
+        self.group = "Miscellaneous"
 
         #we add the input vector layer. It can have any kind of geometry
         #It is a mandatory (not optional) one, hence the False argument

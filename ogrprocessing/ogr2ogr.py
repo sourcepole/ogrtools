@@ -11,8 +11,10 @@ from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import string
+from string import Template
 import re
 import os
+import tempfile
 import ogr
 import gdal
 import osr
@@ -82,15 +84,21 @@ class Ogr2Ogr(OgrAlgorithm):
         if poDstDS is None:
             SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Error creating %s" % dst_ds)
             return
-        #self.ogrtransform(poDS,  poDstDS,  bOverwrite = True,  poOutputSRS = srs,  poSourceSRS = srs)
+        #self.ogrtransform(poDS, poDstDS, bOverwrite = True, poOutputSRS = srs, poSourceSRS = srs)
         self.ogrtransform(poDS, poDstDS, bOverwrite = True)
 
-    def vrtsource(self, vrt, vars):
-        vrt_templ = Template(open(vrt).read())
-        vrt_xml = vrt_templ.substitute(vars)
-        gdal.FileFromMemBuffer('/vsimem/input.vrt', vrt_xml)
-        poSrcDS = ogr.Open('/vsimem/input.vrt')
-        return poSrcDS
+    def transformed_template(self, template, substitutions):
+        vrt_templ = Template(open(template).read())
+        vrt_xml = vrt_templ.substitute(substitutions)
+        vrt = tempfile.mktemp( '.vrt', 'ogr_', '/vsimem')
+        # Create in-memory file
+        gdal.FileFromMemBuffer(vrt, vrt_xml)
+        return vrt
+
+    def transformed_datasource(self, template, substitutions):
+        vrt = transformed_template(template, substitutions)
+        ds = ogr.Open(vrt)
+        return ds
 
     def ogrtransform(self, 
                      poSrcDS,
@@ -125,12 +133,69 @@ class Ogr2Ogr(OgrAlgorithm):
           #TODO: poDstDS.GetLayerByName for VRT layer fails if name is not lower case
 
           TranslateLayer( poSrcDS, poSrcLayer, poDstDS, papszLCO, pszNewLayerName, \
-                        bTransform,  poOutputSRS, poSourceSRS, papszSelFields, \
+                        bTransform, poOutputSRS, poSourceSRS, papszSelFields, \
                         bAppend, eGType, bOverwrite, eGeomOp, dfGeomOpParam, \
                         papszFieldTypesToString, nCountLayerFeatures, \
                         poClipSrc, poClipDst, bExplodeCollections, pszZField, pszWHERE, \
                         pfnProgress, pProgressData)
 
+
+class Ogr2OgrVrt(Ogr2Ogr):
+
+    INPUT_VRT = "INPUT_VRT"
+    BASE_DIR = "BASE_DIR"
+    TEMPL_VARS = "TEMPL_VARS"
+
+    def defineCharacteristics(self):
+        self.name = "VRT transformation"
+        self.group = "Transformation"
+
+        self.addParameter(ParameterString(self.INPUT_VRT, "VRT template", "/home/pi/code/gis/geodb-gl/import_np/NPGlarus.vrt"))
+        self.addParameter(ParameterString(self.BASE_DIR, "Base path for data", "/home/pi/code/gis/geodb-gl/import_np"))
+        self.addParameter(ParameterString(self.TEMPL_VARS, "Template variables (var1=value1;var2=value2,...)", "srcdata=NPRiedern.ITF,RaumPL_GL_v10304.ili;bfsnr=1625"))
+        self.addParameter(ParameterString(self.DEST_FORMAT, "Destination Format", "ESRI Shapefile")) #SQLite
+        self.addParameter(ParameterString(self.DEST_DSCO, "Creation Options", "")) #SPATIALITE=YES
+
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, "Output layer"))
+
+    def processAlgorithm(self, progress):
+        '''Here is where the processing itself takes place'''
+
+        input = self.getParameterValue(self.INPUT_VRT)
+        base_dir = self.getParameterValue(self.BASE_DIR)
+        templ_vars_str = self.getParameterValue(self.TEMPL_VARS)
+        templ_vars = {}
+        for pair in string.split(templ_vars_str, ';'):
+            var, val = string.split(pair, '=')
+            templ_vars[var] = val
+        qDebug("Template vars '%s'" % templ_vars)
+        output = self.getOutputValue(self.OUTPUT_LAYER)
+
+        dst_ds = self.ogrConnectionString(output)
+        dst_format = self.getParameterValue(self.DEST_FORMAT)
+        ogr_dsco = [self.getParameterValue(self.DEST_DSCO)] #TODO: split
+
+        os.chdir(base_dir)
+        templ_vars['ds'] = self.transformed_template('custom-enums.vrt', templ_vars) #TODO: separate process step for nested templates
+        ogrLayer = self.transformed_template(input, templ_vars)
+        qDebug("Opening data source '%s'" % ogrLayer)
+        poDS = ogr.Open( ogrLayer, False )
+        if poDS is None:
+            SextanteLog.addToLog(SextanteLog.LOG_ERROR, self.failure(ogrLayer))
+            return
+
+        qDebug("Creating output '%s'" % dst_ds)
+        if dst_format == "SQLite" and os.path.isfile(dst_ds):
+            os.remove(dst_ds)
+        driver = ogr.GetDriverByName(dst_format)
+        poDstDS = driver.CreateDataSource(dst_ds, options = ogr_dsco)
+        if poDstDS is None:
+            SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Error creating %s" % dst_ds)
+            return
+        self.ogrtransform(poDS, poDstDS, bOverwrite = True)
+
+        # Free memory associated with the in-memory file
+        gdal.Unlink(templ_vars['ds'])
 
 # --------------------------------------------------
 # From ogr2ogr.py implementation included in GDAL/OGR
@@ -243,7 +308,7 @@ def SetZ (poGeom, dfZ ):
 #/************************************************************************/
 
 def TranslateLayer( poSrcDS, poSrcLayer, poDstDS, papszLCO, pszNewLayerName, \
-                    bTransform,  poOutputSRS, poSourceSRS, papszSelFields, \
+                    bTransform, poOutputSRS, poSourceSRS, papszSelFields, \
                     bAppend, eGType, bOverwrite, eGeomOp, dfGeomOpParam, \
                     papszFieldTypesToString, nCountLayerFeatures, \
                     poClipSrc, poClipDst, bExplodeCollections, pszZField, pszWHERE, \
