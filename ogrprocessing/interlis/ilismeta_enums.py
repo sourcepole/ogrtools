@@ -96,11 +96,13 @@ def extract_enums_asgml(fn):
                             #  </gml:featureMember>
                             featureMember = ElementTree.SubElement(gml, "gml:featureMember")
                             feat = ElementTree.SubElement(featureMember, curEnumName)
-                            value = ElementTree.SubElement(feat, "value")
-                            value.text = string.replace(enumNode.get("TID"), curEnum.get("TID")+'.', '')
                             id = ElementTree.SubElement(feat, "id")
                             id.text = str(idx)
                             idx = idx + 1
+                            enum = ElementTree.SubElement(feat, "enum")
+                            enum.text = string.replace(enumNode.get("TID"), curEnum.get("TID")+'.', '')
+                            enumtxt = ElementTree.SubElement(feat, "enumtxt")
+                            enumtxt.text = enum.text
     return ElementTree.tostring(gml, 'utf-8')
 
 
