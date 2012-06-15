@@ -78,14 +78,24 @@ def extract_enums_asgml(fn):
 
                 curEnum = None
                 curEnumName = None
+                enumIdx = 0
                 idx = None
                 for enumNode in enumNodes:
                     parent = enumNode.find("{%s}ParentNode" % ns)
                     if parent == None:
                         curEnum = enumNode
+                        #enum name should not be longer than 63 chars, which is PG default name limit
+                        #Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonenflaeche.Herkunft.TYPE -> enumXX_herkunft
+                        enumTypeName = enumNode.find("{%s}EnumType" % ns).get('REF')
+                        enumTypeName = string.replace(enumTypeName, '.TYPE', '')
+                        enumTypeName = string.rsplit(enumTypeName,  '.',  maxsplit=1)[-1]
+                        curEnumName = "enum%d_%s" % (enumIdx, enumTypeName)
+                        enumIdx = enumIdx + 1
+                        #curEnumName = curEnum.get("TID")
                         #Remove trailing .TOP or .TYPE
-                        curEnumName = string.replace(curEnum.get("TID"), '.TOP', '')
-                        curEnumName = string.replace(curEnumName, '.TYPE', '')
+                        #curEnumName = string.replace(curEnumName, '.TOP', '')
+                        #curEnumName = string.replace(curEnumName, '.TYPE', '')
+                        #curEnumName = string.replace(curEnumName, '.', '__')
                         idx = 0
                     else:
                         if enumNode.get("TID") not in parent_nodes:
