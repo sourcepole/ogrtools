@@ -46,6 +46,7 @@ def ili_to_meta(ili, ili2c="ili2c.jar"):
     #TODO: write in temp file and return as string
     return call(["java",  "-jar",  ili2c,  "-oIMD", "--out",  string.replace(ili,  '.ili',  '') + '.imd', ili])
 
+
 def extract_enums_asgml(fn):
     """Extract Interlis Enumerations as GML
     """
@@ -68,6 +69,13 @@ def extract_enums_asgml(fn):
             enumNodes = model.findall("{%s}IlisMeta07.ModelData.EnumNode" % ns)
 
             if enumNodes != None:
+                #Collect parent enums
+                parent_nodes = set()
+                for enumNode in enumNodes:
+                    parent = enumNode.find("{%s}ParentNode" % ns)
+                    if parent != None:
+                        parent_nodes.add(parent.get("REF"))
+
                 curEnum = None
                 curEnumName = None
                 idx = None
@@ -80,18 +88,19 @@ def extract_enums_asgml(fn):
                         curEnumName = string.replace(curEnumName, '.TYPE', '')
                         idx = 0
                     else:
-                        #  <gml:featureMember>
-                        #    <ogr:Grundzonen__GrundZonenCode__ZonenArt>
-                        #      <ogr:value>Dorfkernzone</ogr:value><ogr:id>0</ogr:id>
-                        #    </ogr:Grundzonen__GrundZonenCode__ZonenArt>
-                        #  </gml:featureMember>
-                        featureMember = ElementTree.SubElement(gml, "gml:featureMember")
-                        feat = ElementTree.SubElement(featureMember, curEnumName)
-                        value = ElementTree.SubElement(feat, "value")
-                        value.text = string.replace(enumNode.get("TID"), curEnum.get("TID")+'.', '')
-                        id = ElementTree.SubElement(feat, "id")
-                        id.text = str(idx)
-                        idx = idx + 1
+                        if enumNode.get("TID") not in parent_nodes:
+                            #  <gml:featureMember>
+                            #    <ogr:Grundzonen__GrundZonenCode__ZonenArt>
+                            #      <ogr:value>Dorfkernzone</ogr:value><ogr:id>0</ogr:id>
+                            #    </ogr:Grundzonen__GrundZonenCode__ZonenArt>
+                            #  </gml:featureMember>
+                            featureMember = ElementTree.SubElement(gml, "gml:featureMember")
+                            feat = ElementTree.SubElement(featureMember, curEnumName)
+                            value = ElementTree.SubElement(feat, "value")
+                            value.text = string.replace(enumNode.get("TID"), curEnum.get("TID")+'.', '')
+                            id = ElementTree.SubElement(feat, "id")
+                            id.text = str(idx)
+                            idx = idx + 1
     return ElementTree.tostring(gml, 'utf-8')
 
 
