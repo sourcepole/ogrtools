@@ -5,6 +5,7 @@ Extract information from Interlis Meta Models.
 """
 from xml.etree import ElementTree
 from xml.dom import minidom
+from subprocess import call
 import sys
 import string
 
@@ -14,6 +15,36 @@ def prettify(rawxml, indent="  "):
     reparsed = minidom.parseString(rawxml)
     return reparsed.toprettyxml(indent)
 
+def ili_to_meta(ili, ili2c="ili2c.jar"):
+    #ili2c USAGE
+    #  ili2c [Options] file1.ili file2.ili ...
+    #
+    #OPTIONS
+    #
+    #--no-auto             don't look automatically after required models.
+    #-o0                   Generate no output (default).
+    #-o1                   Generate INTERLIS-1 output.
+    #-o2                   Generate INTERLIS-2 output.
+    #-oXSD                 Generate an XML-Schema.
+    #-oFMT                 Generate an INTERLIS-1 Format.
+    #-oIMD                 Generate Model as IlisMeta INTERLIS-Transfer (XTF).
+    #-oIOM                 (deprecated) Generate Model as INTERLIS-Transfer (XTF).
+    #--out file/dir        file or folder for output.
+    #--ilidirs %ILI_DIR;http://models.interlis.ch/;%JAR_DIR list of directories with ili-files.
+    #--proxy host          proxy server to access model repositories.
+    #--proxyPort port      proxy port to access model repositories.
+    #--with-predefined     Include the predefined MODEL INTERLIS in
+    #                      the output. Usually, this is omitted.
+    #--without-warnings    Report only errors, no warnings. Usually,
+    #                      warnings are generated as well.
+    #--trace               Display detailed trace messages.
+    #--quiet               Suppress info messages.
+    #-h|--help             Display this help text.
+    #-u|--usage            Display short information about usage.
+    #-v|--version          Display the version of ili2c.
+
+    #TODO: write in temp file and return as string
+    return call(["java",  "-jar",  ili2c,  "-oIMD", "--out",  string.replace(ili,  '.ili',  '') + '.imd', ili])
 
 def extract_enums_asgml(fn):
     """Extract Interlis Enumerations as GML
@@ -67,6 +98,7 @@ def extract_enums_asgml(fn):
 def main(argv=None):
     if argv is None:
         argv = sys.argv
+    #ili_to_meta(argv[1],  ili2c="/home/pi/apps/ili2c/ili2c.jar")
     gml = extract_enums_asgml(argv[1])
     print prettify(gml)
 
