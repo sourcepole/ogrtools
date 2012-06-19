@@ -31,7 +31,7 @@ class Ili2Pg(OgrAlgorithm):
         self.addParameter(ParameterString(self.DB, "DB", "zplnaenikon"))
         self.addParameter(ParameterString(self.ILI, "ILI", "/home/pi/Dropbox/Projects/geosummit/workshop/NP_73_CH_de_ili2.ili"))
 
-        self.addOutput(OutputHTML(self.OUTPUT, "Ili2Pg result"))
+        #self.addOutput(OutputHTML(self.OUTPUT, "Ili2Pg result"))
 
 
     def processAlgorithm(self, progress):
@@ -41,7 +41,7 @@ class Ili2Pg(OgrAlgorithm):
         db = self.getParameterValue(self.DB)
         ili = self.getParameterValue(self.ILI)
 
-        output = self.getOutputValue(self.OUTPUT)
+        #output = self.getOutputValue(self.OUTPUT)
 
         IliUtils.runJava( '/home/pi/apps/ili2pg-1.4.0/ili2pg.jar', ['-schemaimport', '-dbdatabase', db, '-dbusr', 'pi', "-models", ili], progress )
 
@@ -66,7 +66,7 @@ class Pg2Ili(OgrAlgorithm):
         self.addParameter(ParameterString(self.ILI, "ILI", "/home/pi/Dropbox/Projects/geosummit/workshop/NP_73_CH_de_ili2.ili"))
         self.addParameter(ParameterString(self.XTF, "XTF", "/tmp/out.xtf"))
 
-        self.addOutput(OutputHTML(self.OUTPUT, "Ili2Pg result"))
+        #self.addOutput(OutputHTML(self.OUTPUT, "Ili2Pg result"))
 
 
     def processAlgorithm(self, progress):
@@ -77,6 +77,6 @@ class Pg2Ili(OgrAlgorithm):
         ili = self.getParameterValue(self.ILI)
         xtf = self.getParameterValue(self.XTF)
 
-        output = self.getOutputValue(self.OUTPUT)
+        #output = self.getOutputValue(self.OUTPUT)
 
         IliUtils.runJava( '/home/pi/apps/ili2pg-1.4.0/ili2pg.jar', ['-export', '-dbdatabase', db, '-dbusr', 'pi', "-models", ili,  xtf], progress )

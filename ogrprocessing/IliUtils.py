@@ -30,5 +30,21 @@ class IliUtils:
         IliUtils.consoleOutput = loglines
 
     @staticmethod
+    def runShellCmd(args, progress):
+        loglines = []
+        loglines.append("Ili execution console output")
+        if SextanteUtils.isWindows():
+            command = ["cmd.exe", "/C ",] + args
+        else:
+            command = args
+        SextanteLog.addToLog(SextanteLog.LOG_INFO, ''.join(['%s ' % c for c in command]))
+        fused_command = ''.join(['"%s" ' % c for c in command])
+        proc = subprocess.Popen(fused_command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=False).stdout
+        for line in iter(proc.readline, ""):
+            loglines.append(line)
+        SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
+        IliUtils.consoleOutput = loglines
+
+    @staticmethod
     def getConsoleOutput():
         return IliUtils.consoleOutput

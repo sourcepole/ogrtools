@@ -5,7 +5,7 @@ from ogr2vrt import Ogr2Vrt
 from ogr2ogr import Ogr2Ogr, Ogr2OgrVrt
 from ogrsql import OgrSql
 from ili2pg import Ili2Pg, Pg2Ili
-#from interlis.ilismeta_enums import prettify
+from ilismeta import Ili2Imd, EnumsAsGML, ImportGML, IliEnumsToPg, CreatePGDb
 
 
 class OgrAlgorithmProvider(AlgorithmProvider):
@@ -14,7 +14,7 @@ class OgrAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        self.alglist = [OgrInfo(), Ogr2Vrt(), Ogr2Ogr(), Ogr2OgrVrt(), OgrSql(), Ili2Pg(), Pg2Ili()]
+        self.alglist = [OgrInfo(), Ogr2Vrt(), Ogr2Ogr(), Ogr2OgrVrt(), OgrSql(), Ili2Pg(), Pg2Ili(), Ili2Imd(), EnumsAsGML(), ImportGML(), IliEnumsToPg(), CreatePGDb()]
         for alg in self.alglist:
             alg.provider = self
 
