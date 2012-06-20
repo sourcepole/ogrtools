@@ -5,6 +5,7 @@ from sextante.parameters.ParameterString import ParameterString
 from sextante.parameters.ParameterBoolean import ParameterBoolean
 from sextante.core.Sextante import Sextante
 from sextante.core.SextanteLog import SextanteLog
+from sextante.core.SextanteUtils import SextanteUtils
 from sextante.core.QGisLayers import QGisLayers
 from ogralgorithm import OgrAlgorithm
 from qgis.core import *
@@ -98,12 +99,14 @@ class Ili2Imd(OgrAlgorithm):
     #or when calling SEXTANTE from the QGIS console.
     OUTPUT = "OUTPUT"
     ILI = "ILI"
+    IMD = "IMD"
 
     def defineCharacteristics(self):
         self.name = "ili to XML metamodel"
         self.group = "Interlis"
 
         self.addParameter(ParameterFile(self.ILI, "Interlis model (.ili)"))
+        self.addParameter(ParameterFile(self.IMD, "Ilismeta XML model output file"))
 
         #self.addOutput(OutputHTML(self.OUTPUT, "ili2c result"))
 
@@ -113,38 +116,11 @@ class Ili2Imd(OgrAlgorithm):
 
         #input = self.getParameterValue(self.INPUT_LAYER)
         ili = self.getParameterValue(self.ILI)
+        imd = self.getParameterValue(self.IMD)
+
+        IliUtils.runIli2c( ["-oIMD", "--out", imd, ili], progress )
 
         #output = self.getOutputValue(self.OUTPUT)
-
-        #ili2c USAGE
-        #  ili2c [Options] file1.ili file2.ili ...
-        #
-        #OPTIONS
-        #
-        #--no-auto             don't look automatically after required models.
-        #-o0                   Generate no output (default).
-        #-o1                   Generate INTERLIS-1 output.
-        #-o2                   Generate INTERLIS-2 output.
-        #-oXSD                 Generate an XML-Schema.
-        #-oFMT                 Generate an INTERLIS-1 Format.
-        #-oIMD                 Generate Model as IlisMeta INTERLIS-Transfer (XTF).
-        #-oIOM                 (deprecated) Generate Model as INTERLIS-Transfer (XTF).
-        #--out file/dir        file or folder for output.
-        #--ilidirs %ILI_DIR;http://models.interlis.ch/;%JAR_DIR list of directories with ili-files.
-        #--proxy host          proxy server to access model repositories.
-        #--proxyPort port      proxy port to access model repositories.
-        #--with-predefined     Include the predefined MODEL INTERLIS in
-        #                      the output. Usually, this is omitted.
-        #--without-warnings    Report only errors, no warnings. Usually,
-        #                      warnings are generated as well.
-        #--trace               Display detailed trace messages.
-        #--quiet               Suppress info messages.
-        #-h|--help             Display this help text.
-        #-u|--usage            Display short information about usage.
-        #-v|--version          Display the version of ili2c.
-
-        #TODO: write in temp file and return as string
-        IliUtils.runJava( '/home/pi/apps/ili2c-4.4.4/ili2c.jar', ["-oIMD", "--out",  string.replace(ili,  '.ili',  '') + '.imd', ili], progress )
 
 
 class EnumsAsGML(OgrAlgorithm):
@@ -237,18 +213,18 @@ class IliEnumsToPg(OgrAlgorithm):
 
         #input = self.getParameterValue(self.INPUT_LAYER)
         ili = self.getParameterValue(self.ILI)
-        gml = '/tmp/enums.gml'
-        imd = '/tmp/model.imd'
+        imd = SextanteUtils.getTempFilename('imd')
+        gml = SextanteUtils.getTempFilename('gml')
         db = self.getParameterValue(self.DB)
 
         #output = self.getOutputValue(self.OUTPUT)
 
-        IliUtils.runJava( '/home/pi/apps/ili2c-4.4.4/ili2c.jar', ["-oIMD", "--out", imd, ili], progress )
+        IliUtils.runIli2c( ["-oIMD", "--out", imd, ili], progress )
         gmlstr = extract_enums_asgml(imd)
         f = open(gml, "w")
-        f.write(prettify(gmlstr))
+        f.write(gmlstr)
         f.close()
-        IliUtils.runShellCmd(["ogr2ogr", "-f", "PostgreSQL", "-a_srs", "EPSG:21781",  "PG:\"dbname='%s'\"" % db, gml], progress)
+        IliUtils.runShellCmd(["ogr2ogr", "-f", "PostgreSQL", "PG:\"dbname='%s'\"" % db, gml], progress)
 
 
 class CreatePGDb(OgrAlgorithm):
