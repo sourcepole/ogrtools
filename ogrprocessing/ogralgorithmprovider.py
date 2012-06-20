@@ -1,5 +1,6 @@
 from sextante.core.AlgorithmProvider import AlgorithmProvider
 from sextante.core.SextanteConfig import Setting, SextanteConfig
+from IliUtils import IliUtils
 from ogrinfo import OgrInfo
 from ogr2vrt import Ogr2Vrt
 from ogr2ogr import Ogr2Ogr, Ogr2OgrVrt
@@ -10,13 +11,14 @@ from ilismeta import Ili2Imd, EnumsAsGML, ImportGML, IliEnumsToPg, CreatePGDb
 
 class OgrAlgorithmProvider(AlgorithmProvider):
 
-    #MY_DUMMY_SETTING = "MY_DUMMY_SETTING"
-
     def __init__(self):
         AlgorithmProvider.__init__(self)
         self.alglist = [OgrInfo(), Ogr2Vrt(), Ogr2Ogr(), Ogr2OgrVrt(), OgrSql(), Ili2Pg(), Pg2Ili(), Ili2Imd(), EnumsAsGML(), ImportGML(), IliEnumsToPg(), CreatePGDb()]
         for alg in self.alglist:
             alg.provider = self
+
+    def getDescription(self):
+        return "OGR and INTERLIS transformation"
 
     def initializeSettings(self):
         '''In this method we add settings needed to configure our provider.
@@ -24,15 +26,17 @@ class OgrAlgorithmProvider(AlgorithmProvider):
         automatically adding a setting for activating or deactivating the
         algorithms in the provider'''
         AlgorithmProvider.initializeSettings(self)
-        #SextanteConfig.addSetting(Setting("Example algorithms", OgrAlgorithmProvider.MY_DUMMY_SETTING, "Example setting", "Default value"))
-        '''To get the parameter of a setting parameter, use SextanteConfig.getSetting(name_of_parameter)'''
+        SextanteConfig.addSetting(Setting(self.getDescription(), IliUtils.JAVA_EXEC, "Java executable", IliUtils.java_exec_default()))
+        SextanteConfig.addSetting(Setting(self.getDescription(), IliUtils.ILI2C_JAR, "ili2c.jar path", "ili2c.jar"))
+        SextanteConfig.addSetting(Setting(self.getDescription(), IliUtils.ILI2PG_JAR, "ili2pg.jar path", "ili2pg.jar"))
 
     def unload(self):
         '''Setting should be removed here, so they do not appear anymore
         when the plugin is unloaded'''
         AlgorithmProvider.unload(self)
-        #SextanteConfig.removeSetting( OgrAlgorithmProvider.MY_DUMMY_SETTING)
-
+        SextanteConfig.removeSetting(IliUtils.JAVA_EXEC)
+        SextanteConfig.removeSetting(IliUtils.ILI2C_JAR)
+        SextanteConfig.removeSetting(IliUtils.ILI2PG_JAR)
 
     def getName(self):
         '''This is the name that will appear on the toolbox group.

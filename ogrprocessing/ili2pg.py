@@ -5,12 +5,13 @@ from sextante.parameters.ParameterString import ParameterString
 from sextante.parameters.ParameterBoolean import ParameterBoolean
 from sextante.core.Sextante import Sextante
 from sextante.core.SextanteLog import SextanteLog
+from sextante.core.SextanteConfig import Setting, SextanteConfig
 from sextante.core.QGisLayers import QGisLayers
 from ogralgorithm import OgrAlgorithm
 from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from IliUtils import *
+from IliUtils import IliUtils
 
 class Ili2Pg(OgrAlgorithm):
 
@@ -41,7 +42,7 @@ class Ili2Pg(OgrAlgorithm):
 
         #output = self.getOutputValue(self.OUTPUT)
 
-        IliUtils.runJava( '/home/pi/apps/ili2pg-1.4.0/ili2pg.jar', ['-schemaimport', '-dbdatabase', db, '-dbusr', 'pi', "-models", ili], progress )
+        IliUtils.runJava( SextanteConfig.getSetting(IliUtils.ILI2PG_JAR), ['-schemaimport', '-dbdatabase', db, '-dbusr', 'pi', "-models", ili], progress )
 
 class Pg2Ili(OgrAlgorithm):
 
@@ -75,4 +76,4 @@ class Pg2Ili(OgrAlgorithm):
 
         #output = self.getOutputValue(self.OUTPUT)
 
-        IliUtils.runJava( '/home/pi/apps/ili2pg-1.4.0/ili2pg.jar', ['-export', '-dbdatabase', db, '-dbusr', 'pi', "-models", ili,  xtf], progress )
+        IliUtils.runJava( SextanteConfig.getSetting(IliUtils.ILI2PG_JAR), ['-export', '-dbdatabase', db, '-dbusr', 'pi', "-models", ili,  xtf], progress )

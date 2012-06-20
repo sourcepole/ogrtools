@@ -2,10 +2,15 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import subprocess
 from sextante.core.SextanteLog import SextanteLog
+from sextante.core.SextanteConfig import Setting, SextanteConfig
 from sextante.core.SextanteUtils import SextanteUtils
 import os
 
 class IliUtils:
+
+    JAVA_EXEC = "JAVA_EXEC"
+    ILI2C_JAR = "ILI2C_JAR"
+    ILI2PG_JAR = "ILI2PG_JAR"
 
     @staticmethod
     def runShellCmd(args, progress):
@@ -24,11 +29,16 @@ class IliUtils:
         IliUtils.consoleOutput = loglines
 
     @staticmethod
-    def runJava(jar, args, progress):
+    def java_exec_default():
         if SextanteUtils.isWindows():
-            args = ["java.exe", "-jar",  jar] + args
+            java = "java.exe"
         else:
-            args = ["java", "-jar",  jar] + args
+            java = "java"
+        return java
+
+    @staticmethod
+    def runJava(jar, args, progress):
+        args = [SextanteConfig.getSetting(IliUtils.JAVA_EXEC), "-jar",  jar] + args
         IliUtils.runShellCmd(args, progress)
 
     @staticmethod
@@ -59,7 +69,7 @@ class IliUtils:
         #-h|--help             Display this help text.
         #-u|--usage            Display short information about usage.
         #-v|--version          Display the version of ili2c.
-        IliUtils.runJava( '/home/pi/apps/ili2c-4.4.4/ili2c.jar', args, progress )
+        IliUtils.runJava( SextanteConfig.getSetting(IliUtils.ILI2C_JAR), args, progress )
 
     @staticmethod
     def getConsoleOutput():

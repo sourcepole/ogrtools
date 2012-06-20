@@ -11,7 +11,7 @@ from ogralgorithm import OgrAlgorithm
 from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from IliUtils import *
+from IliUtils import IliUtils
 from xml.etree import ElementTree
 from xml.dom import minidom
 import string
