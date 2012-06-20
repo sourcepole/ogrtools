@@ -1,6 +1,6 @@
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.outputs.OutputHTML import OutputHTML
-from sextante.parameters.ParameterVector import ParameterVector
+from sextante.parameters.ParameterFile import ParameterFile
 from sextante.parameters.ParameterString import ParameterString
 from sextante.parameters.ParameterBoolean import ParameterBoolean
 from sextante.core.Sextante import Sextante
@@ -103,9 +103,7 @@ class Ili2Imd(OgrAlgorithm):
         self.name = "ili to XML metamodel"
         self.group = "Interlis"
 
-        #It is a mandatory (not optional) one, hence the False argument
-        #self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
-        self.addParameter(ParameterString(self.ILI, "ILI", "/home/pi/Dropbox/Projects/geosummit/workshop/NP_73_CH_de_ili2.ili"))
+        self.addParameter(ParameterFile(self.ILI, "Interlis model (.ili)"))
 
         #self.addOutput(OutputHTML(self.OUTPUT, "ili2c result"))
 
@@ -162,10 +160,8 @@ class EnumsAsGML(OgrAlgorithm):
         self.name = "Export Enums to GML"
         self.group = "Interlis"
 
-        #It is a mandatory (not optional) one, hence the False argument
-        #self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
-        self.addParameter(ParameterString(self.IMD, "IMD", "/home/pi/Dropbox/Projects/geosummit/workshop/NP_73_CH_de_ili2.imd"))
-        self.addParameter(ParameterString(self.GML, "GML", "/tmp/enums.gml"))
+        self.addParameter(ParameterFile(self.IMD, "Interlis Ilismeta XML model"))
+        self.addParameter(ParameterFile(self.GML, "GML output file"))
 
         #self.addOutput(OutputHTML(self.OUTPUT, "EnumsAsGML result"))
 
@@ -199,10 +195,8 @@ class ImportGML(OgrAlgorithm):
         self.name = "Import Enums from GML"
         self.group = "Interlis"
 
-        #It is a mandatory (not optional) one, hence the False argument
-        #self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
-        self.addParameter(ParameterString(self.GML, "GML", "/tmp/enums.gml"))
-        self.addParameter(ParameterString(self.DB, "DB", "zplnaenikon"))
+        self.addParameter(ParameterFile(self.GML, "GML file"))
+        self.addParameter(ParameterString(self.DB, "Database name"))
 
         #self.addOutput(OutputHTML(self.OUTPUT, "EnumsAsGML result"))
 
@@ -232,10 +226,8 @@ class IliEnumsToPg(OgrAlgorithm):
         self.name = "Ili Enums to PG"
         self.group = "Interlis"
 
-        #It is a mandatory (not optional) one, hence the False argument
-        #self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
-        self.addParameter(ParameterString(self.ILI, "ILI", "/home/pi/Dropbox/Projects/geosummit/workshop/NP_73_CH_de_ili2.ili"))
-        self.addParameter(ParameterString(self.DB, "DB", "zplnaenikon"))
+        self.addParameter(ParameterFile(self.ILI, "Interlis model (.ili)"))
+        self.addParameter(ParameterString(self.DB, "Database name"))
 
         #self.addOutput(OutputHTML(self.OUTPUT, "EnumsAsGML result"))
 
@@ -271,9 +263,8 @@ class CreatePGDb(OgrAlgorithm):
         self.name = "Create PostGIS databse"
         self.group = "Miscellaneous"
 
-        #It is a mandatory (not optional) one, hence the False argument
-        #self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
-        self.addParameter(ParameterString(self.DB, "DB", "zplnaenikon"))
+        #self.addParameter(ParameterString(self.DB, "Databse template"))
+        self.addParameter(ParameterString(self.DB, "Database name"))
 
         #self.addOutput(OutputHTML(self.OUTPUT, "EnumsAsGML result"))
 

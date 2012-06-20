@@ -1,6 +1,6 @@
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.outputs.OutputHTML import OutputHTML
-from sextante.parameters.ParameterVector import ParameterVector
+from sextante.parameters.ParameterFile import ParameterFile
 from sextante.parameters.ParameterString import ParameterString
 from sextante.parameters.ParameterBoolean import ParameterBoolean
 from sextante.core.Sextante import Sextante
@@ -26,10 +26,8 @@ class Ili2Pg(OgrAlgorithm):
         self.name = "ili2pg schemaimport"
         self.group = "Interlis"
 
-        #It is a mandatory (not optional) one, hence the False argument
-        #self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
-        self.addParameter(ParameterString(self.DB, "DB", "zplnaenikon"))
-        self.addParameter(ParameterString(self.ILI, "ILI", "/home/pi/Dropbox/Projects/geosummit/workshop/NP_73_CH_de_ili2.ili"))
+        self.addParameter(ParameterString(self.DB, "Database name"))
+        self.addParameter(ParameterFile(self.ILI, "Interlis model (.ili)"))
 
         #self.addOutput(OutputHTML(self.OUTPUT, "Ili2Pg result"))
 
@@ -60,11 +58,9 @@ class Pg2Ili(OgrAlgorithm):
         self.name = "ili2pg export"
         self.group = "Interlis"
 
-        #It is a mandatory (not optional) one, hence the False argument
-        #self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
-        self.addParameter(ParameterString(self.DB, "DB", "zplnaenikon"))
-        self.addParameter(ParameterString(self.ILI, "ILI", "/home/pi/Dropbox/Projects/geosummit/workshop/NP_73_CH_de_ili2.ili"))
-        self.addParameter(ParameterString(self.XTF, "XTF", "/tmp/out.xtf"))
+        self.addParameter(ParameterString(self.DB, "Database name"))
+        self.addParameter(ParameterFile(self.ILI, "Interlis model (.ili)"))
+        self.addParameter(ParameterFile(self.XTF, "Interlis 2 tansfer file (.xtf)"))
 
         #self.addOutput(OutputHTML(self.OUTPUT, "Ili2Pg result"))
 
