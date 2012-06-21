@@ -1,12 +1,12 @@
 from sextante.core.AlgorithmProvider import AlgorithmProvider
 from sextante.core.SextanteConfig import Setting, SextanteConfig
-from IliUtils import IliUtils
 from ogrinfo import OgrInfo
 from ogr2vrt import Ogr2Vrt
 from ogr2ogr import Ogr2Ogr, Ogr2OgrVrt
 from ogrsql import OgrSql
-from ili2pg import Ili2Pg, Pg2Ili
-from ilismeta import Ili2Imd, EnumsAsGML, ImportGML, IliEnumsToPg, CreatePGDb
+from .interlis.IliUtils import IliUtils
+from .interlis.ili2pg import Ili2Pg, Pg2Ili
+from .interlis.ilismeta import Ili2Imd, EnumsAsGML, ImportGML, IliEnumsToPg, CreatePGDb
 
 
 class OgrAlgorithmProvider(AlgorithmProvider):

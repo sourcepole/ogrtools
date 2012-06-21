@@ -27,8 +27,8 @@ class Ili2Pg(OgrAlgorithm):
         self.name = "ili2pg schemaimport"
         self.group = "Interlis"
 
-        self.addParameter(ParameterString(self.DB, "Database name"))
         self.addParameter(ParameterFile(self.ILI, "Interlis model (.ili)"))
+        self.addParameter(ParameterString(self.DB, "Database name"))
 
         #self.addOutput(OutputHTML(self.OUTPUT, "Ili2Pg result"))
 
@@ -37,8 +37,8 @@ class Ili2Pg(OgrAlgorithm):
         '''Here is where the processing itself takes place'''
 
         #input = self.getParameterValue(self.INPUT_LAYER)
-        db = self.getParameterValue(self.DB)
         ili = self.getParameterValue(self.ILI)
+        db = self.getParameterValue(self.DB)
 
         #output = self.getOutputValue(self.OUTPUT)
 
