@@ -3,11 +3,12 @@ from sextante.outputs.OutputHTML import OutputHTML
 from sextante.parameters.ParameterFile import ParameterFile
 from sextante.parameters.ParameterString import ParameterString
 from sextante.parameters.ParameterBoolean import ParameterBoolean
+from ogrprocessing.sextanteext.ParameterDbConnection import ParameterDbConnection
 from sextante.core.Sextante import Sextante
 from sextante.core.SextanteLog import SextanteLog
 from sextante.core.SextanteUtils import SextanteUtils
 from sextante.core.QGisLayers import QGisLayers
-from ogralgorithm import OgrAlgorithm
+from ogrprocessing.ogralgorithm import OgrAlgorithm
 from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -114,7 +115,6 @@ class Ili2Imd(OgrAlgorithm):
     def processAlgorithm(self, progress):
         '''Here is where the processing itself takes place'''
 
-        #input = self.getParameterValue(self.INPUT_LAYER)
         ili = self.getParameterValue(self.ILI)
         imd = self.getParameterValue(self.IMD)
 
@@ -145,7 +145,6 @@ class EnumsAsGML(OgrAlgorithm):
     def processAlgorithm(self, progress):
         '''Here is where the processing itself takes place'''
 
-        #input = self.getParameterValue(self.INPUT_LAYER)
         imd = self.getParameterValue(self.IMD)
         gmlout = self.getParameterValue(self.GML)
 
@@ -172,7 +171,7 @@ class ImportGML(OgrAlgorithm):
         self.group = "Interlis"
 
         self.addParameter(ParameterFile(self.GML, "GML file"))
-        self.addParameter(ParameterString(self.DB, "Database name"))
+        self.addParameter(ParameterDbConnection(self.DB, "Database"))
 
         #self.addOutput(OutputHTML(self.OUTPUT, "EnumsAsGML result"))
 
@@ -180,13 +179,12 @@ class ImportGML(OgrAlgorithm):
     def processAlgorithm(self, progress):
         '''Here is where the processing itself takes place'''
 
-        #input = self.getParameterValue(self.INPUT_LAYER)
         gml = self.getParameterValue(self.GML)
-        db = self.getParameterValue(self.DB)
+        db = self.getParameterFromName(self.DB)
 
         #output = self.getOutputValue(self.OUTPUT)
 
-        IliUtils.runShellCmd(["ogr2ogr", "-f", "PostgreSQL", "-a_srs", "EPSG:21781",  "PG:\"dbname='%s'\"" % db, gml], progress)
+        IliUtils.runShellCmd(["ogr2ogr", "-f", "PostgreSQL", "-a_srs", "EPSG:21781", db.getOgrConnection(), gml], progress)
 
 
 class IliEnumsToPg(OgrAlgorithm):
@@ -203,7 +201,7 @@ class IliEnumsToPg(OgrAlgorithm):
         self.group = "Interlis"
 
         self.addParameter(ParameterFile(self.ILI, "Interlis model (.ili)"))
-        self.addParameter(ParameterString(self.DB, "Database name"))
+        self.addParameter(ParameterDbConnection(self.DB, "Database"))
 
         #self.addOutput(OutputHTML(self.OUTPUT, "EnumsAsGML result"))
 
@@ -211,11 +209,10 @@ class IliEnumsToPg(OgrAlgorithm):
     def processAlgorithm(self, progress):
         '''Here is where the processing itself takes place'''
 
-        #input = self.getParameterValue(self.INPUT_LAYER)
         ili = self.getParameterValue(self.ILI)
         imd = SextanteUtils.getTempFilename('imd')
         gml = SextanteUtils.getTempFilename('gml')
-        db = self.getParameterValue(self.DB)
+        db = self.getParameterFromName(self.DB)
 
         #output = self.getOutputValue(self.OUTPUT)
 
@@ -224,7 +221,7 @@ class IliEnumsToPg(OgrAlgorithm):
         f = open(gml, "w")
         f.write(gmlstr)
         f.close()
-        IliUtils.runShellCmd(["ogr2ogr", "-f", "PostgreSQL", "PG:\"dbname='%s'\"" % db, gml], progress)
+        IliUtils.runShellCmd(["ogr2ogr", "-f", "PostgreSQL", db.getOgrConnection(), gml], progress)
 
 
 class CreatePGDb(OgrAlgorithm):
@@ -233,13 +230,14 @@ class CreatePGDb(OgrAlgorithm):
     #They will be used when calling the algorithm from another algorithm,
     #or when calling SEXTANTE from the QGIS console.
     OUTPUT = "OUTPUT"
+    TEMPLATE = "TEMPLATE"
     DB = "DB"
 
     def defineCharacteristics(self):
         self.name = "Create PostGIS databse"
         self.group = "Miscellaneous"
 
-        #self.addParameter(ParameterString(self.DB, "Databse template"))
+        self.addParameter(ParameterString(self.TEMPLATE, "Database template", 'template_postgis'))
         self.addParameter(ParameterString(self.DB, "Database name"))
 
         #self.addOutput(OutputHTML(self.OUTPUT, "EnumsAsGML result"))
@@ -248,8 +246,7 @@ class CreatePGDb(OgrAlgorithm):
     def processAlgorithm(self, progress):
         '''Here is where the processing itself takes place'''
 
-        #input = self.getParameterValue(self.INPUT_LAYER)
-        template = 'template_postgis'
+        template = self.getParameterValue(self.TEMPLATE)
         db = self.getParameterValue(self.DB)
 
         #output = self.getOutputValue(self.OUTPUT)
