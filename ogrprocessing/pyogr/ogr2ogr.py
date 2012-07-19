@@ -551,7 +551,10 @@ def ogr2ogr(
 #/* -------------------------------------------------------------------- */
 #/*      Open data source.                                               */
 #/* -------------------------------------------------------------------- */
-    poDS = ogr.Open(pszDataSource, False)
+    if isinstance(pszDataSource, str):
+        poDS = ogr.Open(pszDataSource, False)
+    else:
+        poDS = pszDataSource
 
 #/* -------------------------------------------------------------------- */
 #/*      Report failure                                                  */
@@ -788,6 +791,8 @@ def ogr2ogr(
         #/* Second pass to do the real job */
         for iLayer in range(nLayerCount):
             poLayer = papoLayers[iLayer]
+
+            print poLayer.GetLayerDefn().GetName() #debugging
 
             if bDisplayProgress:
                 pfnProgress = ScaledProgressFunc
