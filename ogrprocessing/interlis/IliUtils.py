@@ -17,12 +17,12 @@ class IliUtils:
         loglines = []
         loglines.append("Ili execution console output")
         if SextanteUtils.isWindows():
-            command = ["cmd.exe", "/C ",] + args
+            command = ["cmd.exe", "/C "] + args
         else:
             command = args
-        SextanteLog.addToLog(SextanteLog.LOG_INFO, ''.join(['%s ' % c for c in command]))
-        fused_command = ''.join(['"%s" ' % c for c in command])
-        proc = subprocess.Popen(fused_command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=False).stdout
+        SextanteLog.addToLog(SextanteLog.LOG_INFO, ' '.join(command))
+        fused_command = ' '.join(command) # java doesn't find quoted file on Win with: ''.join(['"%s" ' % c for c in command])
+        proc = subprocess.Popen(fused_command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=True).stdout
         for line in iter(proc.readline, ""):
             loglines.append(line)
         SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)

@@ -9,6 +9,7 @@ from sextante.core.SextanteLog import SextanteLog
 from sextante.core.SextanteUtils import SextanteUtils
 from sextante.core.QGisLayers import QGisLayers
 from ogrprocessing.ogralgorithm import OgrAlgorithm
+from ogrprocessing.pyogr.ogr2ogr import *
 from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -184,7 +185,11 @@ class ImportGML(OgrAlgorithm):
 
         #output = self.getOutputValue(self.OUTPUT)
 
-        IliUtils.runShellCmd(["ogr2ogr", "-f", "PostgreSQL", "-a_srs", "EPSG:21781", db.getOgrConnection(), gml], progress)
+        #IliUtils.runShellCmd(["ogr2ogr", "-f", "PostgreSQL", db.getOgrConnection(), gml], progress)
+
+        ogr2ogr(pszFormat=db.getOgrDriverName(),
+            pszDataSource=gml,
+            pszDestDataSource=db.getOgrConnection())
 
 
 class IliEnumsToPg(OgrAlgorithm):
@@ -221,7 +226,12 @@ class IliEnumsToPg(OgrAlgorithm):
         f = open(gml, "w")
         f.write(gmlstr)
         f.close()
-        IliUtils.runShellCmd(["ogr2ogr", "-f", "PostgreSQL", db.getOgrConnection(), gml], progress)
+
+        #IliUtils.runShellCmd(["ogr2ogr", "-f", "PostgreSQL", db.getOgrConnection(), gml], progress)
+
+        ogr2ogr(pszFormat=db.getOgrDriverName(),
+            pszDataSource=gml,
+            pszDestDataSource=db.getOgrConnection())
 
 
 class CreatePGDb(OgrAlgorithm):

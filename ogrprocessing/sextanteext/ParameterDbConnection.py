@@ -14,7 +14,21 @@ class ParameterDbConnection(ParameterSelection):
         return DbConnection.layer_uri(self.getConnectionName())
 
     def getOgrConnection(self):
-        return "PG:\"dbname='%s'\"" % self.getDatabase() #FIXME
+        connoptions = {
+            "host": self.getHost(),
+            "port": self.getPort(),
+            "dbname": self.getDatabase(),
+            "user": self.getUsername(),
+            "password": self.getPassword()
+            }
+        connargs = []
+        for k,v in connoptions.items():
+            if len(v)>0:
+                connargs.append("%s='%s'" % (k, v))
+        return "PG:%s" % " ".join(connargs)
+
+    def getOgrDriverName(self):
+        return 'PostgreSQL'
 
     def getHost(self):
         return DbConnection.connection_value(self.getConnectionName(), "host")
@@ -34,12 +48,16 @@ class ParameterDbConnection(ParameterSelection):
     def getValueAsCommandLineParameter(self):
         return "\"" + str(self.value) + "\""
 
-    def serialize(self):
-        return self.__module__.split(".")[-1] + "|" + self.name + "|" + self.description
+    def getAsScriptCode(self):
+        return "##" + self.name + "=dbconnection " + ";".join(self.options)
 
     def deserialize(self, s):
         tokens = s.split("|")
-        return ParameterDbConnection(tokens[0], tokens[1])
+        if len(tokens) == 4:
+            return ParameterSelection(tokens[0], tokens[1], tokens[2].split(";"), int(tokens[3]))
+        else:
+            return ParameterSelection(tokens[0], tokens[1], tokens[2].split(";"))
 
-    def getAsScriptCode(self):
-        return "##" + self.name + "=dbconnection"
+    def serialize(self):
+        return self.__module__.split(".")[-1] + "|" + self.name + "|" + self.description +\
+                        "|" + ";".join(self.options)
