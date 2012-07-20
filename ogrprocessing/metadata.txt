@@ -12,7 +12,7 @@
 name=OGR Processing
 qgisMinimumVersion=1.0
 description=Vector transformation based on OGR library
-version=0.1
+version=0.2
 
 # end of mandatory metadata
 

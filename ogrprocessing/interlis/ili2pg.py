@@ -35,7 +35,6 @@ class Ili2Pg(OgrAlgorithm):
     #They will be used when calling the algorithm from another algorithm,
     #or when calling SEXTANTE from the QGIS console.
     OUTPUT = "OUTPUT"
-    DB = "DB"
     ILI = "ILI"
 
     def defineCharacteristics(self):
@@ -65,7 +64,6 @@ class Pg2Ili(OgrAlgorithm):
     #They will be used when calling the algorithm from another algorithm,
     #or when calling SEXTANTE from the QGIS console.
     OUTPUT = "OUTPUT"
-    DB = "DB"
     ILI = "ILI"
     XTF = "XTF"
 

@@ -1,6 +1,7 @@
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.Sextante import Sextante
 from sextante.core.QGisLayers import QGisLayers
+from ogrprocessing.sextanteext.ParameterDbConnection import ParameterDbConnection
 from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -9,6 +10,15 @@ import re
 import ogr
 
 class OgrAlgorithm(GeoAlgorithm):
+
+    DB = "DB"
+
+    def checkBeforeOpeningParametersDialog(self):
+        #Update DB dropdown
+        for idx, param in enumerate(self.parameters):
+            if param.name == self.DB:
+                self.parameters[idx] = ParameterDbConnection(self.DB, "Database")
+        return None
 
     def ogrConnectionString(self, uri):
         ogrstr = None

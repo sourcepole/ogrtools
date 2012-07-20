@@ -11,6 +11,7 @@ class IliUtils:
     JAVA_EXEC = "JAVA_EXEC"
     ILI2C_JAR = "ILI2C_JAR"
     ILI2PG_JAR = "ILI2PG_JAR"
+    CREATEDB_EXEC = "CREATEDB_EXEC"
 
     @staticmethod
     def runShellCmd(args, progress):
