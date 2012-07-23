@@ -5,7 +5,7 @@ class ParameterDbConnection(ParameterSelection):
 
     def __init__(self, name="", description=""):
         self.options = DbConnection.qgis_connections()
-        ParameterSelection.__init__(self, name, description, self.options, default = 0)
+        ParameterSelection.__init__(self, name, description, self.options, default=0)
 
     def getConnectionName(self):
         return self.options[self.value]
@@ -20,10 +20,10 @@ class ParameterDbConnection(ParameterSelection):
             "dbname": self.getDatabase(),
             "user": self.getUsername(),
             "password": self.getPassword()
-            }
+        }
         connargs = []
-        for k,v in connoptions.items():
-            if len(v)>0:
+        for k, v in connoptions.items():
+            if len(v) > 0:
                 connargs.append("%s='%s'" % (k, v))
         return "PG:%s" % " ".join(connargs)
 
@@ -59,5 +59,5 @@ class ParameterDbConnection(ParameterSelection):
             return ParameterSelection(tokens[0], tokens[1], tokens[2].split(";"))
 
     def serialize(self):
-        return self.__module__.split(".")[-1] + "|" + self.name + "|" + self.description +\
+        return self.__module__.split(".")[-1] + "|" + self.name + "|" + self.description + \
                         "|" + ";".join(self.options)
