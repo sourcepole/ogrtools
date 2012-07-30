@@ -18,7 +18,7 @@ class IliUtils:
         loglines = []
         loglines.append("Ili execution console output")
         if SextanteUtils.isWindows():
-            command = ["cmd.exe", "/C "] + args
+            command = ["cmd.exe", "/C ", '"' + args[0] + '"'] + args[1:]
         else:
             command = args
         SextanteLog.addToLog(SextanteLog.LOG_INFO, ' '.join(command))
