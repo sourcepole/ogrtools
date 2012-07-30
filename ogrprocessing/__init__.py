@@ -25,7 +25,7 @@ def name():
 def description():
     return "Vector transformation based on OGR library"
 def version():
-    return "0.2.0"
+    return "0.3.0"
 def experimental():
     return True
 def icon():
