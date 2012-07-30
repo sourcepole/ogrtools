@@ -49,3 +49,17 @@ class DbConnection:
         settings.endGroup()
         settings.endGroup()
         return value
+
+    @staticmethod
+    def add_connection(name, host, port, database, username, password):
+        settings = QSettings()
+        key = u"/PostgreSQL/connections/" + name
+        settings.setValue(key + "/host", QVariant(host))
+        settings.setValue(key + "/port", port)
+        settings.setValue(key + "/database", QVariant(database))
+        settings.setValue(key + "/username", QVariant(username))
+        settings.setValue(key + "/password", QVariant(password))
+        settings.setValue(key + "/saveUsername", True)
+        settings.setValue(key + "/savePassword", True)
+        settings.setValue(key + "/geometryColumnsOnly", True)
+        settings.setValue(key + "/estimatedMetadata", True)

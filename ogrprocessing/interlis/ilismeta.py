@@ -6,10 +6,12 @@ from sextante.parameters.ParameterBoolean import ParameterBoolean
 from ogrprocessing.sextanteext.ParameterDbConnection import ParameterDbConnection
 from sextante.core.Sextante import Sextante
 from sextante.core.SextanteLog import SextanteLog
+from sextante.core.SextanteConfig import SextanteConfig
 from sextante.core.SextanteUtils import SextanteUtils
 from sextante.core.QGisLayers import QGisLayers
 from ogrprocessing.ogralgorithm import OgrAlgorithm
 from ogrprocessing.pyogr.ogr2ogr import *
+from ogrprocessing.dbconnection import DbConnection
 from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -164,7 +166,6 @@ class ImportGML(OgrAlgorithm):
     #They will be used when calling the algorithm from another algorithm,
     #or when calling SEXTANTE from the QGIS console.
     OUTPUT = "OUTPUT"
-    DB = "DB"
     GML= "GML"
 
     def defineCharacteristics(self):
@@ -199,7 +200,6 @@ class IliEnumsToPg(OgrAlgorithm):
     #or when calling SEXTANTE from the QGIS console.
     OUTPUT = "OUTPUT"
     ILI = "ILI"
-    DB = "DB"
 
     def defineCharacteristics(self):
         self.name = "Ili Enums to PG"
@@ -241,24 +241,44 @@ class CreatePGDb(OgrAlgorithm):
     #or when calling SEXTANTE from the QGIS console.
     OUTPUT = "OUTPUT"
     TEMPLATE = "TEMPLATE"
-    DB = "DB"
+    DBNAME = "DBNAME"
+    HOST = "HOST"
+    PORT = "PORT"
+    USER = "USER"
+    PASSWORD = "PASSWORD"
 
     def defineCharacteristics(self):
         self.name = "Create PostGIS databse"
         self.group = "Miscellaneous"
 
+        self.addParameter(ParameterString(self.DBNAME, "Database name"))
         self.addParameter(ParameterString(self.TEMPLATE, "Database template", 'template_postgis'))
-        self.addParameter(ParameterString(self.DB, "Database name"))
-
+        self.addParameter(ParameterString(self.HOST, "Host", "localhost"))
+        self.addParameter(ParameterString(self.PORT, "Port", "5432"))
+        self.addParameter(ParameterString(self.USER, "User", "postgres"))
+        self.addParameter(ParameterString(self.PASSWORD, "Password"))
         #self.addOutput(OutputHTML(self.OUTPUT, "EnumsAsGML result"))
-
 
     def processAlgorithm(self, progress):
         '''Here is where the processing itself takes place'''
 
-        template = self.getParameterValue(self.TEMPLATE)
-        db = self.getParameterValue(self.DB)
+        db = self.getParameterValue(self.DBNAME)
+
+        connoptions = {
+            "host": self.getParameterValue(self.HOST),
+            "port": self.getParameterValue(self.PORT),
+            "user": self.getParameterValue(self.USER),
+            "password": self.getParameterValue(self.PASSWORD),
+            "template": self.getParameterValue(self.TEMPLATE)
+            }
+        connargs = []
+        for k,v in connoptions.items():
+            if len(v)>0:
+                connargs.append("--%s=%s" % (k, v))
 
         #output = self.getOutputValue(self.OUTPUT)
 
-        IliUtils.runShellCmd(["createdb", "--template=%s" % template, db], progress)
+        IliUtils.runShellCmd([SextanteConfig.getSetting(IliUtils.CREATEDB_EXEC),
+                              ' '.join(connargs), db], progress)
+
+        DbConnection.add_connection(db, connoptions["host"], connoptions["port"], db, connoptions["user"], connoptions["password"])

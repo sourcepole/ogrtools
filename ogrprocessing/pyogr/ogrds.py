@@ -34,3 +34,11 @@ class OgrDs:
                 poFeature = poResultSet.GetNextFeature()
             self.ds.ReleaseResultSet( poResultSet )
         return values
+
+    def table_exists(self, table):
+        exists = True
+        try:
+          self.ds.ExecuteSQL( "SELECT 1 FROM %s" % table, None, None )
+        except:
+          exists = False
+        return exists

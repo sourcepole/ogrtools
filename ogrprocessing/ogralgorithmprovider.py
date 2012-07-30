@@ -28,6 +28,7 @@ class OgrAlgorithmProvider(AlgorithmProvider):
         SextanteConfig.addSetting(Setting(self.getDescription(), IliUtils.JAVA_EXEC, "Java executable", IliUtils.java_exec_default()))
         SextanteConfig.addSetting(Setting(self.getDescription(), IliUtils.ILI2C_JAR, "ili2c.jar path", "ili2c.jar"))
         SextanteConfig.addSetting(Setting(self.getDescription(), IliUtils.ILI2PG_JAR, "ili2pg.jar path", "ili2pg.jar"))
+        SextanteConfig.addSetting(Setting(self.getDescription(), IliUtils.CREATEDB_EXEC, "createdb path", "createdb"))
 
     def unload(self):
         '''Setting should be removed here, so they do not appear anymore

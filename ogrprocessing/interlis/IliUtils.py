@@ -11,13 +11,14 @@ class IliUtils:
     JAVA_EXEC = "JAVA_EXEC"
     ILI2C_JAR = "ILI2C_JAR"
     ILI2PG_JAR = "ILI2PG_JAR"
+    CREATEDB_EXEC = "CREATEDB_EXEC"
 
     @staticmethod
     def runShellCmd(args, progress):
         loglines = []
         loglines.append("Ili execution console output")
         if SextanteUtils.isWindows():
-            command = ["cmd.exe", "/C "] + args
+            command = ["cmd.exe", "/C ", '"' + args[0] + '"'] + args[1:]
         else:
             command = args
         SextanteLog.addToLog(SextanteLog.LOG_INFO, ' '.join(command))
