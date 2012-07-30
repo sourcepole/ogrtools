@@ -115,3 +115,7 @@ clean:
 # build documentation with sphinx
 doc: 
 	cd help; make html
+
+publish: compile doc transcompile
+		git push --tags
+		ssh root@builder su builder /home/builder/qgis-plugins-update
