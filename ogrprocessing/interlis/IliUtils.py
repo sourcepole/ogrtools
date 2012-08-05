@@ -75,3 +75,7 @@ class IliUtils:
     @staticmethod
     def getConsoleOutput():
         return IliUtils.consoleOutput
+
+    @staticmethod
+    def errfunc(text):
+        SextanteLog.addToLog(SextanteLog.LOG_ERROR, text)

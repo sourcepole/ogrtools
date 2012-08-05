@@ -21,13 +21,10 @@ import gdal
 import osr
 
 
-class Enum(set):
-    def __getattr__(self, name):
-        if name in self:
-            return name
-        raise AttributeError
-
 GeomOperation = Enum(["NONE", "SEGMENTIZE", "SIMPLIFY_PRESERVE_TOPOLOGY"])
+
+def errfunc(text):
+    SextanteLog.addToLog(SextanteLog.LOG_ERROR, text)
 
 
 class Ogr2Ogr(OgrAlgorithm):
@@ -168,7 +165,7 @@ class Ogr2Ogr(OgrAlgorithm):
                         bAppend, eGType, bOverwrite, eGeomOp, dfGeomOpParam, \
                         papszFieldTypesToString, nCountLayerFeatures, \
                         poClipSrc, poClipDst, bExplodeCollections, pszZField, pszWHERE, \
-                        pfnProgress, pProgressData)
+                        pfnProgress, pProgressData, error=errfunc)
         return True
 
 

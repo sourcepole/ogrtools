@@ -177,7 +177,6 @@ class ImportGML(OgrAlgorithm):
 
         #self.addOutput(OutputHTML(self.OUTPUT, "EnumsAsGML result"))
 
-
     def processAlgorithm(self, progress):
         '''Here is where the processing itself takes place'''
 
@@ -190,7 +189,8 @@ class ImportGML(OgrAlgorithm):
 
         ogr2ogr(pszFormat=db.getOgrDriverName(),
             pszDataSource=gml,
-            pszDestDataSource=db.getOgrConnection())
+            pszDestDataSource=db.getOgrConnection(),
+            error=IliUtils.errfunc)
 
 
 class IliEnumsToPg(OgrAlgorithm):
