@@ -272,9 +272,9 @@ class CreatePGDb(OgrAlgorithm):
             "password": self.getParameterValue(self.PASSWORD),
             "template": self.getParameterValue(self.TEMPLATE)
             }
-        connargs = []
+        connargs = ['--no-password']
         for k,v in connoptions.items():
-            if len(v)>0:
+            if len(v)>0 and k<>'password':
                 connargs.append("--%s=%s" % (k, v))
 
         #output = self.getOutputValue(self.OUTPUT)
