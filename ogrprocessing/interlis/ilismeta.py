@@ -268,7 +268,7 @@ class CreatePGDb(OgrAlgorithm):
         connoptions = {
             "host": self.getParameterValue(self.HOST),
             "port": self.getParameterValue(self.PORT),
-            "user": self.getParameterValue(self.USER),
+            "username": self.getParameterValue(self.USER),
             "password": self.getParameterValue(self.PASSWORD),
             "template": self.getParameterValue(self.TEMPLATE)
             }
@@ -282,4 +282,4 @@ class CreatePGDb(OgrAlgorithm):
         IliUtils.runShellCmd([SextanteConfig.getSetting(IliUtils.CREATEDB_EXEC),
                               ' '.join(connargs), db], progress)
 
-        DbConnection.add_connection(db, connoptions["host"], connoptions["port"], db, connoptions["user"], connoptions["password"])
+        DbConnection.add_connection(db, connoptions["host"], connoptions["port"], db, connoptions["username"], connoptions["password"])
