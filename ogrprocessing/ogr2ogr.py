@@ -23,9 +23,6 @@ import osr
 
 GeomOperation = Enum(["NONE", "SEGMENTIZE", "SIMPLIFY_PRESERVE_TOPOLOGY"])
 
-def errfunc(text):
-    SextanteLog.addToLog(SextanteLog.LOG_ERROR, text)
-
 
 class Ogr2Ogr(OgrAlgorithm):
 
@@ -165,7 +162,7 @@ class Ogr2Ogr(OgrAlgorithm):
                         bAppend, eGType, bOverwrite, eGeomOp, dfGeomOpParam, \
                         papszFieldTypesToString, nCountLayerFeatures, \
                         poClipSrc, poClipDst, bExplodeCollections, pszZField, pszWHERE, \
-                        pfnProgress, pProgressData, error=errfunc)
+                        pfnProgress, pProgressData)
         return True
 
 

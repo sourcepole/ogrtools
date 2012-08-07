@@ -190,7 +190,7 @@ class ImportGML(OgrAlgorithm):
         ogr2ogr(pszFormat=db.getOgrDriverName(),
             pszDataSource=gml,
             pszDestDataSource=db.getOgrConnection(),
-            error=IliUtils.errfunc)
+            errfunc=IliUtils.errfunc)
 
 
 class IliEnumsToPg(OgrAlgorithm):
@@ -231,7 +231,8 @@ class IliEnumsToPg(OgrAlgorithm):
 
         ogr2ogr(pszFormat=db.getOgrDriverName(),
             pszDataSource=gml,
-            pszDestDataSource=db.getOgrConnection())
+            pszDestDataSource=db.getOgrConnection(),
+            errfunc=IliUtils.errfunc)
 
 
 class CreatePGDb(OgrAlgorithm):
