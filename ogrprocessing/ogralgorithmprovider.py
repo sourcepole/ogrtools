@@ -7,12 +7,13 @@ from ogrsql import OgrSql
 from ogrprocessing.interlis.IliUtils import IliUtils
 from ogrprocessing.interlis.ili2pg import Ili2Pg, Pg2Ili
 from ogrprocessing.interlis.ilismeta import Ili2Imd, EnumsAsGML, ImportGML, IliEnumsToPg, CreatePGDb
+from ogrprocessing.interlis.iliogr2ogr import IliOgr2Ogr
 
 class OgrAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        self.alglist = [OgrInfo(), Ogr2Vrt(), Ogr2Ogr(), Ogr2OgrVrt(), OgrSql(), Ili2Pg(), Pg2Ili(), Ili2Imd(), EnumsAsGML(), ImportGML(), IliEnumsToPg(), CreatePGDb()]
+        self.alglist = [OgrInfo(), Ogr2Vrt(), Ogr2Ogr(), Ogr2OgrVrt(), OgrSql(), Ili2Pg(), Pg2Ili(), Ili2Imd(), EnumsAsGML(), ImportGML(), IliEnumsToPg(), CreatePGDb(), IliOgr2Ogr()]
         for alg in self.alglist:
             alg.provider = self
 
