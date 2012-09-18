@@ -58,4 +58,4 @@ class IliOgr2Ogr(OgrAlgorithm):
             bOverwrite = not append,
             poOutputSRS = srs,
             poSourceSRS = srs,
-            error=IliUtils.errfunc)
+            errfunc=IliUtils.errfunc)
