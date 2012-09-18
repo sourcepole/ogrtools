@@ -66,8 +66,33 @@ def TermProgress(dfComplete, pszMessage, pProgressArg):
 
     return True
 
-def printerror(text):
-    print(text)
+
+class StdStreamCapture(object):
+    def __init__(self, outputfunc=None):
+        self._outputfunc = outputfunc
+
+    def __enter__(self):
+        if self._outputfunc is not None:
+            self._old_stdout = sys.stdout
+            self._old_stdout.flush()
+            self._old_stderr = sys.stderr
+            self._old_stderr.flush()
+            sys.stdout = sys.stderr = self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        if self._outputfunc is not None:
+            sys.stdout.flush()
+            sys.stdout = self._old_stdout
+            sys.stderr.flush()
+            sys.stderr = self._old_stderr
+
+    #Stream methods
+
+    def write(self, s):
+        self._outputfunc(s)
+
+    def flush(self):
+        pass
 
 
 #/************************************************************************/
@@ -502,8 +527,7 @@ def main(args=None, progress_func=TermProgress, progress_data=None):
         pszSrcEncoding,
         pszDstEncoding,
         bExplodeCollections,
-        pszZField,
-        error=printerror)
+        pszZField)
 
 def ogr2ogr(
     pszFormat="ESRI Shapefile",
@@ -548,7 +572,96 @@ def ogr2ogr(
     pszDstEncoding=None,
     bExplodeCollections=False,
     pszZField=None,
-    error=printerror):
+    errfunc=None):
+        # Redirect Stdout & Stderr to error function
+        with StdStreamCapture(errfunc):
+            return ogr2ogrStdstreams(
+                pszFormat,
+                pszDataSource,
+                pszDestDataSource,
+                papszLayers,
+                papszDSCO,
+                papszLCO,
+                bTransform,
+                bAppend,
+                bUpdate,
+                bOverwrite,
+                pszOutputSRSDef,
+                pszSourceSRSDef,
+                poOutputSRS,
+                poSourceSRS,
+                pszNewLayerName,
+                pszWHERE,
+                poSpatialFilter,
+                pszSelect,
+                papszSelFields,
+                pszSQLStatement,
+                eGType,
+                eGeomOp,
+                dfGeomOpParam,
+                papszFieldTypesToString,
+                bDisplayProgress,
+                progress_func,
+                progress_data,
+                bClipSrc,
+                poClipSrc,
+                pszClipSrcDS,
+                pszClipSrcSQL,
+                pszClipSrcLayer,
+                pszClipSrcWhere,
+                poClipDst,
+                pszClipDstDS,
+                pszClipDstSQL,
+                pszClipDstLayer,
+                pszClipDstWhere,
+                pszSrcEncoding,
+                pszDstEncoding,
+                bExplodeCollections,
+                pszZField)
+
+def ogr2ogrStdstreams(
+    pszFormat="ESRI Shapefile",
+    pszDataSource=None,
+    pszDestDataSource=None,
+    papszLayers=[],
+    papszDSCO=[],
+    papszLCO=[],
+    bTransform=False,
+    bAppend=False,
+    bUpdate=False,
+    bOverwrite=False,
+    pszOutputSRSDef=None,
+    pszSourceSRSDef=None,
+    poOutputSRS=None,
+    poSourceSRS=None,
+    pszNewLayerName=None,
+    pszWHERE=None,
+    poSpatialFilter=None,
+    pszSelect=None,
+    papszSelFields=None,
+    pszSQLStatement=None,
+    eGType= -2,
+    eGeomOp=GeomOperation.NONE,
+    dfGeomOpParam=0,
+    papszFieldTypesToString=[],
+    bDisplayProgress=False,
+    progress_func=None,
+    progress_data=None,
+    bClipSrc=False,
+    poClipSrc=None,
+    pszClipSrcDS=None,
+    pszClipSrcSQL=None,
+    pszClipSrcLayer=None,
+    pszClipSrcWhere=None,
+    poClipDst=None,
+    pszClipDstDS=None,
+    pszClipDstSQL=None,
+    pszClipDstLayer=None,
+    pszClipDstWhere=None,
+    pszSrcEncoding=None,
+    pszDstEncoding=None,
+    bExplodeCollections=False,
+    pszZField=None):
 
     pfnProgress = None
     pProgressData = None
@@ -565,11 +678,11 @@ def ogr2ogr(
 #/*      Report failure                                                  */
 #/* -------------------------------------------------------------------- */
     if poDS is None:
-        error("FAILURE:\n" + \
+        print("FAILURE:\n" + \
                 "Unable to open datasource `%s' with the following drivers." % pszDataSource)
 
         for iDriver in range(ogr.GetDriverCount()):
-            error("  ->  " + ogr.GetDriver(iDriver).GetName())
+            print("  ->  " + ogr.GetDriver(iDriver).GetName())
 
         return False
 
@@ -593,12 +706,12 @@ def ogr2ogr(
                     poODS = None
 
             if bUpdate:
-                error("FAILURE:\n" + 
+                print("FAILURE:\n" + 
                         "Unable to open existing output datasource `%s'." % pszDestDataSource)
                 return False
 
         elif len(papszDSCO) > 0:
-            error("WARNING: Datasource creation options ignored since an existing datasource\n" + \
+            print("WARNING: Datasource creation options ignored since an existing datasource\n" + \
                     "         being updated.")
 
         if poODS is not None:
@@ -610,16 +723,16 @@ def ogr2ogr(
     if not bUpdate:
         poDriver = ogr.GetDriverByName(pszFormat)
         if poDriver is None:
-            error("Unable to find driver `%s'." % pszFormat)
-            error("The following drivers are available:")
+            print("Unable to find driver `%s'." % pszFormat)
+            print("The following drivers are available:")
 
             for iDriver in range(ogr.GetDriverCount()):
-                error("  ->  %s" % ogr.GetDriver(iDriver).GetName())
+                print("  ->  %s" % ogr.GetDriver(iDriver).GetName())
 
             return False
 
         if poDriver.TestCapability(ogr.ODrCCreateDataSource) == False:
-            error("%s driver does not support data source creation." % pszFormat)
+            print("%s driver does not support data source creation." % pszFormat)
             return False
 
 #/* -------------------------------------------------------------------- */
@@ -645,7 +758,7 @@ def ogr2ogr(
                     # this syntax is only supported by Python >= 2.6
                     os.mkdir(pszDestDataSource, 493)
                 except:
-                    error("Failed to create directory %s\n"
+                    print("Failed to create directory %s\n"
                           "for shapefile datastore.\n" % pszDestDataSource)
                     return False
 
@@ -654,7 +767,7 @@ def ogr2ogr(
 #/* -------------------------------------------------------------------- */
         poODS = poDriver.CreateDataSource(pszDestDataSource, options=papszDSCO)
         if poODS is None:
-            error("%s driver failed to create %s" % (pszFormat, pszDestDataSource))
+            print("%s driver failed to create %s" % (pszFormat, pszDestDataSource))
             return False
 
 #/* -------------------------------------------------------------------- */
@@ -663,7 +776,7 @@ def ogr2ogr(
     if pszOutputSRSDef is not None:
         poOutputSRS = osr.SpatialReference()
         if poOutputSRS.SetFromUserInput(pszOutputSRSDef) != 0:
-            error("Failed to process SRS definition: %s" % pszOutputSRSDef)
+            print("Failed to process SRS definition: %s" % pszOutputSRSDef)
             return False
 
 #/* -------------------------------------------------------------------- */
@@ -672,7 +785,7 @@ def ogr2ogr(
     if pszSourceSRSDef is not None:
         poSourceSRS = osr.SpatialReference()
         if poSourceSRS.SetFromUserInput(pszSourceSRSDef) != 0:
-            error("Failed to process SRS definition: %s" % pszSourceSRSDef)
+            print("Failed to process SRS definition: %s" % pszSourceSRSDef)
             return False
 
 #/* -------------------------------------------------------------------- */
@@ -680,9 +793,9 @@ def ogr2ogr(
 #/* -------------------------------------------------------------------- */
     if pszSQLStatement is not None:
         if pszWHERE is not None:
-            error("-where clause ignored in combination with -sql.")
+            print("-where clause ignored in combination with -sql.")
         if len(papszLayers) > 0:
-            error("layer names ignored in combination with -sql.")
+            print("layer names ignored in combination with -sql.")
 
         poResultSet = poDS.ExecuteSQL(pszSQLStatement, poSpatialFilter, \
                                         None)
@@ -691,7 +804,7 @@ def ogr2ogr(
             nCountLayerFeatures = 0
             if bDisplayProgress:
                 if not poResultSet.TestCapability(ogr.OLCFastFeatureCount):
-                    error("Progress turned off as fast feature count is not available.")
+                    print("Progress turned off as fast feature count is not available.")
                     bDisplayProgress = False
 
                 else:
@@ -718,8 +831,8 @@ def ogr2ogr(
                                 poSourceSRS, papszSelFields, bAppend, eGType, \
                                 bOverwrite, eGeomOp, dfGeomOpParam, papszFieldTypesToString, \
                                 nCountLayerFeatures, poClipSrc, poClipDst, bExplodeCollections, \
-                                pszZField, pszWHERE, pfnProgress, pProgressData, error):
-                error(
+                                pszZField, pszWHERE, pfnProgress, pProgressData):
+                print(
                         "Terminating translation prematurely after failed\n" + \
                         "translation from sql statement.")
 
@@ -744,7 +857,7 @@ def ogr2ogr(
                 poLayer = poDS.GetLayer(iLayer)
 
                 if poLayer is None:
-                    error("FAILURE: Couldn't fetch advertised layer %d!" % iLayer)
+                    print("FAILURE: Couldn't fetch advertised layer %d!" % iLayer)
                     return False
 
                 papoLayers[iLayer] = poLayer
@@ -762,7 +875,7 @@ def ogr2ogr(
                 poLayer = poDS.GetLayerByName(layername)
 
                 if poLayer is None:
-                    error("FAILURE: Couldn't fetch advertised layer %s!" % layername)
+                    print("FAILURE: Couldn't fetch advertised layer %s!" % layername)
                     return False
 
                 papoLayers[iLayer] = poLayer
@@ -778,7 +891,7 @@ def ogr2ogr(
 
             if pszWHERE is not None:
                 if poLayer.SetAttributeFilter(pszWHERE) != 0:
-                    error("FAILURE: SetAttributeFilter(%s) failed." % pszWHERE)
+                    print("FAILURE: SetAttributeFilter(%s) failed." % pszWHERE)
                     if not bSkipFailures:
                         return False
 
@@ -787,7 +900,7 @@ def ogr2ogr(
 
             if bDisplayProgress:
                 if not poLayer.TestCapability(ogr.OLCFastFeatureCount):
-                    error("Progress turned off as fast feature count is not available.")
+                    print("Progress turned off as fast feature count is not available.")
                     bDisplayProgress = False
                 else:
                     panLayerCountFeatures[iLayer] = poLayer.GetFeatureCount()
@@ -797,7 +910,7 @@ def ogr2ogr(
         for iLayer in range(nLayerCount):
             poLayer = papoLayers[iLayer]
 
-            #error(poLayer.GetLayerDefn().GetName()) #debugging
+            #print(poLayer.GetLayerDefn().GetName()) #debugging
 
             if bDisplayProgress:
                 pfnProgress = ScaledProgressFunc
@@ -827,9 +940,9 @@ def ogr2ogr(
                                 poSourceSRS, papszSelFields, bAppend, eGType, \
                                 bOverwrite, eGeomOp, dfGeomOpParam, papszFieldTypesToString, \
                                 panLayerCountFeatures[iLayer], poClipSrc, poClipDst, bExplodeCollections, \
-                                pszZField, pszWHERE, pfnProgress, pProgressData, error)  \
+                                pszZField, pszWHERE, pfnProgress, pProgressData)  \
                 and not bSkipFailures:
-                error(
+                print(
                         "Terminating translation prematurely after failed\n" + \
                         "translation of layer " + poLayer.GetLayerDefn().GetName() + " (use -skipfailures to skip errors)")
 
@@ -1013,7 +1126,7 @@ def TranslateLayer(poSrcDS, poSrcLayer, poDstDS, papszLCO, pszNewLayerName, \
                     bAppend, eGType, bOverwrite, eGeomOp, dfGeomOpParam, \
                     papszFieldTypesToString, nCountLayerFeatures, \
                     poClipSrc, poClipDst, bExplodeCollections, pszZField, pszWHERE, \
-                    pfnProgress, pProgressData, error=printerror) :
+                    pfnProgress, pProgressData) :
 
     bForceToPolygon = False
     bForceToMultiPolygon = False

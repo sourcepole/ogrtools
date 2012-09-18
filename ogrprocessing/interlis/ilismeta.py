@@ -190,7 +190,7 @@ class ImportGML(OgrAlgorithm):
         ogr2ogr(pszFormat=db.getOgrDriverName(),
             pszDataSource=gml,
             pszDestDataSource=db.getOgrConnection(),
-            error=IliUtils.errfunc)
+            errfunc=IliUtils.errfunc)
 
 
 class IliEnumsToPg(OgrAlgorithm):
@@ -231,7 +231,8 @@ class IliEnumsToPg(OgrAlgorithm):
 
         ogr2ogr(pszFormat=db.getOgrDriverName(),
             pszDataSource=gml,
-            pszDestDataSource=db.getOgrConnection())
+            pszDestDataSource=db.getOgrConnection(),
+            errfunc=IliUtils.errfunc)
 
 
 class CreatePGDb(OgrAlgorithm):
@@ -267,13 +268,13 @@ class CreatePGDb(OgrAlgorithm):
         connoptions = {
             "host": self.getParameterValue(self.HOST),
             "port": self.getParameterValue(self.PORT),
-            "user": self.getParameterValue(self.USER),
+            "username": self.getParameterValue(self.USER),
             "password": self.getParameterValue(self.PASSWORD),
             "template": self.getParameterValue(self.TEMPLATE)
             }
-        connargs = []
+        connargs = ['--no-password']
         for k,v in connoptions.items():
-            if len(v)>0:
+            if len(v)>0 and k<>'password':
                 connargs.append("--%s=%s" % (k, v))
 
         #output = self.getOutputValue(self.OUTPUT)
@@ -281,4 +282,4 @@ class CreatePGDb(OgrAlgorithm):
         IliUtils.runShellCmd([SextanteConfig.getSetting(IliUtils.CREATEDB_EXEC),
                               ' '.join(connargs), db], progress)
 
-        DbConnection.add_connection(db, connoptions["host"], connoptions["port"], db, connoptions["user"], connoptions["password"])
+        DbConnection.add_connection(db, connoptions["host"], connoptions["port"], db, connoptions["username"], connoptions["password"])
