@@ -57,7 +57,7 @@ class OgrProcessingPlugin:
    
 
     def initGui(self):
-        Sextante.addProvider(self.provider)
+        Sextante.addProvider(self.provider, True)
 
     def unload(self):
         Sextante.removeProvider(self.provider)
