@@ -4,9 +4,15 @@
 import sys
 import os
 import stat
-import ogr
-import gdal
-import osr
+import tempfile
+try:
+    from osgeo import ogr
+    from osgeo import gdal
+    from osgeo import osr
+except ImportError:
+    import ogr
+    import gdal
+    import osr
 
 ###############################################################################
 
@@ -74,10 +80,25 @@ class StdStreamCapture(object):
     def __enter__(self):
         if self._outputfunc is not None:
             self._old_stdout = sys.stdout
-            self._old_stdout.flush()
+            try:
+                self._old_stdout.flush()
+            except IOError:
+                pass #ignore IOError: [Errno 9] Bad file descriptor
             self._old_stderr = sys.stderr
-            self._old_stderr.flush()
-            sys.stdout = sys.stderr = self
+            try:
+                self._old_stderr.flush()
+            except IOError:
+                pass #ignore IOError: [Errno 9] Bad file descriptor
+            # Redirect stdout+stderr to file
+            (self._outfd, self._outfn) = tempfile.mkstemp()
+            try:
+                os.dup2(self._outfd, sys.stdout.fileno())
+                os.dup2(self._outfd, sys.stderr.fileno())
+            except:
+                #Error on windows: OSError: [Errno 0] Error
+                sys.stdout = self._old_stdout
+                sys.stderr = self._old_stderr
+
 
     def __exit__(self, exc_type, exc_value, traceback):
         if self._outputfunc is not None:
@@ -86,13 +107,11 @@ class StdStreamCapture(object):
             sys.stderr.flush()
             sys.stderr = self._old_stderr
 
-    #Stream methods
-
-    def write(self, s):
-        self._outputfunc(s)
-
-    def flush(self):
-        pass
+            os.close(self._outfd)
+            f = open(self._outfn, 'r')
+            self._outputfunc(f.read())
+            f.close()
+            os.unlink(self._outfn)
 
 
 #/************************************************************************/
@@ -669,7 +688,7 @@ def ogr2ogrStdstreams(
 #/* -------------------------------------------------------------------- */
 #/*      Open data source.                                               */
 #/* -------------------------------------------------------------------- */
-    if isinstance(pszDataSource, str):
+    if isinstance(pszDataSource, basestring):
         poDS = ogr.Open(pszDataSource, False)
     else:
         poDS = pszDataSource
@@ -913,6 +932,8 @@ def ogr2ogrStdstreams(
             #print(poLayer.GetLayerDefn().GetName()) #debugging
 
             if bDisplayProgress:
+                if nCountLayersFeatures == 0:
+                    nCountLayersFeatures = 1 #Avoid division by zero
                 pfnProgress = ScaledProgressFunc
                 pProgressData = ScaledProgressObject(\
                         nAccCountFeatures * 1.0 / nCountLayersFeatures, \
@@ -1134,6 +1155,7 @@ def TranslateLayer(poSrcDS, poSrcLayer, poDstDS, papszLCO, pszNewLayerName, \
 
     if pszNewLayerName is None:
         pszNewLayerName = poSrcLayer.GetLayerDefn().GetName()
+    pszNewLayerName = pszNewLayerName.encode('ascii','ignore') #unicode is not supported by GetLayerByName
 
     if wkbFlatten(eGType) == ogr.wkbPolygon:
         bForceToPolygon = True
@@ -1566,6 +1588,18 @@ def TranslateLayer(poSrcDS, poSrcLayer, poDstDS, papszLCO, pszNewLayerName, \
         poDstLayer.CommitTransaction()
 
     return True
+
+def ogr_version_info():
+    try:
+        return gdal.VersionInfo('RELEASE_NAME')
+    except:
+        return "Unknown"
+
+def ogr_version_num():
+    try:
+        return int(gdal.VersionInfo('VERSION_NUM'))
+    except:
+        return 1000
 
 if __name__ == '__main__':
     version_num = int(gdal.VersionInfo('VERSION_NUM'))
