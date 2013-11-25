@@ -1,0 +1,75 @@
+#!/usr/bin/env python
+
+import argparse
+import sys
+from pyogr.ogrinfo import ogrinfo, ogr_formats, ogr_version_info
+from pyogr.ogrvrt import ogr2vrt
+
+
+def info(args):
+    if not args.layers:
+        return ogrinfo(bReadOnly = True, bSummaryOnly = True, bAllLayers = True,
+                       pszDataSource = args.source)
+    else:
+        return ogrinfo(bReadOnly = True, bSummaryOnly = True,
+                       pszDataSource = args.source, papszLayers = args.layers)
+
+def formats(args):
+    return ogr_formats()
+
+def version(args):
+    return ogr_version_info()
+
+def sql(args):
+    print args
+    return ogrinfo(pszDataSource = args.source, pszSQLStatement = args.sql)
+
+def vrt(args):
+    return ogr2vrt(infile = args.source, layer_list = args.layers)
+
+def main():
+    """Returns 0 on success, 1 on error, for sys.exit."""
+
+    parser = argparse.ArgumentParser(
+        description="Query and transform OGR compatible vector data")
+
+    #Commands
+    subparsers = parser.add_subparsers(title='commands',
+                                       description='valid commands')
+    #Common parameters
+    inparam = {
+        'help': "input datasource"
+    }
+    outparam = {
+        'nargs': '?', 
+        'help': "output datasource",
+        'default': sys.stdout
+    }
+
+    subparser = subparsers.add_parser('version', help='Show version information')
+    subparser.set_defaults(func=version)
+
+    subparser = subparsers.add_parser('formats', help='List available data formats')
+    subparser.set_defaults(func=formats)
+
+    subparser = subparsers.add_parser('info', help='Information about data')
+    subparser.add_argument('source', **inparam)
+    subparser.add_argument('layers', nargs='*', help='layer names')
+    subparser.set_defaults(func=info)
+
+    subparser = subparsers.add_parser('sql', help='Execute SQL Query')
+    subparser.add_argument('source', **inparam)
+    subparser.add_argument('sql', metavar='sql-query', help='SQL query')
+    subparser.set_defaults(func=sql)
+
+    subparser = subparsers.add_parser('vrt', help='Create VRT from data source')
+    subparser.add_argument('source', **inparam)
+    subparser.add_argument('layers', nargs='*', help='layer names')
+    subparser.set_defaults(func=vrt)
+
+    args = parser.parse_args()
+    return args.func(args)
+
+
+if __name__ == '__main__':
+    sys.exit(main())
