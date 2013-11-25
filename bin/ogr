@@ -4,6 +4,7 @@ import argparse
 import sys
 from pyogr.ogrinfo import ogrinfo, ogr_formats, ogr_version_info
 from pyogr.ogrvrt import ogr2vrt
+from ogrtransform.spec import Spec
 
 
 def info(args):
@@ -26,6 +27,10 @@ def sql(args):
 
 def vrt(args):
     return ogr2vrt(infile = args.source, layer_list = args.layers)
+
+def genspec(args):
+    trans = Spec(ds = args.source)
+    return trans.generate_spec(layer_list = args.layers)
 
 def main():
     """Returns 0 on success, 1 on error, for sys.exit."""
@@ -66,6 +71,11 @@ def main():
     subparser.add_argument('source', **inparam)
     subparser.add_argument('layers', nargs='*', help='layer names')
     subparser.set_defaults(func=vrt)
+
+    subparser = subparsers.add_parser('genspec', help='Generate transormation specification from data source')
+    subparser.add_argument('source', **inparam)
+    subparser.add_argument('layers', nargs='*', help='layer names')
+    subparser.set_defaults(func=genspec)
 
     args = parser.parse_args()
     return args.func(args)
