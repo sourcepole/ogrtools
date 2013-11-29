@@ -1,4 +1,5 @@
 import ogr
+import json
 
 class Spec:
 
@@ -21,28 +22,30 @@ class Spec:
             for layer in self.ds:
                 layer_list.append( layer.GetLayerDefn().GetName() )
 
-        spec = '// OGR transformation specifcation\n\n'
+        spec = {}
+        #Javscript comments are not allowed JSON
+        spec['_comment'] = '// OGR transformation specifcation'
 
         for name in layer_list:
             layer = self.ds.GetLayerByName(name)
             layerdef = layer.GetLayerDefn()
 
-            spec += '{ "%s":\n' % name
-            spec += '    {\n'
+            speclayer = {}
+            spec[name] = speclayer
 
             for fld_index in range(layerdef.GetFieldCount()):
                 src_fd = layerdef.GetFieldDefn( fld_index )
 
-                spec += '      "%s": {\n' % src_fd.GetName()
-                spec += '        "src": "%s"\n' % src_fd.GetName()
-                spec += '      },\n' #FIXME: skip last
+                specfield = {}
+                field_name = src_fd.GetName()
+                speclayer[field_name] = specfield
+                specfield['src'] = field_name
 
-            spec += '    }\n'
-            spec += '}\n'
+        specstr = json.dumps(spec, indent=2)
 
         if outfile is not None:
             f = open(outfile, "w")
-            f.write(spec)
+            f.write(specstr)
             f.close()
 
-        return spec
+        return specstr

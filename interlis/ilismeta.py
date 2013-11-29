@@ -1,6 +1,8 @@
-from IliUtils import IliUtils
+#!/usr/bin/env python
+
 from xml.etree import ElementTree
 from xml.dom import minidom
+import json
 import string
 import sys
 
@@ -78,3 +80,69 @@ def extract_enums_asgml(fn):
                             enumtxt = ElementTree.SubElement(feat, "enumtxt")
                             enumtxt.text = enum.text
     return ElementTree.tostring(gml, 'utf-8')
+
+def extract_enums_json(fn, indent=None):
+    """Extract Interlis Enumerations as JSON
+    """
+    enum_tables = {}
+    tree = ElementTree.parse(fn)
+    #Extract default namespace from root e.g. {http://www.interlis.ch/INTERLIS2.3}TRANSFER
+    #ns = tree.getroot().tag
+    ns = "http://www.interlis.ch/INTERLIS2.3"
+
+    models = tree.findall("{%s}DATASECTION/{%s}IlisMeta07.ModelData" % (ns, ns))
+    if models != None:
+
+        for model in models:
+            enumNodes = model.findall("{%s}IlisMeta07.ModelData.EnumNode" % ns)
+
+            if enumNodes != None:
+                #Collect parent enums
+                parent_nodes = set()
+                for enumNode in enumNodes:
+                    parent = enumNode.find("{%s}ParentNode" % ns)
+                    if parent != None:
+                        parent_nodes.add(parent.get("REF"))
+
+                curEnum = None
+                curEnumName = None
+                enumIdx = 0
+                idx = None
+                for enumNode in enumNodes:
+                    parent = enumNode.find("{%s}ParentNode" % ns)
+                    if parent == None:
+                        curEnum = enumNode
+                        #enum name should not be longer than 63 chars, which is PG default name limit
+                        #Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonenflaeche.Herkunft.TYPE -> enumXX_herkunft
+                        enumTypeName = enumNode.find("{%s}EnumType" % ns).get('REF')
+                        enumTypeName = string.replace(enumTypeName, '.TYPE', '')
+                        enumTypeName = string.rsplit(enumTypeName,  '.',  maxsplit=1)[-1]
+                        curEnumName = "enum%d_%s" % (enumIdx, enumTypeName)
+                        enum_table = []
+                        enum_tables[curEnumName] = enum_table
+                        enumIdx = enumIdx + 1
+                        #curEnumName = curEnum.get("TID")
+                        #Remove trailing .TOP or .TYPE
+                        #curEnumName = string.replace(curEnumName, '.TOP', '')
+                        #curEnumName = string.replace(curEnumName, '.TYPE', '')
+                        #curEnumName = string.replace(curEnumName, '.', '__')
+                        idx = 0
+                    else:
+                        if enumNode.get("TID") not in parent_nodes:
+                            enum_record = {}
+                            enum_record["id"] = idx #str(idx)
+                            idx = idx + 1
+                            enum = string.replace(enumNode.get("TID"), curEnum.get("TID")+'.', '')
+                            enum_record["enum"] = enum
+                            enum_record["enumtxt"] = enum
+                            enum_table.append(enum_record)
+    return json.dumps(enum_tables, indent=indent)
+
+def main(argv):
+    fn = argv[1]
+    #print prettify(extract_enums_asgml(fn))
+    print extract_enums_json(fn, indent=2)
+    return 0
+
+if __name__ == '__main__':
+    sys.exit(main( sys.argv ))

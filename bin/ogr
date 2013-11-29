@@ -22,7 +22,6 @@ def version(args):
     return ogr_version_info()
 
 def sql(args):
-    print args
     return ogrinfo(pszDataSource = args.source, pszSQLStatement = args.sql)
 
 def vrt(args):
