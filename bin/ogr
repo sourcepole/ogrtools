@@ -28,7 +28,7 @@ def vrt(args):
     return ogr2vrt(infile = args.source, layer_list = args.layers)
 
 def genspec(args):
-    trans = Spec(ds = args.source)
+    trans = Spec(ds = args.source, model = args.model)
     return trans.generate_spec(layer_list = args.layers)
 
 def main():
@@ -74,6 +74,7 @@ def main():
     subparser = subparsers.add_parser('genspec', help='Generate transormation specification from data source')
     subparser.add_argument('source', **inparam)
     subparser.add_argument('layers', nargs='*', help='layer names')
+    subparser.add_argument('--model', default=None, help='Data model specification')
     subparser.set_defaults(func=genspec)
 
     args = parser.parse_args()
