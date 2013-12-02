@@ -1,8 +1,9 @@
 import ogr
 import json
 
-GEOMETRY_TYPES = {
 # Mapping of OGR integer geometry types to GeoJSON type names. (from Fiona)
+
+GEOMETRY_TYPES = {
     0: 'Unknown',
     1: 'Point',
     2: 'LineString',
@@ -19,7 +20,8 @@ GEOMETRY_TYPES = {
     0x80000004: '3D MultiPoint',
     0x80000005: '3D MultiLineString',
     0x80000006: '3D MultiPolygon',
-    0x80000007: '3D GeometryCollection' }
+    0x80000007: '3D GeometryCollection'
+}
 
 # Mapping of OGR integer field types to VRT field type names.
 
@@ -35,8 +37,9 @@ FIELD_TYPES = [
     'Binary',       # OFTBinary, Raw Binary data
     'Date',         # OFTDate, Date
     'Time',         # OFTTime, Time
-    'DateTime',     # OFTDateTime, Date and Time
-    ]
+    'DateTime'      # OFTDateTime, Date and Time
+]
+
 
 class Spec:
 
@@ -44,20 +47,20 @@ class Spec:
         self.open(ds)
 
     def open(self, ds):
-        self.ds = ogr.Open( ds, update = False )
+        self.ds = ogr.Open(ds, update=False)
         return self.ds
 
     def close(self):
         if self.ds is not None:
             self.ds.Destroy()
 
-    def generate_spec(self, outfile = None, layer_list = []):
+    def generate_spec(self, outfile=None, layer_list=[]):
         if self.ds is None:
             return None
 
         if len(layer_list) == 0:
             for layer in self.ds:
-                layer_list.append( layer.GetLayerDefn().GetName() )
+                layer_list.append(layer.GetLayerDefn().GetName())
 
         spec = {}
         #Javscript comments are not allowed JSON
@@ -75,7 +78,7 @@ class Spec:
             speclayer['fields'] = fields
 
             for fld_index in range(layerdef.GetFieldCount()):
-                src_fd = layerdef.GetFieldDefn( fld_index )
+                src_fd = layerdef.GetFieldDefn(fld_index)
 
                 specfield = {}
                 field_name = src_fd.GetName()
