@@ -2,34 +2,50 @@
 
 import argparse
 import sys
+from pyogr.ogr2ogr import ogr2ogr
 from pyogr.ogrinfo import ogrinfo, ogr_formats, ogr_version_info
 from pyogr.ogrvrt import ogr2vrt
 from ogrtransform.spec import Spec
+#from interlis.ilismeta import prettify
 
 
 def info(args):
     if not args.layers:
-        return ogrinfo(bReadOnly = True, bSummaryOnly = True, bAllLayers = True,
-                       pszDataSource = args.source)
+        return ogrinfo(bReadOnly=True, bSummaryOnly=True, bAllLayers=True,
+                       pszDataSource=args.source)
     else:
-        return ogrinfo(bReadOnly = True, bSummaryOnly = True,
-                       pszDataSource = args.source, papszLayers = args.layers)
+        return ogrinfo(bReadOnly=True, bSummaryOnly=True,
+                       pszDataSource=args.source, papszLayers=args.layers)
+
 
 def formats(args):
     return ogr_formats()
 
+
 def version(args):
     return ogr_version_info()
 
+
 def sql(args):
-    return ogrinfo(pszDataSource = args.source, pszSQLStatement = args.sql)
+    return ogrinfo(pszDataSource=args.source, pszSQLStatement=args.sql)
+
 
 def vrt(args):
-    return ogr2vrt(infile = args.source, layer_list = args.layers)
+    return ogr2vrt(infile=args.source, layer_list=args.layers)
+
 
 def genspec(args):
-    trans = Spec(ds = args.source, model = args.model)
-    return trans.generate_spec(layer_list = args.layers)
+    trans = Spec(ds=args.source, model=args.model)
+    return trans.generate_spec(layer_list=args.layers)
+
+
+def transform(args):
+    trans = Spec(ds=args.source, spec=args.spec)
+    ds = trans.vrt_datasource()
+    ogr2ogr(pszFormat=args.format, pszDataSource=ds, pszDestDataSource=args.dest,
+            bOverwrite=True)  # ,papszDSCO=["SPATIALITE=YES"],poOutputSRS=srs, poSourceSRS=srs
+    trans.free_vrt_datasource()
+
 
 def main():
     """Returns 0 on success, 1 on error, for sys.exit."""
@@ -45,7 +61,7 @@ def main():
         'help': "input datasource"
     }
     outparam = {
-        'nargs': '?', 
+        'nargs': '?',
         'help': "output datasource",
         'default': sys.stdout
     }
@@ -74,8 +90,17 @@ def main():
     subparser = subparsers.add_parser('genspec', help='Generate transormation specification from data source')
     subparser.add_argument('source', **inparam)
     subparser.add_argument('layers', nargs='*', help='layer names')
+    subparser.add_argument('--format', default='PostgreSQL', help='Destination format')
     subparser.add_argument('--model', default=None, help='Data model specification')
     subparser.set_defaults(func=genspec)
+
+    subparser = subparsers.add_parser('transform', help='Transform data source based on transformation specification')
+    subparser.add_argument('dest', **outparam)
+    subparser.add_argument('source', **inparam)
+    subparser.add_argument('layers', nargs='*', help='layer names')
+    subparser.add_argument('--format', default='PostgreSQL', help='Destination format')
+    subparser.add_argument('--spec', help='Transformation specification')
+    subparser.set_defaults(func=transform)
 
     args = parser.parse_args()
     return args.func(args)

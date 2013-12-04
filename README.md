@@ -107,13 +107,15 @@ optional arguments:
 commands:
   valid commands
 
-  {version,formats,info,sql,vrt,genspec}
+  {version,formats,info,sql,vrt,genspec,transform}
     version             Show version information
     formats             List available data formats
     info                Information about data
     sql                 Execute SQL Query
     vrt                 Create VRT from data source
     genspec             Generate transormation specification from data source
+    transform           Transform data source based on transformation
+                        specification
 ```
 
 ### ogr version
@@ -285,6 +287,20 @@ ogr genspec tests/data/railway.shp
     }
   }
 }
+```
+
+### ogr transform
+
+Transform data source based on transformation specification
+
+```
+usage: ogr transform [-h] [--format FORMAT] [--spec SPEC]
+                     [dest] source [layers [layers ...]]
+```
+
+Example:
+```
+ogr transform roads.sqlite RoadsExdm2ien.xml --format=SQLite --spec=roads.spec
 ```
 
 
