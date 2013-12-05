@@ -97,7 +97,8 @@ The ogr command line tool exposes ogrtools functionality for using in a command 
 
 ```
 ogr --help
-usage: ogr [-h] {version,formats,info,sql,vrt,genspec} ...
+usage: ogr [-h]
+           {version,formats,info,sql,vrt,genspec,write-enums,transform} ...
 
 Query and transform OGR compatible vector data
 
@@ -107,13 +108,14 @@ optional arguments:
 commands:
   valid commands
 
-  {version,formats,info,sql,vrt,genspec,transform}
+  {version,formats,info,sql,vrt,genspec,write-enums,transform}
     version             Show version information
     formats             List available data formats
     info                Information about data
     sql                 Execute SQL Query
     vrt                 Create VRT from data source
     genspec             Generate transormation specification from data source
+    write-enums         Write tables with enumeration values
     transform           Transform data source based on transformation
                         specification
 ```
@@ -290,6 +292,27 @@ ogr genspec --format=PostgreSQL tests/data/railway.shp
 }
 ```
 
+### ogr write-enums
+
+Write tables with enumeration values
+
+```
+usage: ogr write-enums [-h] [--debug] [--format FORMAT] [--spec SPEC] [dest]
+
+positional arguments:
+  dest             output datasource
+
+optional arguments:
+  -h, --help       show this help message and exit
+  --debug          Display debugging information
+  --format FORMAT  Destination format
+  --spec SPEC      Transformation specification
+```
+
+Example:
+```
+ogr write-enums --spec=roads.spec "PG:dbname=ogrili"
+```
 ### ogr transform
 
 Transform data source based on transformation specification
@@ -298,6 +321,18 @@ Transform data source based on transformation specification
 usage: ogr transform [-h] [--debug] [--reverse] [--format FORMAT]
                      [--spec SPEC]
                      [dest] source [layers [layers ...]]
+
+positional arguments:
+  dest             output datasource
+  source           input datasource
+  layers           layer names
+
+optional arguments:
+  -h, --help       show this help message and exit
+  --debug          Display debugging information
+  --reverse        Reverse transformation
+  --format FORMAT  Destination format
+  --spec SPEC      Transformation specification
 ```
 
 Example:

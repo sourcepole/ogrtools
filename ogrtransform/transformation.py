@@ -12,41 +12,51 @@ except ImportError:
 
 class Transformation:
 
-    def __init__(self, ds, spec):
-        self._trans = Spec(ds, spec)
+    def __init__(self, spec, ds=None):
+        self._trans = Spec(ds=ds, spec=spec)
 
     def transform(self, args):
         vrt = self._trans.generate_vrt()
         if args.debug:
             print prettify(vrt)
-        ds = self.vrt_datasource(vrt)
+        ds = self.tmp_datasource(vrt)
         dst_format = args.format or self._trans.dst_format()
         ogr2ogr(pszFormat=str(dst_format), pszDataSource=ds, pszDestDataSource=args.dest,
                 bOverwrite=True)  # ,papszDSCO=["SPATIALITE=YES"],poOutputSRS=srs, poSourceSRS=srs
-        self.free_vrt_datasource()
+        self.free_tmp_datasource()
 
     def transform_reverse(self, args):
         vrt = self._trans.generate_reverse_vrt()
         if args.debug:
             print prettify(vrt)
-        ds = self.vrt_datasource(vrt)
+        ds = self.tmp_datasource(vrt)
         dst_format = args.format or self._trans.src_format()
         ogr2ogr(pszFormat=str(dst_format), pszDataSource=ds,
                 pszDestDataSource=args.dest, bOverwrite=True)
-        self.free_vrt_datasource()
+        self.free_tmp_datasource()
 
-    def vrt_memfile(self, vrt_xml):
-        self.vrt_memfile = tempfile.mktemp('.vrt', 'ogr_', '/vsimem')
+    def write_enum_tables(self, args):
+        gml = self._trans.generate_enum_gml()
+        if args.debug:
+            print prettify(gml)
+        ds = self.tmp_datasource(gml)
+        dst_format = args.format or self._trans.dst_format()
+        ogr2ogr(pszFormat=str(dst_format), pszDataSource=ds,
+                pszDestDataSource=args.dest, bOverwrite=True)
+        self.free_tmp_datasource()
+
+    def tmp_memfile(self, data):
+        self._tmp_memfile = tempfile.mktemp('.vrt', 'ogr_', '/vsimem')
         # Create in-memory file
-        gdal.FileFromMemBuffer(self.vrt_memfile, vrt_xml)
-        return self.vrt_memfile
+        gdal.FileFromMemBuffer(self._tmp_memfile, data)
+        return self._tmp_memfile
 
-    def free_vrt_datasource(self):
+    def free_tmp_datasource(self):
         # Free memory associated with the in-memory file
-        gdal.Unlink(self.vrt_memfile)
+        gdal.Unlink(self._tmp_memfile)
 
-    def vrt_datasource(self, vrt_xml):
-        #Call free_vrt_datasource after closing datasource to free memeroy
-        vrt = self.vrt_memfile(vrt_xml)
+    def tmp_datasource(self, data):
+        #Call free_tmp_datasource after closing datasource to free memeroy
+        vrt = self.tmp_memfile(data)
         ds = ogr.Open(vrt)
         return ds

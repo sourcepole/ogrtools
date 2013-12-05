@@ -50,7 +50,7 @@ class Spec:
 
     format_handlers = FormatHandlerRegistry()
 
-    def __init__(self, ds, spec=None, model=None):
+    def __init__(self, ds=None, spec=None, model=None):
         self._ds_fn = ds
         self._ds = None
         self._spec = self._load(spec)
@@ -194,4 +194,30 @@ class Spec:
                 node.set('name', specfield['src'])
                 node.set('type', specfield['type'])
                 node.set('src', dst_name)
+        return ElementTree.tostring(xml, 'utf-8')
+
+    def generate_enum_gml(self):
+        xml = ElementTree.Element('ogr:FeatureCollection')
+        xml.set('xmlns:xsi', 'http://ogr.maptools.org/ ogrtools-enums.xsd')
+        xml.set('xmlns:schemaLocation', 'http://www.w3.org/2001/XMLSchema-instance')
+        xml.set('xmlns:ogr', 'http://ogr.maptools.org/')
+        xml.set('xmlns:gml', 'http://www.opengis.net/gml')
+        node = ElementTree.SubElement(xml, 'gml:boundedBy')
+        node = ElementTree.SubElement(node, 'gml:null')
+        node.text = 'missing'
+        if self._spec['enums']:
+            for name, enum_table in self._spec['enums'].items():
+                for enum in enum_table['values']:
+                    # <gml:featureMember>
+                    #   <ogr:landcover_type fid="landcover_type.0">
+                    #     <ogr:ilicode>building</ogr:ilicode>
+                    #     <ogr:dispname>building</ogr:dispname>
+                    #   </ogr:landcover_type>
+                    # </gml:featureMember>
+                    node = ElementTree.SubElement(xml, 'gml:featureMember')
+                    feature_node = ElementTree.SubElement(node, 'ogr:{0}'.format(name))
+                    feature_node.set('fid', 'ogr:{0}.{1}'.format(name, enum['id']))
+                    for colname, value in enum.items():
+                        node = ElementTree.SubElement(feature_node, 'ogr:{0}'.format(colname))
+                        node.text = str(value)
         return ElementTree.tostring(xml, 'utf-8')
