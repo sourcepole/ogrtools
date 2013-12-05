@@ -36,13 +36,14 @@ def vrt(args):
 
 def genspec(args):
     trans = Spec(ds=args.source, model=args.model)
-    return trans.generate_spec(layer_list=args.layers)
+    return trans.generate_spec(args.format, layer_list=args.layers)
 
 
 def transform(args):
     trans = Spec(ds=args.source, spec=args.spec)
     ds = trans.vrt_datasource()
-    ogr2ogr(pszFormat=args.format, pszDataSource=ds, pszDestDataSource=args.dest,
+    dst_format = args.format or trans.dst_format()
+    ogr2ogr(pszFormat=str(dst_format), pszDataSource=ds, pszDestDataSource=args.dest,
             bOverwrite=True)  # ,papszDSCO=["SPATIALITE=YES"],poOutputSRS=srs, poSourceSRS=srs
     trans.free_vrt_datasource()
 
@@ -98,7 +99,7 @@ def main():
     subparser.add_argument('dest', **outparam)
     subparser.add_argument('source', **inparam)
     subparser.add_argument('layers', nargs='*', help='layer names')
-    subparser.add_argument('--format', default='PostgreSQL', help='Destination format')
+    subparser.add_argument('--format', default=None, help='Destination format')
     subparser.add_argument('--spec', help='Transformation specification')
     subparser.set_defaults(func=transform)
 

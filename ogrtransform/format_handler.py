@@ -7,7 +7,7 @@ from interlis.ilismeta import extract_enums_json
 #Base class for format specific methods
 class FormatHandler:
     def __init__(self):
-        self.name_seq = 0
+        self._name_seq = 0
 
     def launder_name(self, src_name):
         #Do nothing in default implementation
@@ -23,8 +23,8 @@ class FormatHandler:
         # Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonenflaeche.Herkunft
         # -> enumXX_herkunft
         short_name = string.rsplit(src_name, splitchar, maxsplit=1)[-1]
-        short_name = "%s%d_%s" % (prefix, self.name_seq, short_name)
-        self.name_seq = self.name_seq + 1
+        short_name = "%s%d_%s" % (prefix, self._name_seq, short_name)
+        self._name_seq = self._name_seq + 1
         return short_name
 
 
@@ -53,3 +53,21 @@ class IliFormatHandler(FormatHandler):
 
     def extract_enums(self, model):
         return extract_enums_json(model)
+
+
+class FormatHandlerRegistry:
+    def __init__(self):
+        self._handlers = {}
+        self.register('', FormatHandler())  # default
+        self.register('PostgreSQL', PgFormatHandler())
+        self.register('Interlis 1', IliFormatHandler())
+        self.register('Interlis 2', IliFormatHandler())
+
+    def register(self, format, handler):
+        self._handlers[format] = handler
+
+    def handler(self, format):
+        if format in self._handlers:
+            return self._handlers[format]
+        else:
+            return self._handlers['']
