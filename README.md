@@ -243,12 +243,13 @@ ogr vrt tests/data/railway.shp
 Generate transormation specification from data source
 
 ```
-usage: ogr genspec [-h] [--model MODEL] source [layers [layers ...]]
+usage: ogr genspec [-h] [--format FORMAT] [--model MODEL]
+                   source [layers [layers ...]]
 ```
 
 Example:
 ```
-ogr genspec tests/data/railway.shp
+ogr genspec --format=PostgreSQL tests/data/railway.shp
 ```
 ```
 {
@@ -294,13 +295,14 @@ ogr genspec tests/data/railway.shp
 Transform data source based on transformation specification
 
 ```
-usage: ogr transform [-h] [--format FORMAT] [--spec SPEC]
+usage: ogr transform [-h] [--debug] [--reverse] [--format FORMAT]
+                     [--spec SPEC]
                      [dest] source [layers [layers ...]]
 ```
 
 Example:
 ```
-ogr transform roads.sqlite RoadsExdm2ien.xml --format=SQLite --spec=roads.spec
+ogr transform --spec=roads.spec "PG:dbname=ogrili" RoadsExdm2ien.xml
 ```
 
 

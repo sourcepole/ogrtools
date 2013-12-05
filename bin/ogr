@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
 import argparse
+import os
 import sys
-from pyogr.ogr2ogr import ogr2ogr
 from pyogr.ogrinfo import ogrinfo, ogr_formats, ogr_version_info
 from pyogr.ogrvrt import ogr2vrt
 from ogrtransform.spec import Spec
-#from interlis.ilismeta import prettify
+from ogrtransform.transformation import Transformation
 
 
 def info(args):
@@ -40,12 +40,13 @@ def genspec(args):
 
 
 def transform(args):
-    trans = Spec(ds=args.source, spec=args.spec)
-    ds = trans.vrt_datasource()
-    dst_format = args.format or trans.dst_format()
-    ogr2ogr(pszFormat=str(dst_format), pszDataSource=ds, pszDestDataSource=args.dest,
-            bOverwrite=True)  # ,papszDSCO=["SPATIALITE=YES"],poOutputSRS=srs, poSourceSRS=srs
-    trans.free_vrt_datasource()
+    if args.debug:
+        os.environ["CPL_DEBUG"] = "on"
+    trans = Transformation(args.source, args.spec)
+    if args.reverse:
+        trans.transform_reverse(args)
+    else:
+        trans.transform(args)
 
 
 def main():
@@ -99,6 +100,8 @@ def main():
     subparser.add_argument('dest', **outparam)
     subparser.add_argument('source', **inparam)
     subparser.add_argument('layers', nargs='*', help='layer names')
+    subparser.add_argument('--debug', default=False, action='store_true', help='Reverse transformation')
+    subparser.add_argument('--reverse', default=False, action='store_true', help='Reverse transformation')
     subparser.add_argument('--format', default=None, help='Destination format')
     subparser.add_argument('--spec', help='Transformation specification')
     subparser.set_defaults(func=transform)

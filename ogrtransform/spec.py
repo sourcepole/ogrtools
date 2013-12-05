@@ -1,13 +1,10 @@
 import json
-import tempfile
 from xml.etree import ElementTree
 from format_handler import FormatHandlerRegistry
 try:
     from osgeo import ogr
-    from osgeo import gdal
 except ImportError:
     import ogr
-    import gdal
 
 # Mapping of OGR integer geometry types to GeoJSON type names. (from Fiona)
 
@@ -171,27 +168,30 @@ class Spec:
             for dst_name, specfield in speclayer['fields'].items():
                 node = ElementTree.SubElement(layer_node, "Field")
                 node.set('name', dst_name)
-                node.set('type', specfield['src'])
-                node.set('src', specfield['type'])
+                node.set('src', specfield['src'])
+                node.set('type', specfield['type'])
                 if 'width' in specfield:
                     node.set('width', specfield['width'])
                 if 'precision' in specfield:
                     node.set('precision', specfield['precision'])
         return ElementTree.tostring(xml, 'utf-8')
 
-    def vrt_memfile(self):
-        vrt_xml = self.generate_vrt()
-        self.vrt_memfile = tempfile.mktemp('.vrt', 'ogr_', '/vsimem')
-        # Create in-memory file
-        gdal.FileFromMemBuffer(self.vrt_memfile, vrt_xml)
-        return self.vrt_memfile
-
-    def free_vrt_datasource(self):
-        # Free memory associated with the in-memory file
-        gdal.Unlink(self.vrt_memfile)
-
-    def vrt_datasource(self):
-        #Call free_vrt_datasource after closing datasource to free memeroy
-        vrt = self.vrt_memfile()
-        ds = ogr.Open(vrt)
-        return ds
+    def generate_reverse_vrt(self):
+        xml = ElementTree.Element('OGRVRTDataSource')
+        for layer_name, speclayer in self._spec['layers'].items():
+            layer_node = ElementTree.SubElement(xml, "OGRVRTLayer")
+            layer_node.set('name', speclayer['src_layer'])
+            node = ElementTree.SubElement(layer_node, "SrcDataSource")
+            node.set('relativeToVRT', '0')
+            node.set('shared', '1')
+            node.text = self._ds_fn
+            node = ElementTree.SubElement(layer_node, "SrcLayer")
+            node.text = layer_name
+            node = ElementTree.SubElement(layer_node, "GeometryType")
+            node.text = 'wkb' + speclayer['geometry_type']
+            for dst_name, specfield in speclayer['fields'].items():
+                node = ElementTree.SubElement(layer_node, "Field")
+                node.set('name', specfield['src'])
+                node.set('type', specfield['type'])
+                node.set('src', dst_name)
+        return ElementTree.tostring(xml, 'utf-8')
