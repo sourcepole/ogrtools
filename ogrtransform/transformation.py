@@ -21,8 +21,14 @@ class Transformation:
             print prettify(vrt)
         ds = self.tmp_datasource(vrt)
         dst_format = args.format or self._trans.dst_format()
+        dsco = []
+        if dst_format == self._trans.dst_format():
+            dsco = self._trans.ds_creation_options()
+        lco = []
+        if dst_format == self._trans.dst_format():
+            lco = self._trans.layer_creation_options()
         ogr2ogr(pszFormat=str(dst_format), pszDataSource=ds, pszDestDataSource=args.dest,
-                bOverwrite=True)  # ,papszDSCO=["SPATIALITE=YES"],poOutputSRS=srs, poSourceSRS=srs
+                bOverwrite=True, papszDSCO=dsco, papszLCO=lco)  # poOutputSRS=srs, poSourceSRS=srs
         self.free_tmp_datasource()
 
     def transform_reverse(self, args):
@@ -41,8 +47,14 @@ class Transformation:
             print prettify(gml)
         ds = self.tmp_datasource(gml)
         dst_format = args.format or self._trans.dst_format()
+        dsco = []
+        if dst_format == self._trans.dst_format():
+            dsco = self._trans.ds_creation_options()
+        lco = []
+        if dst_format == self._trans.dst_format():
+            lco = self._trans.layer_creation_options()
         ogr2ogr(pszFormat=str(dst_format), pszDataSource=ds,
-                pszDestDataSource=args.dest, bOverwrite=True)
+                pszDestDataSource=args.dest, bOverwrite=True, papszDSCO=dsco, papszLCO=lco)
         self.free_tmp_datasource()
 
     def tmp_memfile(self, data):

@@ -101,6 +101,8 @@ class Spec:
         self._spec['//'] = 'OGR transformation specification'
         self._spec['src_format'] = src_format
         self._spec['dst_format'] = dst_format
+        self._spec['dst_dsco'] = dst_format_handler.default_ds_creation_options()
+        self._spec['dst_lco'] = dst_format_handler.default_layer_creation_options()
         layers = {}
         self._spec['layers'] = layers
 
@@ -151,6 +153,18 @@ class Spec:
 
     def dst_format(self):
         return self._spec['dst_format']
+
+    def layer_creation_options(self):
+        options = []
+        for key, value in self._spec['dst_lco'].items():
+            options.append(key+"="+value)
+        return options
+
+    def ds_creation_options(self):
+        options = []
+        for key, value in self._spec['dst_dsco'].items():
+            options.append(key+"="+value)
+        return options
 
     def generate_vrt(self):
         xml = ElementTree.Element('OGRVRTDataSource')

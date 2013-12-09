@@ -13,6 +13,14 @@ class FormatHandler:
         #Do nothing in default implementation
         return src_name
 
+    def default_ds_creation_options(self):
+        #No options in default implementation
+        return {}
+
+    def default_layer_creation_options(self):
+        #No options in default implementation
+        return {}
+
     def detect_model(self, src_file):
         return None
 
@@ -42,6 +50,10 @@ class PgFormatHandler(FormatHandler):
             return self.shorten_name(name, 'n')
         else:
             return re.compile("\W+", re.UNICODE).sub("_", name)
+
+    def default_layer_creation_options(self):
+        # see http://www.gdal.org/ogr/drv_pg.html Layer Creation Options
+        return {'SCHEMA': 'public'}
 
 
 class IliFormatHandler(FormatHandler):
