@@ -6,36 +6,17 @@ class ModelLoader:
         self.model = None
 
     def detect_format(self):
-        # char        szHeader[1000];
-        #
-        # Ili1:
-        # int nLen = (int)VSIFRead( szHeader, 1, sizeof(szHeader), fp );
-        # if (nLen == sizeof(szHeader))
-        #     szHeader[sizeof(szHeader)-1] = '\0';
-        # else
-        #     szHeader[nLen] = '\0';
-        #
-        # if( strstr(szHeader,"SCNT") == NULL )
-        # {
-        #     VSIFClose( fp );
-        #     return FALSE;
-        # }
+        #Detection as in OGR lib
+        f = open(self.fn, "rb")
+        header = f.read(1000)
+        f.close()
 
-        # Ili2:
-        # int nLen = (int)VSIFRead( szHeader, 1, sizeof(szHeader), fp );
-        # if (nLen == sizeof(szHeader))
-        #     szHeader[sizeof(szHeader)-1] = '\0';
-        # else
-        #     szHeader[nLen] = '\0';
-        #
-        # if( szHeader[0] != '<'
-        #     || strstr(szHeader,"interlis.ch/INTERLIS2") == NULL )
-        # { // "www.interlis.ch/INTERLIS2.2"
-        #     VSIFClose( fp );
-        #     CSLDestroy( filenames );
-        #     return FALSE;
-        # }
-        return 'Interlis 2'
+        if "interlis.ch/INTERLIS2" in header:
+            return 'Interlis 2'
+        elif "SCNT" in header:
+            return 'Interlis 1'
+        else:
+            return None
 
     def detect_model(self):
         self.model = None
