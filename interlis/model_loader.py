@@ -1,3 +1,4 @@
+import re
 from java_exec import run_java
 
 class ModelLoader:
@@ -20,13 +21,34 @@ class ModelLoader:
 
     def detect_model(self):
         self.model = None
-        fmt = self.detect_format(self.fn)
+        match = None
+        fmt = self.detect_format()
+        f = open(self.fn, "r")
         if fmt == 'Interlis 1':
             #Search for MODL xxx
-            self.model = 'xxx'
+            regex = re.compile(r'^MODL\s+(\w+)')
+            for line in f:
+                m = regex.search(line)
+                if m:
+                    self.model = m.group(1)
+                    break
         elif fmt == 'Interlis 2':
             #Search for <MODEL NAME="xxx"
-            self.model = 'xxx'
+            #Optimized for big files, but does't handle all cases
+            self.model = []
+            inmodels = False
+            regex = re.compile(r'<MODEL[^>]*\sNAME\s*=\s*"([^"]+)"')
+            for line in f:
+                if not inmodels:
+                    inmodels = ("<MODELS>" in line)
+                if inmodels:
+                    for m in regex.finditer(line):
+                        if m.group(0) == '</MODELS>':
+                            break
+                        else:
+                            self.model.append(m.group(1))
+
+        f.close()
         return self.model
 
     def load_model(self):
