@@ -1,4 +1,6 @@
 import re
+import urllib2
+from xml.etree import ElementTree
 from java_exec import run_java
 
 class ModelLoader:
@@ -30,14 +32,14 @@ class ModelLoader:
             for line in f:
                 m = regex.search(line)
                 if m:
-                    self.model = m.group(1)
+                    self.model = [m.group(1)]
                     break
         elif fmt == 'Interlis 2':
             #Search for <MODEL NAME="xxx"
             #Optimized for big files, but does't handle all cases
             self.model = []
             inmodels = False
-            regex = re.compile(r'<MODEL[^>]*\sNAME\s*=\s*"([^"]+)"')
+            regex = re.compile(r'<MODEL[^>]*\sNAME\s*=\s*"([^"]+)"|</MODELS>')
             for line in f:
                 if not inmodels:
                     inmodels = ("<MODELS>" in line)
@@ -47,13 +49,33 @@ class ModelLoader:
                             break
                         else:
                             self.model.append(m.group(1))
+                    
 
         f.close()
         return self.model
 
+    def repositories(self):
+        return ['http://models.interlis.ch/']
+
+    def read_ilisite(self, repo):
+        url = repo + "ilisite.xml"
+        print "Loading " + url + " ..."
+        fn = urllib2.urlopen(url)
+        tree = ElementTree.parse(fn)
+        ns = {'xmlns': "http://www.interlis.ch/INTERLIS2.3"}
+
+        subsites = []
+        path = "xmlns:DATASECTION/xmlns:IliSite09.SiteMetadata/xmlns:IliSite09.SiteMetadata.Site/xmlns:subsidiarySite/xmlns:IliSite09.RepositoryLocation_/xmlns:value"
+        for location in tree.findall(path, ns):
+            subsites.append(location.text)
+        return subsites
+
     def load_model(self):
         #Load model from model repository
         #http://www.interlis.ch/models/ModelRepository.pdf
+        for repo in self.repositories():
+            subsites = self.read_ilisite(repo)
+
         return None
 
     def load_ilismeta_model(self):
