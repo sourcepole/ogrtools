@@ -21,35 +21,37 @@ def test_detect_none():
     assert loader.detect_format() is None
 
 
-def test_detect_model_ili1():
+def test_detect_models_ili1():
     loader = ModelLoader("./tests/data/ili/Beispiel.itf")
-    assert loader.detect_model() == ['Beispiel']
+    assert loader.detect_models()[0].name == 'Beispiel'
 
 
-def test_detect_model_ili2():
+def test_detect_models_ili2():
     loader = ModelLoader("./tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.xtf")
-    assert loader.detect_model() == [
+    models = loader.detect_models()
+    names = map(lambda model: model.name, models)
+    assert names == [
         "CodeISO", "chGeoId10", "MultilingualText09", "OeREBKRM09", "OeREBKRM09vs", "OeREBKRM09trsfr"]
 
 
-def test_detect_model_none():
+def test_detect_models_none():
     loader = ModelLoader("./tests/data/osm/railway.shp")
-    assert loader.detect_model() is None
+    assert loader.detect_models() is None
 
 
-def test_read_ilisite():
+def xxtest_read_ilisite():
     loader = ModelLoader("")
-    assert loader.read_ilisite("http://models.interlis.ch/") == [
+    assert loader.lookup_sites("http://models.interlis.ch/") == [
         'http://models.geo.admin.ch/',
         'http://models.umleditor.org/', 'http://models.ikgeo.ch/']
 
 
 def test_model_loader():
-    loader = ModelLoader("./tests/data/ili/Beispiel.itf")
-    assert loader.load_model() is None
+    loader = ModelLoader("./tests/data/ili/roads23.xtf")
+    print loader.load_models()
 
 
-def test_model_conversion():
+def xxtest_model_conversion():
     loader = ModelLoader("")
     outfile = os.path.join(TEMPDIR, "tmpogrtools")
     loader.convert_model(["./tests/data/ili/Beispiel.ili"], outfile)
