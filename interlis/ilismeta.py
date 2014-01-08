@@ -4,26 +4,24 @@ from xml.etree import ElementTree
 from xml.dom import minidom
 import json
 import string
+import re
 import sys
 
 
 def prettify(rawxml, indent="  "):
-    """Return a pretty-printed XML string
-    """
+    """Return a pretty-printed XML string"""
     reparsed = minidom.parseString(rawxml)
     return reparsed.toprettyxml(indent)
 
 
 def extract_enums_asgml(fn):
-    """Extract Interlis Enumerations as GML
-    """
+    """Extract Interlis Enumerations as GML"""
     tree = ElementTree.parse(fn)
     #Extract default namespace from root e.g. {http://www.interlis.ch/INTERLIS2.3}TRANSFER
-    #ns = tree.getroot().tag
-    ns = "http://www.interlis.ch/INTERLIS2.3"
+    ns = {'xmlns': re.match(r'^{(.+)}', tree.getroot().tag).group(1)}
 
-    models = tree.findall("{%s}DATASECTION/{%s}IlisMeta07.ModelData" % (ns, ns))
-    if models != None:
+    models = tree.findall("xmlns:DATASECTION/xmlns:IlisMeta07.ModelData", ns)
+    if models is not None:
         #GML output
         gml = ElementTree.Element('FeatureCollection')
         gml.set('xmlns', 'http://ogr.maptools.org/')
@@ -33,14 +31,14 @@ def extract_enums_asgml(fn):
         #     xmlns:gml="http://www.opengis.net/gml">
 
         for model in models:
-            enumNodes = model.findall("{%s}IlisMeta07.ModelData.EnumNode" % ns)
+            enumNodes = model.findall("xmlns:IlisMeta07.ModelData.EnumNode", ns)
 
-            if enumNodes != None:
+            if enumNodes is not None:
                 #Collect parent enums
                 parent_nodes = set()
                 for enumNode in enumNodes:
-                    parent = enumNode.find("{%s}ParentNode" % ns)
-                    if parent != None:
+                    parent = enumNode.find("xmlns:ParentNode", ns)
+                    if parent is not None:
                         parent_nodes.add(parent.get("REF"))
 
                 curEnum = None
@@ -48,14 +46,14 @@ def extract_enums_asgml(fn):
                 enumIdx = 0
                 idx = None
                 for enumNode in enumNodes:
-                    parent = enumNode.find("{%s}ParentNode" % ns)
-                    if parent == None:
+                    parent = enumNode.find("xmlns:ParentNode", ns)
+                    if parent is None:
                         curEnum = enumNode
                         #enum name should not be longer than 63 chars, which is PG default name limit
                         #Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonenflaeche.Herkunft.TYPE -> enumXX_herkunft
-                        enumTypeName = enumNode.find("{%s}EnumType" % ns).get('REF')
+                        enumTypeName = enumNode.find("xmlns:EnumType", ns).get('REF')
                         enumTypeName = string.replace(enumTypeName, '.TYPE', '')
-                        enumTypeName = string.rsplit(enumTypeName,  '.',  maxsplit=1)[-1]
+                        enumTypeName = string.rsplit(enumTypeName, '.', maxsplit=1)[-1]
                         curEnumName = "enum%d_%s" % (enumIdx, enumTypeName)
                         enumIdx = enumIdx + 1
                         #curEnumName = curEnum.get("TID")
@@ -77,42 +75,40 @@ def extract_enums_asgml(fn):
                             id.text = str(idx)
                             idx = idx + 1
                             enum = ElementTree.SubElement(feat, "enum")
-                            enum.text = string.replace(enumNode.get("TID"), curEnum.get("TID")+'.', '')
+                            enum.text = string.replace(enumNode.get("TID"), curEnum.get("TID") + '.', '')
                             enumtxt = ElementTree.SubElement(feat, "enumtxt")
                             enumtxt.text = enum.text
     return ElementTree.tostring(gml, 'utf-8')
 
 
 def extract_enums_json(fn):
-    """Extract Interlis Enumerations as JSON
-    """
+    """Extract Interlis Enumerations as JSON"""
     enum_tables = {}
     tree = ElementTree.parse(fn)
     #Extract default namespace from root e.g. {http://www.interlis.ch/INTERLIS2.3}TRANSFER
-    #ns = tree.getroot().tag
-    ns = "http://www.interlis.ch/INTERLIS2.3"
+    ns = {'xmlns': re.match(r'^{(.+)}', tree.getroot().tag).group(1)}
 
-    models = tree.findall("{%s}DATASECTION/{%s}IlisMeta07.ModelData" % (ns, ns))
+    models = tree.findall("xmlns:DATASECTION/xmlns:IlisMeta07.ModelData", ns)
     if models is not None:
 
         for model in models:
-            enumNodes = model.findall("{%s}IlisMeta07.ModelData.EnumNode" % ns)
+            enumNodes = model.findall("xmlns:IlisMeta07.ModelData.EnumNode", ns)
 
             if enumNodes is not None:
                 #Collect parent enums
                 parent_nodes = set()
                 for enumNode in enumNodes:
-                    parent = enumNode.find("{%s}ParentNode" % ns)
+                    parent = enumNode.find("xmlns:ParentNode", ns)
                     if parent is not None:
                         parent_nodes.add(parent.get("REF"))
 
                 curEnum = None
                 idx = None
                 for enumNode in enumNodes:
-                    parent = enumNode.find("{%s}ParentNode" % ns)
+                    parent = enumNode.find("xmlns:ParentNode", ns)
                     if parent is None:
                         curEnum = enumNode
-                        enumTypeName = enumNode.find("{%s}EnumType" % ns).get('REF')
+                        enumTypeName = enumNode.find("xmlns:EnumType", ns).get('REF')
                         enumTypeName = string.replace(enumTypeName, '.TYPE', '')
                         enum_table = []
                         enum_tables[enumTypeName] = enum_table
