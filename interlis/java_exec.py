@@ -1,17 +1,19 @@
+import sys
 import subprocess
 
 
-def run_shell_cmd(args, progress):
+def run_shell_cmd(args):
     if is_windows():
         command = ["cmd.exe", "/C ", '"' + args[0] + '"'] + args[1:]
     else:
         command = args
     fused_command = ' '.join(command)  # java doesn't find quoted file on Win with: ''.join(['"%s" ' % c for c in command])
     proc = subprocess.Popen(fused_command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True).stdout
+    return proc.read()
 
 
 def is_windows():
-    return False  # TODO
+    return sys.platform.startswith('win')
 
 
 def java_exec():
@@ -22,6 +24,6 @@ def java_exec():
     return java
 
 
-def run_java(jar, args, progress):
+def run_java(jar, args):
     args = [java_exec(), "-jar", jar] + args
-    run_shell_cmd(args, progress)
+    return run_shell_cmd(args)

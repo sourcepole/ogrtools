@@ -1,6 +1,9 @@
 import os
+import tempfile
 
 from interlis.model_loader import ModelLoader
+
+TEMPDIR = tempfile.gettempdir()
 
 def test_detect_ili1():
     loader = ModelLoader("./tests/data/ili/Beispiel.itf")
@@ -28,10 +31,18 @@ def test_detect_model_none():
     assert loader.detect_model() is None
 
 def test_read_ilisite():
-    loader = ModelLoader("./tests/data/ili/Beispiel.itf")
+    loader = ModelLoader("")
     assert loader.read_ilisite("http://models.interlis.ch/") == ['http://models.geo.admin.ch/',
         'http://models.umleditor.org/', 'http://models.ikgeo.ch/']
 
 def test_model_loader():
     loader = ModelLoader("./tests/data/ili/Beispiel.itf")
-    assert loader.load_model()
+    assert loader.load_model() is None
+
+def test_model_conversion():
+    loader = ModelLoader("")
+    outfile = os.path.join(TEMPDIR, "tmpogrtools")
+    loader.convert_model("./tests/data/ili/Beispiel.ili", outfile)
+    with open(outfile) as file:
+        imd = file.read()
+        assert 'IlisMeta07.ModelData.EnumNode TID="Beispiel.Bodenbedeckung.BoFlaechen.Art.TYPE.TOP"' in imd

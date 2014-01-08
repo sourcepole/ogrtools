@@ -1,14 +1,17 @@
+import os
 import re
 import urllib2
 from xml.etree import ElementTree
 from java_exec import run_java
 
 class ModelLoader:
+    """Load models of Interlis transfer files"""
     def __init__(self, fn):
         self.fn = fn
         self.model = None
 
     def detect_format(self):
+        """Detect Interlis transfer file type"""
         #Detection as in OGR lib
         f = open(self.fn, "rb")
         header = f.read(1000)
@@ -22,6 +25,7 @@ class ModelLoader:
             return None
 
     def detect_model(self):
+        """Find model in itf/xtf file"""
         self.model = None
         match = None
         fmt = self.detect_format()
@@ -55,7 +59,10 @@ class ModelLoader:
         return self.model
 
     def repositories(self):
-        return ['http://models.interlis.ch/']
+        return ["http://models.interlis.ch/"]
+
+    def ili2c(self):
+        return os.getenv("ILI2C", "ili2c.jar")
 
     def read_ilisite(self, repo):
         url = repo + "ilisite.xml"
@@ -71,7 +78,7 @@ class ModelLoader:
         return subsites
 
     def load_model(self):
-        #Load model from model repository
+        """Load model of itf/xtf from model repository"""
         #http://www.interlis.ch/models/ModelRepository.pdf
         for repo in self.repositories():
             subsites = self.read_ilisite(repo)
@@ -82,10 +89,8 @@ class ModelLoader:
         #Call ilismeta service api with URL of ili model
         return None
 
-    def convert_model(self):
-        ili2c_jar = 'ili2c.jar'
-        ili = self.model + '.ili'
-        imd = self.model + '.imd'
+    def convert_model(self, ilifiles, outfile):
+        """Convert ili model to ilismeta model."""
 
         #ili2c USAGE
         #  ili2c [Options] file1.ili file2.ili ...
@@ -113,4 +118,4 @@ class ModelLoader:
         #-h|--help             Display this help text.
         #-u|--usage            Display short information about usage.
         #-v|--version          Display the version of ili2c.
-        run_java(ili2c_jar, ["-oIMD", "--out", imd, ili])
+        return run_java(self.ili2c(), ["-oIMD", "--out", outfile, ilifiles])
