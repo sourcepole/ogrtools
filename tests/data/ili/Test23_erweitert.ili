@@ -1,0 +1,306 @@
+INTERLIS 2.3;
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!
+!! Erweiterung des Basismodells Test23 um Nachfuehrungstabellen.
+!!
+!! Version: 1.0
+!! Sprache: Deutsch
+!! Dateiname: Test23_erweitert.ili (Datum: Februar 2008)
+!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+CONTRACTED MODEL Test23_erweitert (de) AT "http://www.interlis.ch/" VERSION "2008-01-28" =
+
+
+  IMPORTS Test23;
+
+  CLASS Nachfuehrung (ABSTRACT) =
+    ATTRIBUTE
+      Identifikator: MANDATORY TEXT*12;
+      Beschreibung: MANDATORY TEXT*30;
+      Perimeter: SURFACE WITH (STRAIGHTS, ARCS) VERTEX Test23.LKoord
+        WITHOUT OVERLAPS > 0.200;
+      Datum1: MANDATORY Test23.Datum;
+      Datum2: Test23.Datum;
+    UNIQUE
+      Identifikator;
+  END Nachfuehrung;
+
+
+  TOPIC FixpunkteKategorie1 EXTENDS Test23.FixpunkteKategorie1 =
+
+    CLASS LFP1Nachfuehrung EXTENDS Nachfuehrung =
+    END LFP1Nachfuehrung;
+
+    CLASS LFP1 (EXTENDED) =
+      ATTRIBUTE
+        HoeheGen (EXTENDED): MANDATORY Test23.Genauigkeit;
+        HoeheZuv (EXTENDED): MANDATORY Test23.Zuverlaessigkeit;
+    END LFP1;
+
+    ASSOCIATION LFP1Assoc =
+      Nachfuehrung -<#> {1} LFP1Nachfuehrung;
+      Punkt -- {1 .. *} LFP1;
+    END LFP1Assoc;
+
+    CLASS HFP1Nachfuehrung EXTENDS Nachfuehrung =
+    END HFP1Nachfuehrung;
+
+    CLASS HFP1 (EXTENDED) =
+      ATTRIBUTE
+        LageGen (EXTENDED): MANDATORY Test23.Genauigkeit;
+        LageZuv (EXTENDED): MANDATORY Test23.Zuverlaessigkeit;
+    END HFP1;
+
+    ASSOCIATION HFP1Assoc =
+      Nachfuehrung -<#> {1} HFP1Nachfuehrung;
+      Punkt -- {1 .. *} HFP1;
+    END HFP1Assoc;
+
+  END FixpunkteKategorie1;
+
+
+  TOPIC FixpunkteKategorie2 EXTENDS Test23.FixpunkteKategorie2 =
+
+    CLASS LFP2Nachfuehrung EXTENDS Nachfuehrung =
+      ATTRIBUTE
+        NBIdent: MANDATORY TEXT*8;
+      UNIQUE NBIdent, Identifikator;
+    END LFP2Nachfuehrung;
+
+    CLASS LFP2 (EXTENDED) =
+      ATTRIBUTE
+        HoeheGen (EXTENDED): MANDATORY Test23.Genauigkeit;
+        HoeheZuv (EXTENDED): MANDATORY Test23.Zuverlaessigkeit;
+    END LFP2;
+
+    ASSOCIATION LFP2Assoc =
+      Nachfuehrung -<#> {1} LFP2Nachfuehrung;
+      Punkt -- {1 .. *} LFP2;
+    END LFP2Assoc;
+
+    CLASS HFP2Nachfuehrung EXTENDS Nachfuehrung =
+      ATTRIBUTE
+        NBIdent: MANDATORY TEXT*8;
+      UNIQUE NBIdent, Identifikator;
+    END HFP2Nachfuehrung;
+
+    CLASS HFP2 (EXTENDED) =
+      ATTRIBUTE
+        LageGen (EXTENDED): MANDATORY Test23.Genauigkeit;
+        LageZuv (EXTENDED): MANDATORY Test23.Zuverlaessigkeit;
+    END HFP2;
+
+    ASSOCIATION HFP2Assoc =
+      Nachfuehrung -<#> {1} HFP2Nachfuehrung;
+      Punkt -- {1 .. *} HFP2;
+    END HFP2Assoc;
+
+  END FixpunkteKategorie2;
+
+
+  TOPIC FixpunkteKategorie3 EXTENDS Test23.FixpunkteKategorie3 =
+
+    CLASS LFP3Nachfuehrung EXTENDS Nachfuehrung =
+      ATTRIBUTE
+        NBIdent: MANDATORY TEXT*8;
+      UNIQUE NBIdent, Identifikator;
+    END LFP3Nachfuehrung;
+
+    CLASS LFP3 (EXTENDED) =
+    END LFP3;
+
+    ASSOCIATION LFP3Assoc =
+      Nachfuehrung -<#> {1} LFP3Nachfuehrung;
+      Punkt -- {1 .. *} LFP3;
+    END LFP3Assoc;
+
+    CLASS HFP3Nachfuehrung EXTENDS Nachfuehrung =
+      ATTRIBUTE
+        NBIdent: MANDATORY TEXT*8;
+      UNIQUE NBIdent, Identifikator;
+    END HFP3Nachfuehrung;
+
+    CLASS HFP3 (EXTENDED) =
+    END HFP3;
+
+    ASSOCIATION HFP3Assoc =
+      Nachfuehrung -<#> {1} HFP3Nachfuehrung;
+      Punkt -- {1 .. *} HFP3;
+    END HFP3Assoc;
+
+  END FixpunkteKategorie3;
+
+
+  TOPIC Bodenbedeckung EXTENDS Test23.Bodenbedeckung =
+
+    DOMAIN
+      BBArtPlus EXTENDS BBArt = (
+        Gebaeude(
+          Wohngebaeude,
+          Industriegebaeude,
+          Verwaltungsgebaeude));
+
+    CLASS BBNachfuehrung EXTENDS Nachfuehrung =
+      ATTRIBUTE
+        NBIdent: MANDATORY TEXT*8;
+        Gueltigkeit: MANDATORY Test23.Status;
+      UNIQUE NBIdent, Identifikator;
+    END BBNachfuehrung;
+
+    CLASS ProjBoFlaeche (EXTENDED) =
+      ATTRIBUTE
+        Art (EXTENDED): BBArtPlus;
+    END ProjBoFlaeche;
+
+    CLASS BoFlaeche (EXTENDED) =
+      ATTRIBUTE
+        Art (EXTENDED): BBArtPlus;
+    END BoFlaeche;
+
+    ASSOCIATION BodbObjektAssoc =
+      Nachfuehrung -<#> {1} BBNachfuehrung;
+      Objekt -- {1 .. *} BodbObjekt;
+    END BodbObjektAssoc;
+
+  END Bodenbedeckung;
+
+
+  TOPIC Einzelobjekte EXTENDS Test23.Einzelobjekte =
+
+    CLASS EONachfuehrung EXTENDS Nachfuehrung =
+      ATTRIBUTE
+        NBIdent: MANDATORY TEXT*8;
+        Gueltigkeit: MANDATORY Test23.Status;
+      UNIQUE NBIdent, Identifikator;
+    END EONachfuehrung;
+
+    ASSOCIATION EinzelobjektAssoc =
+      Nachfuehrung -<#> {1} EONachfuehrung;
+      Objekt -- {1 .. *} Einzelobjekt;
+    END EinzelobjektAssoc;
+
+    ASSOCIATION EinzelpunktAssoc =
+      Nachfuehrung -<#> {1} EONachfuehrung;
+      Punkt -- {1 .. *} Einzelpunkt;
+    END EinzelpunktAssoc;
+
+  END Einzelobjekte;
+
+
+  TOPIC Hoehen EXTENDS Test23.Hoehen =
+
+    CLASS HONachfuehrung EXTENDS Nachfuehrung =
+      ATTRIBUTE
+        NBIdent: MANDATORY TEXT*8;
+        Gueltigkeit: MANDATORY Test23.Status;
+      UNIQUE NBIdent, Identifikator;
+    END HONachfuehrung;
+
+    ASSOCIATION HoehenobjektAssoc =
+      Nachfuehrung -<#> {1} HONachfuehrung;
+      Objekt -- {1 .. *} Hoehenobjekt;
+    END HoehenobjektAssoc;
+
+  END Hoehen;
+
+
+  TOPIC Nomenklatur EXTENDS Test23.Nomenklatur =
+
+    CLASS NKNachfuehrung EXTENDS Nachfuehrung =
+      ATTRIBUTE
+        NBIdent: MANDATORY TEXT*8;
+      UNIQUE NBIdent, Identifikator;
+    END NKNachfuehrung;
+
+    ASSOCIATION NameAssoc =
+      Nachfuehrung -<#> {1} NKNachfuehrung;
+      Name -- {1 .. *} Name;
+    END NameAssoc;
+
+  END Nomenklatur;
+
+
+  TOPIC Liegenschaften EXTENDS Test23.Liegenschaften =
+
+    CLASS LSNachfuehrung EXTENDS Nachfuehrung =
+      ATTRIBUTE
+        NBIdent: MANDATORY TEXT*8;
+        Datum3: Test23.Datum;
+        Gueltigkeit: MANDATORY Test23.Status;
+      UNIQUE NBIdent, Identifikator;
+    END LSNachfuehrung;
+
+    ASSOCIATION LiegObjektAssoc =
+      Nachfuehrung -<#> {1} LSNachfuehrung;
+      Objekt -- {1 .. *} LiegObjekt;
+    END LiegObjektAssoc;
+
+  END Liegenschaften;
+
+
+  TOPIC Rohrleitungen EXTENDS Test23.Rohrleitungen =
+
+    CLASS RLNachfuehrung EXTENDS Nachfuehrung =
+      ATTRIBUTE
+        NBIdent: MANDATORY TEXT*8;
+        Gueltigkeit: MANDATORY Test23.Status;
+      UNIQUE NBIdent, Identifikator;
+    END RLNachfuehrung;
+
+    ASSOCIATION RohrObjektAssoc =
+      Nachfuehrung -<#> {1} RLNachfuehrung;
+      Objekt -- {1 .. *} RohrObjekt;
+    END RohrObjektAssoc;
+
+  END Rohrleitungen;
+
+
+  TOPIC Gemeindegrenzen EXTENDS Test23.Gemeindegrenzen =
+
+    CLASS GEMNachfuehrung EXTENDS Nachfuehrung =
+      ATTRIBUTE
+        NBIdent: MANDATORY TEXT*8;
+        Datum3: Test23.Datum;
+        Gueltigkeit: MANDATORY Test23.Status;
+      UNIQUE NBIdent, Identifikator;
+    END GEMNachfuehrung;
+
+    ASSOCIATION GrenzobjektAssoc =
+      Nachfuehrung -<#> {1} GEMNachfuehrung;
+      Objekt -- {1 .. *} Grenzobjekt;
+    END GrenzobjektAssoc;
+
+  END Gemeindegrenzen;
+
+
+  TOPIC Nummerierungsbereiche EXTENDS Test23.Nummerierungsbereiche =
+  END Nummerierungsbereiche;
+
+
+  TOPIC Bezirksgrenzen EXTENDS Test23.Bezirksgrenzen =
+  END Bezirksgrenzen;
+
+
+  TOPIC Kantonsgrenzen EXTENDS Test23.Kantonsgrenzen =
+  END Kantonsgrenzen;
+
+
+  TOPIC Landesgrenzen EXTENDS Test23.Landesgrenzen =
+  END Landesgrenzen;
+
+
+  TOPIC Planeinteilungen EXTENDS Test23.Planeinteilungen =
+  END Planeinteilungen;
+
+
+  TOPIC TSEinteilung EXTENDS Test23.TSEinteilung =
+  END TSEinteilung;
+
+
+  TOPIC Rutschgebiete EXTENDS Test23.Rutschgebiete =
+  END Rutschgebiete;
+
+END Test23_erweitert.
+

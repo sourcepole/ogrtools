@@ -4,6 +4,7 @@ import urllib2
 from xml.etree import ElementTree
 from java_exec import run_java
 
+
 class ModelLoader:
     """Load models of Interlis transfer files"""
     def __init__(self, fn):
@@ -27,7 +28,6 @@ class ModelLoader:
     def detect_model(self):
         """Find model in itf/xtf file"""
         self.model = None
-        match = None
         fmt = self.detect_format()
         f = open(self.fn, "r")
         if fmt == 'Interlis 1':
@@ -53,7 +53,6 @@ class ModelLoader:
                             break
                         else:
                             self.model.append(m.group(1))
-                    
 
         f.close()
         return self.model
@@ -118,4 +117,4 @@ class ModelLoader:
         #-h|--help             Display this help text.
         #-u|--usage            Display short information about usage.
         #-v|--version          Display the version of ili2c.
-        return run_java(self.ili2c(), ["-oIMD", "--out", outfile, ilifiles])
+        return run_java(self.ili2c(), ["-oIMD", "--out", outfile] + ilifiles)
