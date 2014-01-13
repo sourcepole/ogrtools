@@ -96,10 +96,12 @@ def extract_enums_json(fn):
 
             if enumNodes is not None:
                 #Collect parent enums
-                parent_nodes = set()
+                parent_nodes = {}  # { enum-node-id: super-enum-node-id, ... }
                 for enumNode in enumNodes:
                     parent = enumNode.find("xmlns:ParentNode", ns)
                     if parent is not None:
+                        #parent_node = parent.get("REF")
+                        #superclass_enum = parent.
                         parent_nodes.add(parent.get("REF"))
 
                 curEnum = None
@@ -129,6 +131,20 @@ def nodeid(tid):
     return tid.replace(".", "_")
 
 
+DISPLAY_ATTRS = {
+    #http://www.graphviz.org/content/attrs
+    #Nodes
+    "Class": "shape=hexagon,width=2.5",
+    "AttrOrParam": "shape=box,width=2",
+    "EnumNode": "shape=octagon",
+    "EnumType": "shape=doubleoctagon",
+    #Edges
+    "Super": "color=red,fontcolor=red"
+}
+
+IGNORED_EDGE_TAGS = ["ElementInPackage", "AllowedInBasket", "AxisSpec", "Unit"]
+
+
 def imd_to_dot(fn):
     """Generate dot graph from IlisMeta file"""
     tree = ElementTree.parse(fn)
@@ -139,25 +155,31 @@ def imd_to_dot(fn):
     models = tree.findall("xmlns:DATASECTION/xmlns:IlisMeta07.ModelData", ns) or []
     modelno = 0
     for model in models:
+        taggroup = {}
         bid = nodeid(model.get("BID"))
         if bid == 'MODEL_INTERLIS':
             continue
         print "subgraph {"
         modelno = modelno + 1
-        print "node [style=filled,colorscheme=accent8,color={}]".format(modelno)
+        print "node [style=filled,colorscheme=accent8,fillcolor={}]".format(modelno)
         for node in model:
             tag = node.tag.replace("{http://www.interlis.ch/INTERLIS2.3}IlisMeta07.ModelData.", "")
             if node.get("TID"):
                 tid = nodeid(node.get("TID"))
                 name = node.find("xmlns:Name", ns).text
-                print tid + ' [label="' + name + "\\n" + tag + '"]'
+                if tag not in taggroup:
+                    taggroup[tag] = []
+                taggroup[tag].append(tid)
+                display_attrs = DISPLAY_ATTRS.get(tag, "")
+                print tid + ' [label="' + name + "\\n" + tag + '" ' + display_attrs + "]"
                 for refnode in node.findall("./*[@REF]"):
                     reftag = refnode.tag.replace("{http://www.interlis.ch/INTERLIS2.3}", "")
                     orderpos = refnode.get("ORDER_POS")
+                    display_attrs = DISPLAY_ATTRS.get(reftag, "")
                     if orderpos:
                         reftag = reftag + "[{}]".format(orderpos)
-                    if reftag != 'ElementInPackage':
-                        print tid + " -> " + nodeid(refnode.get("REF")) + ' [label="' + reftag + '"]'
+                    if reftag not in IGNORED_EDGE_TAGS:
+                        print tid + " -> " + nodeid(refnode.get("REF")) + ' [label="' + reftag + '" ' + display_attrs + "]"
             else:
                 relnodes = node.findall("./*[@REF]")
                 n1 = nodeid(relnodes[0].get("REF"))
@@ -165,7 +187,13 @@ def imd_to_dot(fn):
                 n2 = nodeid(relnodes[1].get("REF"))
                 #l2 = relnodes[1].tag.replace("{http://www.interlis.ch/INTERLIS2.3}", "")
                 #print n1 + " -> " + n2 + ' [headlabel="' + l2 + '" taillabel="' + l1 + '" style=dotted]'
-                print n1 + " -> " + n2 + ' [label="' + tag + '" style=dotted]'
+                orderpos = relnodes[0].get("ORDER_POS") or relnodes[1].get("ORDER_POS")
+                if tag not in IGNORED_EDGE_TAGS:
+                    if orderpos:
+                        tag = tag + "[{}]".format(orderpos)
+                    print n1 + " -> " + n2 + ' [label="' + tag + '" style=dotted,color=blue,fontcolor=blue]'
+        print "{ rank = same; " + ";".join(taggroup["Class"]) + " }"
+        print "{ rank = same; " + ";".join(taggroup["EnumType"]) + " }"
 
         print "}"
     print "}"
@@ -180,7 +208,7 @@ def main(argv):
         enum_tables = extract_enums_json(fn)
         print json.dumps(enum_tables, indent=2)
     elif output == 'dot':
-        #./ilismeta.py dot ../tests/data/ili/RoadsExdm2ien.imd | dot -Tps >/tmp/imd.ps
+        #./ilismeta.py dot ../tests/data/ili/RoadsExdm2ien.imd | dot -Tsvg >../tests/data/ili/RoadsExdm2ien.imd.svg
         imd_to_dot(fn)
     return 0
 
