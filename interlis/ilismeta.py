@@ -193,7 +193,8 @@ def imd_to_dot(fn):
                         tag = tag + "[{}]".format(orderpos)
                     print n1 + " -> " + n2 + ' [label="' + tag + '" style=dotted,color=blue,fontcolor=blue]'
         print "{ rank = same; " + ";".join(taggroup["Class"]) + " }"
-        print "{ rank = same; " + ";".join(taggroup["EnumType"]) + " }"
+        if "EnumType" in taggroup:
+            print "{ rank = same; " + ";".join(taggroup["EnumType"]) + " }"
 
         print "}"
     print "}"
