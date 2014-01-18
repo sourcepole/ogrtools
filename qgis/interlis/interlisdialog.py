@@ -32,6 +32,9 @@ class InterlisDialog(QtGui.QDialog):
         # Set up the user interface from Designer.
         self.ui = Ui_Interlis()
         self.ui.setupUi(self)
+        #Initialize DB connection drop-down
+        self.ui.cbDbConnections.clear()
+        self.ui.cbDbConnections.addItems(self.dbConnectionList())
 
     def dataSourceUri(self):
         if self.ui.mDataLineEdit.text().isEmpty():
@@ -40,6 +43,15 @@ class InterlisDialog(QtGui.QDialog):
             return self.ui.mDataLineEdit.text() + "," + self.ui.mModelLineEdit.text()
         else:
             return self.ui.mDataLineEdit.text()
+
+    def dbConnectionList(self):
+        connection_names = []
+        settings = QSettings()
+        settings.beginGroup(u"/PostgreSQL/connections")
+        for name in settings.childGroups():
+            connection_names.append(name)
+        settings.endGroup()
+        return connection_names
 
     @pyqtSignature('')  # avoid two connections
     def on_mDataFileButton_clicked(self):
