@@ -92,6 +92,13 @@ zip: deploy dclean
 package: compile
 		rm -f $(PLUGINNAME).zip
 		git archive --prefix=$(PLUGINNAME)/ -o $(PLUGINNAME).zip $(VERSION)
+		#Add symlinked lib dirs
+		rm -rf $(PLUGINNAME)
+		mkdir -p $(PLUGINNAME)
+		cp -r ../../interlis ../../ogrtransform ../../pyogr $(PLUGINNAME)/
+		mv $(PLUGINNAME)/interlis $(PLUGINNAME)/ilismeta
+		zip -r -i '*.py' -q -g $(PLUGINNAME).zip $(PLUGINNAME)
+		rm -rf $(PLUGINNAME)
 		echo "Created package: $(PLUGINNAME).zip"
 
 upload: zip

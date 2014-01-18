@@ -1,0 +1,5 @@
+ilismeta export-ignore  
+ogrtransform export-ignore  
+pyogr export-ignore  
+.gitattributes export-ignore  
+.gitignore export-ignore
