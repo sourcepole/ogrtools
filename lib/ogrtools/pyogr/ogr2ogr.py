@@ -118,7 +118,7 @@ class StdStreamCapture(object):
 #/*                                main()                                */
 #/************************************************************************/
 
-bSkipFailures = False
+bSkipFailures = True  # TODO: ogr2ogr arg!
 nGroupTransactions = 200
 bPreserveFID = False
 nFIDToFetch = ogr.NullFID

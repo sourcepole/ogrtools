@@ -3,10 +3,10 @@
 import argparse
 import os
 import sys
-from pyogr.ogrinfo import ogrinfo, ogr_formats, ogr_version_info
-from pyogr.ogrvrt import ogr2vrt
-from ogrtransform.spec import Spec
-from ogrtransform.transformation import Transformation
+from ogrtools.pyogr.ogrinfo import ogrinfo, ogr_formats, ogr_version_info
+from ogrtools.pyogr.ogrvrt import ogr2vrt
+from ogrtools.ogrtransform.spec import Spec
+from ogrtools.ogrtransform.transformation import Transformation
 
 
 def info(args):
@@ -43,7 +43,7 @@ def write_enums(args):
     if args.debug:
         os.environ["CPL_DEBUG"] = "on"
     trans = Transformation(args.spec)
-    return trans.write_enum_tables(args)
+    return trans.write_enum_tables(args.dest, args.format, args.debug)
 
 
 def transform(args):
@@ -51,9 +51,9 @@ def transform(args):
         os.environ["CPL_DEBUG"] = "on"
     trans = Transformation(args.spec, args.source)
     if args.reverse:
-        trans.transform_reverse(args)
+        trans.transform_reverse(args.dest, args.format, args.debug)
     else:
-        trans.transform(args)
+        trans.transform(args.dest, args.format, args.debug)
 
 
 def main():

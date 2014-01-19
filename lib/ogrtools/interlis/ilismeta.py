@@ -96,7 +96,7 @@ def extract_enums_json(fn):
 
             if enumNodes is not None:
                 #Collect parent enums
-                parent_nodes = {}  # { enum-node-id: super-enum-node-id, ... }
+                parent_nodes = set()  # = {} { enum-node-id: super-enum-node-id, ... }
                 for enumNode in enumNodes:
                     parent = enumNode.find("xmlns:ParentNode", ns)
                     if parent is not None:

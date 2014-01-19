@@ -1,4 +1,4 @@
-from interlis.ilismeta import extract_enums_asgml, extract_enums_json
+from ogrtools.interlis.ilismeta import extract_enums_asgml, extract_enums_json
 
 
 def test_extract_enums_json():

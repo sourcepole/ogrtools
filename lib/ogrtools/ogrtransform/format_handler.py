@@ -1,7 +1,7 @@
 import string
 import re
 
-from interlis.ilismeta import extract_enums_json
+from ..interlis.ilismeta import extract_enums_json
 
 
 #Base class for format specific methods

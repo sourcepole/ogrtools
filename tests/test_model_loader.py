@@ -1,7 +1,7 @@
 import os
 import tempfile
 
-from interlis.model_loader import ModelLoader
+from ogrtools.interlis.model_loader import ModelLoader
 
 TEMPDIR = tempfile.gettempdir()
 
