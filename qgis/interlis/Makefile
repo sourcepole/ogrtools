@@ -95,8 +95,7 @@ package: compile
 		#Add symlinked lib dirs
 		rm -rf $(PLUGINNAME)
 		mkdir -p $(PLUGINNAME)
-		cp -r ../../interlis ../../ogrtransform ../../pyogr $(PLUGINNAME)/
-		mv $(PLUGINNAME)/interlis $(PLUGINNAME)/ilismeta
+		cp -r ../../lib/ogrtools $(PLUGINNAME)/
 		zip -r -i '*.py' -q -g $(PLUGINNAME).zip $(PLUGINNAME)
 		rm -rf $(PLUGINNAME)
 		echo "Created package: $(PLUGINNAME).zip"

@@ -32,9 +32,12 @@ class InterlisDialog(QtGui.QDialog):
         # Set up the user interface from Designer.
         self.ui = Ui_Interlis()
         self.ui.setupUi(self)
+
+    def show(self):
         #Initialize DB connection drop-down
         self.ui.cbDbConnections.clear()
         self.ui.cbDbConnections.addItems(self.dbConnectionList())
+        QtGui.QDialog.show(self)
 
     def dataSourceUri(self):
         if self.ui.mDataLineEdit.text().isEmpty():
@@ -43,6 +46,23 @@ class InterlisDialog(QtGui.QDialog):
             return self.ui.mDataLineEdit.text() + "," + self.ui.mModelLineEdit.text()
         else:
             return self.ui.mDataLineEdit.text()
+
+    def ogrDs(self):
+        key = u"/PostgreSQL/connections/" + self.ui.cbDbConnections.currentText()
+        settings = QSettings()
+        settings.beginGroup(key)
+        params = {
+            'host': settings.value("host", type=str),
+            'port': settings.value("port", type=str),
+            'dbname': settings.value("database", type=str),
+            'username': settings.value("username", type=str),
+            'password': settings.value("password", type=str)
+        }
+        ds = 'PG:'
+        for k, v in params.items():
+            if v:
+                ds = ds + k + "='" + v + "' "
+        return ds
 
     def dbConnectionList(self):
         connection_names = []
