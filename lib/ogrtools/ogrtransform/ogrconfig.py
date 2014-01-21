@@ -46,22 +46,23 @@ FIELD_TYPES = [
 ]
 
 
-class Spec:
+class OgrConfig:
+    """OGR transformation configuration"""
 
     format_handlers = FormatHandlerRegistry()
 
-    def __init__(self, ds=None, spec=None, model=None):
+    def __init__(self, ds=None, config=None, model=None):
         self._ds_fn = ds
         self._ds = None
-        self._spec = self._load(spec)
+        self._config = self._load(config)
         self._model = model
 
     def _load(self, fn):
-        spec = None
+        config = None
         if fn is not None:
             with open(fn) as file:
-                spec = json.load(file)
-        return spec
+                config = json.load(file)
+        return config
 
     def open(self):
         self._ds = ogr.Open(self._ds_fn, update=False)
@@ -83,7 +84,7 @@ class Spec:
                 }
         return enum_tables
 
-    def generate_spec(self, dst_format, outfile=None, layer_list=[]):
+    def generate_config(self, dst_format, outfile=None, layer_list=[]):
         if self._ds is None:
             self.open()
 
@@ -92,83 +93,83 @@ class Spec:
                 layer_list.append(layer.GetLayerDefn().GetName())
 
         src_format = self._ds.GetDriver().GetName()
-        src_format_handler = Spec.format_handlers.handler(src_format)
-        dst_format_handler = Spec.format_handlers.handler(dst_format)
+        src_format_handler = OgrConfig.format_handlers.handler(src_format)
+        dst_format_handler = OgrConfig.format_handlers.handler(dst_format)
 
-        self._spec = {}
+        self._config = {}
 
         #Javscript comments are not allowed JSON
-        self._spec['//'] = 'OGR transformation specification'
-        self._spec['src_format'] = src_format
-        self._spec['dst_format'] = dst_format
-        self._spec['dst_dsco'] = dst_format_handler.default_ds_creation_options()
-        self._spec['dst_lco'] = dst_format_handler.default_layer_creation_options()
+        self._config['//'] = 'OGR transformation configuration'
+        self._config['src_format'] = src_format
+        self._config['dst_format'] = dst_format
+        self._config['dst_dsco'] = dst_format_handler.default_ds_creation_options()
+        self._config['dst_lco'] = dst_format_handler.default_layer_creation_options()
         layers = {}
-        self._spec['layers'] = layers
+        self._config['layers'] = layers
 
         for name in layer_list:
             layer = self._ds.GetLayerByName(name)
             layerdef = layer.GetLayerDefn()
 
-            speclayer = {}
+            cfglayer = {}
             layer_name = dst_format_handler.launder_name(name)
-            layers[layer_name] = speclayer
-            speclayer['src_layer'] = name
+            layers[layer_name] = cfglayer
+            cfglayer['src_layer'] = name
             fields = {}
-            speclayer['fields'] = fields
+            cfglayer['fields'] = fields
 
             for fld_index in range(layerdef.GetFieldCount()):
                 src_fd = layerdef.GetFieldDefn(fld_index)
 
-                specfield = {}
+                cfgfield = {}
                 field_name = src_fd.GetName()
                 dst_name = dst_format_handler.launder_name(field_name)
-                fields[dst_name] = specfield
-                specfield['src'] = field_name
+                fields[dst_name] = cfgfield
+                cfgfield['src'] = field_name
                 jsontype = FIELD_TYPES[src_fd.GetType()]
-                specfield['type'] = jsontype
+                cfgfield['type'] = jsontype
                 if src_fd.GetWidth() > 0:
-                    specfield['width'] = src_fd.GetWidth()
+                    cfgfield['width'] = src_fd.GetWidth()
                 if src_fd.GetPrecision() > 0:
-                    specfield['precision'] = src_fd.GetPrecision()
+                    cfgfield['precision'] = src_fd.GetPrecision()
 
             geom_type = GEOMETRY_TYPES[layerdef.GetGeomType()]
-            speclayer['geometry_type'] = geom_type
+            cfglayer['geometry_type'] = geom_type
 
         enum_tables = self._enums(src_format_handler, dst_format_handler)
         if enum_tables:
-            self._spec['enums'] = enum_tables
+            self._config['enums'] = enum_tables
 
-        specstr = json.dumps(self._spec, indent=2)
+        configstr = json.dumps(self._config, indent=2)
 
         if outfile is not None:
             f = open(outfile, "w")
-            f.write(specstr)
+            f.write(configstr)
             f.close()
 
-        return specstr
+        return configstr
 
     def src_format(self):
-        return self._spec['src_format']
+        return self._config['src_format']
 
     def dst_format(self):
-        return self._spec['dst_format']
+        return self._config['dst_format']
 
     def layer_creation_options(self):
         options = []
-        for key, value in self._spec['dst_lco'].items():
-            options.append(key+"="+value)
+        for key, value in self._config['dst_lco'].items():
+            options.append(key + "=" + value)
         return options
 
     def ds_creation_options(self):
         options = []
-        for key, value in self._spec['dst_dsco'].items():
-            options.append(key+"="+value)
+        for key, value in self._config['dst_dsco'].items():
+            options.append(key + "=" + value)
         return options
 
     def generate_vrt(self):
         xml = ElementTree.Element('OGRVRTDataSource')
-        for layer_name, speclayer in self._spec['layers'].items():
+        for layer_name, cfglayer in self._config['layers'].items():
             layer_node = ElementTree.SubElement(xml, "OGRVRTLayer")
             layer_node.set('name', layer_name)
             node = ElementTree.SubElement(layer_node, "SrcDataSource")
@@ -176,25 +177,25 @@ class Spec:
             node.set('shared', '1')
             node.text = self._ds_fn
             node = ElementTree.SubElement(layer_node, "SrcLayer")
-            node.text = speclayer['src_layer']
+            node.text = cfglayer['src_layer']
             node = ElementTree.SubElement(layer_node, "GeometryType")
-            node.text = 'wkb' + speclayer['geometry_type']
-            for dst_name, specfield in speclayer['fields'].items():
+            node.text = 'wkb' + cfglayer['geometry_type']
+            for dst_name, cfgfield in cfglayer['fields'].items():
                 node = ElementTree.SubElement(layer_node, "Field")
                 node.set('name', dst_name)
-                node.set('src', specfield['src'])
-                node.set('type', specfield['type'])
-                if 'width' in specfield:
-                    node.set('width', specfield['width'])
-                if 'precision' in specfield:
-                    node.set('precision', specfield['precision'])
+                node.set('src', cfgfield['src'])
+                node.set('type', cfgfield['type'])
+                if 'width' in cfgfield:
+                    node.set('width', cfgfield['width'])
+                if 'precision' in cfgfield:
+                    node.set('precision', cfgfield['precision'])
         return ElementTree.tostring(xml, 'utf-8')
 
     def generate_reverse_vrt(self):
         xml = ElementTree.Element('OGRVRTDataSource')
-        for layer_name, speclayer in self._spec['layers'].items():
+        for layer_name, cfglayer in self._config['layers'].items():
             layer_node = ElementTree.SubElement(xml, "OGRVRTLayer")
-            layer_node.set('name', speclayer['src_layer'])
+            layer_node.set('name', cfglayer['src_layer'])
             node = ElementTree.SubElement(layer_node, "SrcDataSource")
             node.set('relativeToVRT', '0')
             node.set('shared', '1')
@@ -202,11 +203,11 @@ class Spec:
             node = ElementTree.SubElement(layer_node, "SrcLayer")
             node.text = layer_name
             node = ElementTree.SubElement(layer_node, "GeometryType")
-            node.text = 'wkb' + speclayer['geometry_type']
-            for dst_name, specfield in speclayer['fields'].items():
+            node.text = 'wkb' + cfglayer['geometry_type']
+            for dst_name, cfgfield in cfglayer['fields'].items():
                 node = ElementTree.SubElement(layer_node, "Field")
-                node.set('name', specfield['src'])
-                node.set('type', specfield['type'])
+                node.set('name', cfgfield['src'])
+                node.set('type', cfgfield['type'])
                 node.set('src', dst_name)
         return ElementTree.tostring(xml, 'utf-8')
 
@@ -219,8 +220,8 @@ class Spec:
         node = ElementTree.SubElement(xml, 'gml:boundedBy')
         node = ElementTree.SubElement(node, 'gml:null')
         node.text = 'missing'
-        if self._spec['enums']:
-            for name, enum_table in self._spec['enums'].items():
+        if self._config['enums']:
+            for name, enum_table in self._config['enums'].items():
                 for enum in enum_table['values']:
                     # <gml:featureMember>
                     #   <ogr:landcover_type fid="landcover_type.0">

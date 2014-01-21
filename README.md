@@ -32,13 +32,13 @@ Extensions for the OGR [Interlis driver](http://www.gdal.org/ogr/drv_ili.html).
 ogrtransform library
 --------------------
 
-OGR has many options to transform data when convertion from one format into an other. The ogrtransform library uses a specification in JSON format to transform data.
+OGR has many options to transform data when convertion from one format into an other. The ogrtransform library uses a configuration in JSON format to transform data.
 
 Example:
 
 ```
 {
-  "comment": "// OGR transformation specification", 
+  "comment": "// OGR transformation configuration",
   "layers": {
     "roadsexdm2ben_roads_streetnameposition": {
       "fields": {
@@ -98,7 +98,7 @@ The ogr command line tool exposes ogrtools functionality for using in a command 
 ```
 ogr --help
 usage: ogr [-h]
-           {version,formats,info,sql,vrt,genspec,write-enums,transform} ...
+           {version,formats,info,sql,vrt,genconfig,write-enums,transform} ...
 
 Query and transform OGR compatible vector data
 
@@ -108,16 +108,16 @@ optional arguments:
 commands:
   valid commands
 
-  {version,formats,info,sql,vrt,genspec,write-enums,transform}
+  {version,formats,info,sql,vrt,genconfig,write-enums,transform}
     version             Show version information
     formats             List available data formats
     info                Information about data
     sql                 Execute SQL Query
     vrt                 Create VRT from data source
-    genspec             Generate transormation specification from data source
+    genconfig           Generate OGR configuration from data source
     write-enums         Write tables with enumeration values
-    transform           Transform data source based on transformation
-                        specification
+    transform           Transform data source based on OGR configuration
+
 ```
 
 ### ogr version
@@ -240,20 +240,21 @@ ogr vrt tests/data/railway.shp
 </OGRVRTDataSource>
 ```
 
-### ogr genspec
+### ogr genconfig
 
 Generate transormation specification from data source
 
 ```
-usage: ogr genspec [-h] [--format FORMAT] [--model MODEL]
+usage: ogr genconfig [-h] [--format FORMAT] [--model MODEL]
                    source [layers [layers ...]]
 ```
 
 Example:
 ```
-ogr genspec --format=PostgreSQL tests/data/railway.shp
+ogr genconfig --format=PostgreSQL tests/data/railway.shp
 ```
 ```
+
 {
   "comment": "// OGR transformation specification", 
   "layers": {
@@ -297,7 +298,8 @@ ogr genspec --format=PostgreSQL tests/data/railway.shp
 Write tables with enumeration values
 
 ```
-usage: ogr write-enums [-h] [--debug] [--format FORMAT] [--spec SPEC] [dest]
+usage: ogr write-enums [-h] [--debug] [--format FORMAT] [--config CONFIG]
+                       [dest]
 
 positional arguments:
   dest             output datasource
@@ -306,20 +308,21 @@ optional arguments:
   -h, --help       show this help message and exit
   --debug          Display debugging information
   --format FORMAT  Destination format
-  --spec SPEC      Transformation specification
+  --config CONFIG  OGR configuration
+
 ```
 
 Example:
 ```
-ogr write-enums --spec=roads.spec "PG:dbname=ogrili"
+ogr write-enums --config=roads.cfg "PG:dbname=ogrili"
 ```
 ### ogr transform
 
-Transform data source based on transformation specification
+Transform data source based on transformation configuration
 
 ```
 usage: ogr transform [-h] [--debug] [--reverse] [--format FORMAT]
-                     [--spec SPEC]
+                     [--config CONFIG]
                      [dest] source [layers [layers ...]]
 
 positional arguments:
@@ -332,12 +335,13 @@ optional arguments:
   --debug          Display debugging information
   --reverse        Reverse transformation
   --format FORMAT  Destination format
-  --spec SPEC      Transformation specification
+  --config CONFIG  OGR configuration
+
 ```
 
 Example:
 ```
-ogr transform --spec=roads.spec "PG:dbname=ogrili" RoadsExdm2ien.xml
+ogr transform --config=roads.cfg "PG:dbname=ogrili" RoadsExdm2ien.xml
 ```
 
 

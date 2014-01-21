@@ -27,7 +27,7 @@ from qgis.core import QgsMessageLog
 from ui_interlis import Ui_Interlis
 import os.path
 import tempfile
-from ogrtools.ogrtransform.spec import Spec
+from ogrtools.ogrtransform.ogrconfig import OgrConfig
 from ogrtools.ogrtransform.transformation import Transformation
 
 
@@ -116,10 +116,10 @@ class InterlisDialog(QtGui.QDialog):
         format = 'PostgreSQL'
         ilids = self.ui.mDataLineEdit.text() + ',' + self.ui.mModelLineEdit.text()
         QgsMessageLog.logMessage(ilids, "Interlis", QgsMessageLog.INFO)
-        spec = os.path.join(tempfile.gettempdir(), "spec.json")
-        QgsMessageLog.logMessage(spec, "Interlis", QgsMessageLog.INFO)
-        trans = Spec(ds=ilids, model=self.ui.mModelLineEdit.text())
-        specjson = trans.generate_spec(format, outfile=spec, layer_list=[])
-        QgsMessageLog.logMessage(specjson, "Interlis", QgsMessageLog.INFO)
-        trans = Transformation(spec, ilids)
+        ogrconfig = os.path.join(tempfile.gettempdir(), "ogrconfig.json")
+        QgsMessageLog.logMessage(ogrconfig, "Interlis", QgsMessageLog.INFO)
+        trans = OgrConfig(ds=ilids, model=self.ui.mModelLineEdit.text())
+        cfgjson = trans.generate_config(format, outfile=ogrconfig, layer_list=[])
+        QgsMessageLog.logMessage(cfgjson, "Interlis", QgsMessageLog.INFO)
+        trans = Transformation(ogrconfig, ilids)
         trans.transform(dest=self.ogrDs(), debug=True)

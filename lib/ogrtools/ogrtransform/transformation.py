@@ -1,6 +1,6 @@
 import tempfile
+from ogrconfig import OgrConfig
 from ..pyogr.ogr2ogr import ogr2ogr
-from ..ogrtransform.spec import Spec
 from ..interlis.ilismeta import prettify
 try:
     from osgeo import ogr
@@ -12,8 +12,8 @@ except ImportError:
 
 class Transformation:
 
-    def __init__(self, spec, ds=None):
-        self._trans = Spec(ds=ds, spec=spec)
+    def __init__(self, config, ds=None):
+        self._trans = OgrConfig(ds=ds, config=config)
 
     def transform(self, dest, format=None, debug=False):
         vrt = self._trans.generate_vrt()
