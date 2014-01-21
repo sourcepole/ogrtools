@@ -6,6 +6,7 @@ def test_generate_usage_markdown():
     ogr_help = os.popen("PYTHONPATH=lib bin/ogr --help").read()
     ogr_write_enums = os.popen("PYTHONPATH=lib bin/ogr write-enums -h").read()
     ogr_transform = os.popen("PYTHONPATH=lib bin/ogr transform -h").read()
+    vrt = os.popen("PYTHONPATH=lib bin/ogr vrt tests/data/osm/railway.shp").read()
     config_example = """
 {
   "comment": "// OGR transformation specification",
@@ -159,19 +160,7 @@ Example:
 ogr vrt tests/data/railway.shp
 ```
 ```
-<OGRVRTDataSource>
-  <OGRVRTLayer name="railway">
-    <SrcDataSource relativeToVRT="0" shared="1">tests/data/railway.shp</SrcDataSource>
-    <SrcLayer>railway</SrcLayer>
-    <GeometryType>wkbLineString</GeometryType>
-    <LayerSRS>GEOGCS[&quot;GCS_WGS_1984&quot;,DATUM[&quot;WGS_1984&quot;,SPHEROID[&quot;WGS_84&quot;,6378137,298.257223563]],PRIMEM[&quot;Greenwich&quot;,0],UNIT[&quot;Degree&quot;,0.017453292519943295]]</LayerSRS>
-    <Field name="type" type="String" src="type" width="255"/>
-    <Field name="osm_id" type="Real" src="osm_id" width="11"/>
-    <Field name="lastchange" type="Date" src="lastchange" width="10"/>
-    <Field name="name" type="String" src="name" width="255"/>
-    <Field name="keyvalue" type="String" src="keyvalue" width="80"/>
-  </OGRVRTLayer>
-</OGRVRTDataSource>
+{vrt}
 ```
 
 ### ogr genconfig
@@ -217,6 +206,7 @@ ogr transform --config=roads.cfg "PG:dbname=ogrili" RoadsExdm2ien.xml
 ```
     """
     print template.format(ogr_help=ogr_help,
+        vrt=vrt,
         config_example=config_example,
         ogr_write_enums=ogr_write_enums,
         ogr_transform=ogr_transform

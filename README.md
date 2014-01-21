@@ -227,7 +227,7 @@ ogr vrt tests/data/railway.shp
 ```
 <OGRVRTDataSource>
   <OGRVRTLayer name="railway">
-    <SrcDataSource relativeToVRT="0" shared="1">tests/data/railway.shp</SrcDataSource>
+    <SrcDataSource relativeToVRT="0" shared="1">tests/data/osm/railway.shp</SrcDataSource>
     <SrcLayer>railway</SrcLayer>
     <GeometryType>wkbLineString</GeometryType>
     <LayerSRS>GEOGCS[&quot;GCS_WGS_1984&quot;,DATUM[&quot;WGS_1984&quot;,SPHEROID[&quot;WGS_84&quot;,6378137,298.257223563]],PRIMEM[&quot;Greenwich&quot;,0],UNIT[&quot;Degree&quot;,0.017453292519943295]]</LayerSRS>
@@ -238,6 +238,7 @@ ogr vrt tests/data/railway.shp
     <Field name="keyvalue" type="String" src="keyvalue" width="80"/>
   </OGRVRTLayer>
 </OGRVRTDataSource>
+
 ```
 
 ### ogr genconfig
@@ -256,7 +257,7 @@ ogr genconfig --format=PostgreSQL tests/data/railway.shp
 ```
 
 {
-  "comment": "// OGR transformation specification", 
+  "comment": "// OGR transformation specification",
   "layers": {
     "railway": {
       "fields": {
@@ -342,7 +343,6 @@ optional arguments:
 Example:
 ```
 ogr transform --config=roads.cfg "PG:dbname=ogrili" RoadsExdm2ien.xml
-```
 
 
 ogrprocessing QGIS plugin
