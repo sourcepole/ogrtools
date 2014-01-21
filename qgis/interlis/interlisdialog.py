@@ -22,8 +22,13 @@
 
 from PyQt4 import QtGui
 from PyQt4.QtCore import pyqtSignature, QSettings, QFileInfo
-from PyQt4.QtGui import QFileDialog, QDialogButtonBox
+from PyQt4.QtGui import QFileDialog
+from qgis.core import QgsMessageLog
 from ui_interlis import Ui_Interlis
+import os.path
+import tempfile
+from ogrtools.ogrtransform.spec import Spec
+from ogrtools.ogrtransform.transformation import Transformation
 
 
 class InterlisDialog(QtGui.QDialog):
@@ -32,10 +37,17 @@ class InterlisDialog(QtGui.QDialog):
         # Set up the user interface from Designer.
         self.ui = Ui_Interlis()
         self.ui.setupUi(self)
+        #Not implemented yet:
+        self.ui.chkModelLookup.setEnabled(False)
+        self.ui.label_2.setEnabled(False)
+        self.ui.mConfigButton.setEnabled(False)
+        self.ui.mConfigLineEdit.setEnabled(False)
+        self.ui.cbResetData.setEnabled(False)
 
     def show(self):
         #Initialize DB connection drop-down
         self.ui.cbDbConnections.clear()
+        self.ui.cbDbConnections.addItem("QGIS Layer")
         self.ui.cbDbConnections.addItems(self.dbConnectionList())
         QtGui.QDialog.show(self)
 
@@ -83,7 +95,7 @@ class InterlisDialog(QtGui.QDialog):
             return  # dialog canceled
         settings.setValue("/qgis/plugins/interlis/datadir", QFileInfo(dataFilePath).absolutePath())
         self.ui.mDataLineEdit.insert(dataFilePath)
-        self.ui.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
+        self.ui.mImportButton.setEnabled(True)
 
     @pyqtSignature('')  # avoid two connections
     def on_mModelFileButton_clicked(self):
@@ -95,3 +107,19 @@ class InterlisDialog(QtGui.QDialog):
             return  # dialog canceled
         settings.setValue("/qgis/plugins/interlis/modeldir", QFileInfo(modelFilePath).absolutePath())
         self.ui.mModelLineEdit.insert(modelFilePath)
+
+    @pyqtSignature('')  # avoid two connections
+    def on_mImportButton_clicked(self):
+        self.importtodb()
+
+    def importtodb(self):
+        format = 'PostgreSQL'
+        ilids = self.ui.mDataLineEdit.text() + ',' + self.ui.mModelLineEdit.text()
+        QgsMessageLog.logMessage(ilids, "Interlis", QgsMessageLog.INFO)
+        spec = os.path.join(tempfile.gettempdir(), "spec.json")
+        QgsMessageLog.logMessage(spec, "Interlis", QgsMessageLog.INFO)
+        trans = Spec(ds=ilids, model=self.ui.mModelLineEdit.text())
+        specjson = trans.generate_spec(format, outfile=spec, layer_list=[])
+        QgsMessageLog.logMessage(specjson, "Interlis", QgsMessageLog.INFO)
+        trans = Transformation(spec, ilids)
+        trans.transform(dest=self.ogrDs(), debug=True)

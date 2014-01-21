@@ -28,9 +28,6 @@ import resources_rc
 # Import the code for the dialog
 from interlisdialog import InterlisDialog
 import os.path
-import tempfile
-from ogrtools.ogrtransform.spec import Spec
-from ogrtools.ogrtransform.transformation import Transformation
 
 
 class Interlis:
@@ -71,24 +68,9 @@ class Interlis:
         self.iface.removePluginMenu(u"&interlis", self.action)
         self.iface.removeToolBarIcon(self.action)
 
-    def importtodb(self):
-        format = 'PostgreSQL'
-        ilids = self.dlg.ui.mDataLineEdit.text() + ',' + self.dlg.ui.mModelLineEdit.text()
-        QgsMessageLog.logMessage(ilids, "Interlis", QgsMessageLog.INFO)
-        spec = os.path.join(tempfile.gettempdir(), "spec.json")
-        QgsMessageLog.logMessage(spec, "Interlis", QgsMessageLog.INFO)
-        trans = Spec(ds=ilids, model=self.dlg.ui.mModelLineEdit.text())
-        specjson = trans.generate_spec(format, outfile=spec, layer_list=[])
-        QgsMessageLog.logMessage(specjson, "Interlis", QgsMessageLog.INFO)
-        trans = Transformation(spec, ilids)
-        trans.transform(dest=self.dlg.ogrDs(), debug=True)
-
     # run method that performs all the real work
     def run(self):
         # show the dialog
         self.dlg.show()
         # Run the dialog event loop
-        result = self.dlg.exec_()
-        # See if OK was pressed
-        if result == QDialog.Accepted:
-            self.importtodb()
+        self.dlg.exec_()

@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>406</width>
-    <height>287</height>
+    <height>354</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Interlis</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_4">
+  <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="enabled">
@@ -22,12 +22,127 @@
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="importtab">
+     <widget class="QWidget" name="transfertab">
       <attribute name="title">
-       <string>Import</string>
+       <string>Import/Export</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_2">
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="mDataLineEdit"/>
+       </item>
+       <item row="4" column="2">
+        <widget class="QPushButton" name="mConfigButton">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>...</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>OGR Config.:</string>
+         </property>
+         <property name="buddy">
+          <cstring>mConfigLineEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="mModelLineEdit"/>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Modell Lookup</string>
+         </property>
+         <property name="buddy">
+          <cstring>chkModelLookup</cstring>
+         </property>
+        </widget>
+       </item>
        <item row="3" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Speicherort:</string>
+         </property>
+         <property name="buddy">
+          <cstring>cbDbConnections</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1" alignment="Qt::AlignVCenter">
+        <widget class="QComboBox" name="cbDbConnections">
+         <item>
+          <property name="text">
+           <string>QGIS Layers</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="mDataFileLabel">
+         <property name="text">
+          <string>Transferfile:</string>
+         </property>
+         <property name="buddy">
+          <cstring>mDataLineEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="QPushButton" name="mModelFileButton">
+         <property name="text">
+          <string>...</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QPushButton" name="mDataFileButton">
+         <property name="text">
+          <string>...</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QCheckBox" name="chkModelLookup">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QLineEdit" name="mConfigLineEdit"/>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="mModelFileLabel">
+         <property name="text">
+          <string>IlisMeta Modell:</string>
+         </property>
+         <property name="buddy">
+          <cstring>mModelLineEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0" colspan="3">
         <widget class="QFrame" name="frame">
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
@@ -36,125 +151,57 @@
           <enum>QFrame::Raised</enum>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
-          <item row="1" column="0">
-           <widget class="QPushButton" name="pushButton_2">
+          <item row="2" column="1" rowspan="2">
+           <widget class="QPushButton" name="mExportButton">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
-             <string>Import Enums</string>
+             <string>Export</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item row="0" column="0">
+           <widget class="QPushButton" name="mSchemaButton">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>Create Schema</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="2">
            <widget class="QDialogButtonBox" name="buttonBox">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
             <property name="standardButtons">
-             <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+             <set>QDialogButtonBox::Close</set>
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <spacer name="verticalSpacer">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
+          <item row="2" column="0" rowspan="2">
+           <widget class="QPushButton" name="mImportButton">
+            <property name="enabled">
+             <bool>false</bool>
             </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
+            <property name="text">
+             <string>Import</string>
             </property>
-           </spacer>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="cbResetData">
+            <property name="text">
+             <string>Daten ersetzen</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
        </item>
-       <item row="0" column="0">
-        <layout class="QGridLayout" name="gridLayout">
-         <item row="0" column="0">
-          <widget class="QLabel" name="mDataFileLabel">
-           <property name="text">
-            <string>Data file:</string>
-           </property>
-           <property name="buddy">
-            <cstring>mDataLineEdit</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLineEdit" name="mDataLineEdit"/>
-         </item>
-         <item row="4" column="1">
-          <widget class="QComboBox" name="cbDbConnections"/>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="mModelFileLabel">
-           <property name="text">
-            <string>IlisMeta Model:</string>
-           </property>
-           <property name="buddy">
-            <cstring>mModelLineEdit</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QPushButton" name="mDataFileButton">
-           <property name="text">
-            <string>...</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QLineEdit" name="mModelLineEdit"/>
-         </item>
-         <item row="2" column="2">
-          <widget class="QPushButton" name="mModelFileButton">
-           <property name="text">
-            <string>...</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="0">
-          <widget class="QLabel" name="label">
-           <property name="text">
-            <string>Database:</string>
-           </property>
-           <property name="buddy">
-            <cstring>cbDbConnections</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="label_2">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>Model Lookup</string>
-           </property>
-           <property name="buddy">
-            <cstring>chkModelLookup</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QCheckBox" name="chkModelLookup">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
       </layout>
-     </widget>
-     <widget class="QWidget" name="exporttab">
-      <attribute name="title">
-       <string>Export</string>
-      </attribute>
      </widget>
      <widget class="QWidget" name="settingstab">
       <attribute name="title">
@@ -219,6 +266,23 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>mDataFileButton</tabstop>
+  <tabstop>mModelFileButton</tabstop>
+  <tabstop>mSchemaButton</tabstop>
+  <tabstop>mImportButton</tabstop>
+  <tabstop>mExportButton</tabstop>
+  <tabstop>buttonBox</tabstop>
+  <tabstop>mConfigButton</tabstop>
+  <tabstop>mConfigLineEdit</tabstop>
+  <tabstop>chkModelLookup</tabstop>
+  <tabstop>lineEdit</tabstop>
+  <tabstop>lineEdit_2</tabstop>
+  <tabstop>cbDbConnections</tabstop>
+  <tabstop>mDataLineEdit</tabstop>
+  <tabstop>mModelLineEdit</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
