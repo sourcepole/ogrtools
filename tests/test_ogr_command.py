@@ -6,9 +6,8 @@ def test_generate_usage_markdown():
     ogr_help = os.popen("PYTHONPATH=lib bin/ogr --help").read()
     ogr_write_enums = os.popen("PYTHONPATH=lib bin/ogr write-enums -h").read()
     ogr_transform = os.popen("PYTHONPATH=lib bin/ogr transform -h").read()
-    vrt = os.popen("PYTHONPATH=lib bin/ogr vrt tests/data/osm/railway.shp").read()
-    config_example = """
-{
+    vrt = os.popen("PYTHONPATH=lib bin/ogr vrt tests/data/osm/railway.shp 2>&1").read()
+    config_example = """{
   "comment": "// OGR transformation specification",
   "layers": {
     "railway": {
@@ -192,6 +191,7 @@ Example:
 ```
 ogr write-enums --config=roads.cfg "PG:dbname=ogrili"
 ```
+
 ### ogr transform
 
 Transform data source based on transformation configuration
@@ -203,8 +203,7 @@ Transform data source based on transformation configuration
 Example:
 ```
 ogr transform --config=roads.cfg "PG:dbname=ogrili" RoadsExdm2ien.xml
-```
-    """
+```"""
     print template.format(ogr_help=ogr_help,
         vrt=vrt,
         config_example=config_example,

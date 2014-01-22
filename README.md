@@ -239,6 +239,7 @@ ogr vrt tests/data/railway.shp
   </OGRVRTLayer>
 </OGRVRTDataSource>
 
+
 ```
 
 ### ogr genconfig
@@ -255,7 +256,6 @@ Example:
 ogr genconfig --format=PostgreSQL tests/data/railway.shp
 ```
 ```
-
 {
   "comment": "// OGR transformation specification",
   "layers": {
@@ -317,6 +317,7 @@ Example:
 ```
 ogr write-enums --config=roads.cfg "PG:dbname=ogrili"
 ```
+
 ### ogr transform
 
 Transform data source based on transformation configuration
@@ -343,7 +344,7 @@ optional arguments:
 Example:
 ```
 ogr transform --config=roads.cfg "PG:dbname=ogrili" RoadsExdm2ien.xml
-
+```
 
 ogrprocessing QGIS plugin
 -------------------------
