@@ -2,7 +2,7 @@ from ogrtools.pyogr.ogrvrt import ogr2vrt
 
 
 def test_ogrvrt():
-    expectedvrt = """<OGRVRTDataSource>
+    expected = """<OGRVRTDataSource>
   <OGRVRTLayer name="railway">
     <SrcDataSource relativeToVRT="0" shared="1">tests/data/osm/railway.shp</SrcDataSource>
     <SrcLayer>railway</SrcLayer>
@@ -17,4 +17,4 @@ def test_ogrvrt():
 </OGRVRTDataSource>
 """
     vrt = ogr2vrt(infile="tests/data/osm/railway.shp")
-    assert vrt == expectedvrt
+    assert vrt == expected
