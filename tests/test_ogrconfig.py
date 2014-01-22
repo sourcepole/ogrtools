@@ -162,7 +162,7 @@ def test_enums():
     cfg = OgrConfig(ds="./tests/data/ili/roads23.xtf,./tests/data/ili/RoadsExdm2ien.imd", model="./tests/data/ili/RoadsExdm2ien.imd")
     cfgjson = cfg.generate_config(dst_format='PostgreSQL')
     expected = """"enums": {
-    "enum3_LArt": {
+    "enum3_lart": {
       "src_name": "RoadsExdm2ben.Roads.LAttrs.LArt", 
       "values": [
         {

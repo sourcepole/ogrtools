@@ -80,6 +80,7 @@ class OgrConfig:
             enums = src_format_handler.extract_enums(self._model)
             for src_name, values in enums.items():
                 dst_name = dst_format_handler.shorten_name(src_name, 'enum')
+                dst_name = dst_format_handler.launder_name(dst_name)
                 enum_tables[dst_name] = {
                     'src_name': src_name,
                     'values': values
