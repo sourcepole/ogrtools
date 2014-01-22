@@ -80,10 +80,10 @@ usage: ogr info [-h] source [layers [layers ...]]
 
 Example:
 ```
-ogr info tests/data/railway.shp
+ogr info tests/data/osm/railway.shp
 ```
 ```
-INFO: Open of `tests/data/railway.shp'
+INFO: Open of `tests/data/osm/railway.shp'
       using driver `ESRI Shapefile' successful.
 
 Layer name: railway
@@ -113,10 +113,10 @@ usage: ogr sql [-h] source sql-query
 
 Example:
 ```
-ogr sql tests/data/railway.shp "SELECT type,osm_id,lastchange FROM railway WHERE lastchange < '2008/04/01'"
+ogr sql tests/data/osm/railway.shp "SELECT type,osm_id,lastchange FROM railway WHERE lastchange < '2008/04/01'"
 ```
 ```
-INFO: Open of `tests/data/railway.shp'
+INFO: Open of `tests/data/osm/railway.shp'
       using driver `ESRI Shapefile' successful.
 
 Layer name: railway
@@ -156,7 +156,7 @@ usage: ogr vrt [-h] source [layers [layers ...]]
 
 Example:
 ```
-ogr vrt tests/data/railway.shp
+ogr vrt tests/data/osm/railway.shp
 ```
 ```
 {vrt}
@@ -173,7 +173,7 @@ usage: ogr genconfig [-h] [--format FORMAT] [--model MODEL]
 
 Example:
 ```
-ogr genconfig --format=PostgreSQL tests/data/railway.shp
+ogr genconfig --format=PostgreSQL tests/data/osm/railway.shp
 ```
 ```
 {config_example}
