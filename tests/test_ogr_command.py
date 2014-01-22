@@ -6,7 +6,7 @@ def test_generate_usage_markdown():
     ogr_help = os.popen("PYTHONPATH=lib bin/ogr --help").read()
     ogr_write_enums = os.popen("PYTHONPATH=lib bin/ogr write-enums -h").read()
     ogr_transform = os.popen("PYTHONPATH=lib bin/ogr transform -h").read()
-    vrt = os.popen("PYTHONPATH=lib bin/ogr vrt tests/data/osm/railway.shp 2>&1").read()
+    vrt = os.popen("PYTHONPATH=lib bin/ogr vrt tests/data/osm/railway.shp").read()
     config_example = """{
   "comment": "// OGR transformation specification",
   "layers": {

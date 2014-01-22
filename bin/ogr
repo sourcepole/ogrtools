@@ -11,39 +11,46 @@ from ogrtools.ogrtransform.transformation import Transformation
 
 def info(args):
     if not args.layers:
-        return ogrinfo(bReadOnly=True, bSummaryOnly=True, bAllLayers=True,
-                       pszDataSource=args.source)
+        print ogrinfo(bReadOnly=True, bSummaryOnly=True, bAllLayers=True,
+                      pszDataSource=args.source)
     else:
-        return ogrinfo(bReadOnly=True, bSummaryOnly=True,
-                       pszDataSource=args.source, papszLayers=args.layers)
+        print ogrinfo(bReadOnly=True, bSummaryOnly=True,
+                      pszDataSource=args.source, papszLayers=args.layers)
+    return 0
 
 
 def formats(args):
-    return ogr_formats()
+    print ogr_formats()
+    return 0
 
 
 def version(args):
-    return ogr_version_info()
+    print ogr_version_info()
+    return 0
 
 
 def sql(args):
-    return ogrinfo(pszDataSource=args.source, pszSQLStatement=args.sql)
+    print ogrinfo(pszDataSource=args.source, pszSQLStatement=args.sql)
+    return 0
 
 
 def vrt(args):
-    return ogr2vrt(infile=args.source, layer_list=args.layers)
+    print ogr2vrt(infile=args.source, layer_list=args.layers)
+    return 0
 
 
 def genconfig(args):
     trans = OgrConfig(ds=args.source, model=args.model)
-    return trans.generate_config(args.format, layer_list=args.layers)
+    print trans.generate_config(args.format, layer_list=args.layers)
+    return 0
 
 
 def write_enums(args):
     if args.debug:
         os.environ["CPL_DEBUG"] = "on"
     trans = Transformation(args.config)
-    return trans.write_enum_tables(args.dest, args.format, args.debug)
+    print trans.write_enum_tables(args.dest, args.format, args.debug)
+    return 0
 
 
 def transform(args):
@@ -54,6 +61,7 @@ def transform(args):
         trans.transform_reverse(args.dest, args.format, args.debug)
     else:
         trans.transform(args.dest, args.format, args.debug)
+    return 0
 
 
 def main():
