@@ -35,6 +35,9 @@ class FormatHandler:
         self._name_seq = self._name_seq + 1
         return short_name
 
+    def layer_name(self, name):
+        return name
+
 
 class PgFormatHandler(FormatHandler):
     #PG default name limit is 63 chars
@@ -67,6 +70,14 @@ class IliFormatHandler(FormatHandler):
         return extract_enums_json(model)
 
 
+class GeoJSONFormatHandler(FormatHandler):
+    def __init__(self):
+        FormatHandler.__init__(self)
+
+    def layer_name(self, name):
+        return "OGRGeoJSON"
+
+
 class FormatHandlerRegistry:
     def __init__(self):
         self._handlers = {}
@@ -74,6 +85,7 @@ class FormatHandlerRegistry:
         self.register('PostgreSQL', PgFormatHandler())
         self.register('Interlis 1', IliFormatHandler())
         self.register('Interlis 2', IliFormatHandler())
+        self.register('GeoJSON', GeoJSONFormatHandler())
 
     def register(self, format, handler):
         self._handlers[format] = handler

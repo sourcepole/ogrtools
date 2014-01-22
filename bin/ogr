@@ -58,9 +58,9 @@ def transform(args):
         os.environ["CPL_DEBUG"] = "on"
     trans = Transformation(args.config, args.source)
     if args.reverse:
-        trans.transform_reverse(args.dest, args.format, args.debug)
+        trans.transform_reverse(args.dest, args.format, layers=args.layers, debug=args.debug)
     else:
-        trans.transform(args.dest, args.format, args.debug)
+        trans.transform(args.dest, args.format, layers=args.layers, debug=args.debug)
     return 0
 
 

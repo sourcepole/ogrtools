@@ -1,0 +1,13 @@
+{
+"type": "FeatureCollection",
+                                                                                
+"features": [
+{ "type": "Feature", "properties": { "tid": "8", "precision": "precise", "street_id": 1 }, "geometry": { "type": "LineString", "coordinates": [ [ 55.6, 37.649 ], [ 15.573, 25.785 ] ] } },
+{ "type": "Feature", "properties": { "tid": "9", "precision": "precise", "street_id": 1 }, "geometry": { "type": "LineString", "coordinates": [ [ 55.6, 37.649 ], [ 94.99, 50.109 ] ] } },
+{ "type": "Feature", "properties": { "tid": "10", "precision": "precise", "street_id": 1 }, "geometry": { "type": "LineString", "coordinates": [ [ 94.99, 50.109 ], [ 101.099, 52.279 ] ] } },
+{ "type": "Feature", "properties": { "tid": "11", "precision": "precise", "street_id": 1 }, "geometry": { "type": "LineString", "coordinates": [ [ 101.099, 52.279 ], [ 126.1, 62.279 ] ] } },
+{ "type": "Feature", "properties": { "tid": "12", "precision": "precise", "street_id": 2 }, "geometry": { "type": "LineString", "coordinates": [ [ 94.99, 50.109 ], [ 89.504, 65.795 ], [ 83.594, 75.598 ], [ 71.774, 80.712 ], [ 11.423, 91.154 ] ] } },
+{ "type": "Feature", "properties": { "tid": "13", "precision": "unprecise", "street_id": 3 }, "geometry": { "type": "LineString", "coordinates": [ [ 101.099, 52.279 ], [ 107.4, 14.603 ] ] } },
+{ "type": "Feature", "properties": { "tid": "15", "precision": "unprecise", "street_id": 4 }, "geometry": { "type": "LineString", "coordinates": [ [ 55.6, 37.649 ], [ 49.359, 56.752 ] ] } }
+]
+}

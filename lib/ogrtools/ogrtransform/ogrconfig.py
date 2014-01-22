@@ -158,6 +158,11 @@ class OgrConfig:
     def src_format(self):
         return self._config['src_format']
 
+    def ds_format(self):
+        if self._ds is None:
+            self.open()
+        return self._ds.GetDriver().GetName()
+
     def dst_format(self):
         return self._config['dst_format']
 
@@ -173,7 +178,10 @@ class OgrConfig:
             options.append(key + "=" + value)
         return options
 
-    def generate_vrt(self):
+    def generate_vrt(self, dst_format=None):
+        #if dst_format is None:
+        #    dst_format = self.dst_format()
+        #dst_format_handler = OgrConfig.format_handlers.handler(dst_format)
         xml = ElementTree.Element('OGRVRTDataSource')
         for layer_name, cfglayer in self._config['layers'].items():
             layer_node = ElementTree.SubElement(xml, "OGRVRTLayer")
@@ -192,12 +200,14 @@ class OgrConfig:
                 node.set('src', cfgfield['src'])
                 node.set('type', cfgfield['type'])
                 if 'width' in cfgfield:
-                    node.set('width', cfgfield['width'])
+                    node.set('width', str(cfgfield['width']))
                 if 'precision' in cfgfield:
-                    node.set('precision', cfgfield['precision'])
+                    node.set('precision', str(cfgfield['precision']))
         return ElementTree.tostring(xml, 'utf-8')
 
-    def generate_reverse_vrt(self):
+    def generate_reverse_vrt(self, dst_format=None):
+        src_format = self.ds_format()
+        src_format_handler = OgrConfig.format_handlers.handler(src_format)
         xml = ElementTree.Element('OGRVRTDataSource')
         for layer_name, cfglayer in self._config['layers'].items():
             layer_node = ElementTree.SubElement(xml, "OGRVRTLayer")
@@ -207,13 +217,13 @@ class OgrConfig:
             node.set('shared', '1')
             node.text = self._ds_fn
             node = ElementTree.SubElement(layer_node, "SrcLayer")
-            node.text = layer_name
+            node.text = src_format_handler.layer_name(layer_name)
             node = ElementTree.SubElement(layer_node, "GeometryType")
             node.text = 'wkb' + cfglayer['geometry_type']
             for dst_name, cfgfield in cfglayer['fields'].items():
                 node = ElementTree.SubElement(layer_node, "Field")
                 node.set('name', cfgfield['src'])
-                node.set('type', cfgfield['type'])
+                #FIXME: original type, not node.set('type', cfgfield['type'])
                 node.set('src', dst_name)
         return ElementTree.tostring(xml, 'utf-8')
 

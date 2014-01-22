@@ -15,8 +15,8 @@ class Transformation:
     def __init__(self, config, ds=None):
         self._trans = OgrConfig(ds=ds, config=config)
 
-    def transform(self, dest, format=None, debug=False):
-        vrt = self._trans.generate_vrt()
+    def transform(self, dest, format=None, layers=[], debug=False):
+        vrt = self._trans.generate_vrt(dst_format=format)
         if debug:
             print prettify(vrt)
         ds = self.tmp_datasource(vrt)
@@ -28,17 +28,17 @@ class Transformation:
         if dst_format == self._trans.dst_format():
             lco = self._trans.layer_creation_options()
         ogr2ogr(pszFormat=str(dst_format), pszDataSource=ds, pszDestDataSource=dest,
-                bOverwrite=True, papszDSCO=dsco, papszLCO=lco)  # poOutputSRS=srs, poSourceSRS=srs
+                bOverwrite=True, papszDSCO=dsco, papszLCO=lco, papszLayers=layers)  # poOutputSRS=srs, poSourceSRS=srs
         self.free_tmp_datasource()
 
-    def transform_reverse(self, dest, format=None, debug=False):
-        vrt = self._trans.generate_reverse_vrt()
+    def transform_reverse(self, dest, format=None, layers=[], debug=False):
+        vrt = self._trans.generate_reverse_vrt(dst_format=format)
         if debug:
             print prettify(vrt)
         ds = self.tmp_datasource(vrt)
         dst_format = format or self._trans.src_format()
         ogr2ogr(pszFormat=str(dst_format), pszDataSource=ds,
-                pszDestDataSource=dest, bOverwrite=True)
+                pszDestDataSource=dest, bOverwrite=True, papszLayers=layers)
         self.free_tmp_datasource()
 
     def write_enum_tables(self, dest, format=None, debug=False):
