@@ -66,6 +66,8 @@ class OgrConfig:
 
     def open(self):
         self._ds = ogr.Open(self._ds_fn, update=False)
+        if self._ds is None:
+            raise IOError("Couldn't open file: %s" % self._ds_fn)
         return self._ds
 
     def close(self):
@@ -88,9 +90,10 @@ class OgrConfig:
         if self._ds is None:
             self.open()
 
-        if len(layer_list) == 0:
+        layer_names = list(layer_list)
+        if len(layer_names) == 0:
             for layer in self._ds:
-                layer_list.append(layer.GetLayerDefn().GetName())
+                layer_names.append(layer.GetLayerDefn().GetName())
 
         src_format = self._ds.GetDriver().GetName()
         src_format_handler = OgrConfig.format_handlers.handler(src_format)
@@ -107,8 +110,10 @@ class OgrConfig:
         layers = {}
         self._config['layers'] = layers
 
-        for name in layer_list:
+        for name in layer_names:
             layer = self._ds.GetLayerByName(name)
+            if layer is None:
+                raise ValueError("Layer '%s' not found" % name)
             layerdef = layer.GetLayerDefn()
 
             cfglayer = {}
