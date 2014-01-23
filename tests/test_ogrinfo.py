@@ -21,6 +21,6 @@ lastchange: Date (10.0)
 name: String (255.0)
 keyvalue: String (80.0)
 """
-    info = ogrinfo(bReadOnly=True, bSummaryOnly=True, bAllLayers=True,
-                  pszDataSource="tests/data/osm/railway.shp")
+    info = ogrinfo(readonly=True, summaryonly=True, all_layers=True,
+                   datasource_name="tests/data/osm/railway.shp")
     assert info == 0  # should eventually be info == expected (ogrinfo prints on stdout)

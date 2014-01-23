@@ -43,11 +43,9 @@ except:
     import gdal
     import ogr
 
-bReadOnly = False
 bVerbose = True
 bSummaryOnly = False
 nFetchFID = ogr.NullFID
-papszOptions = None
 
 def EQUAL(a, b):
     return a.lower() == b.lower()
@@ -58,11 +56,9 @@ def EQUAL(a, b):
 
 def main(argv = None):
     
-    global bReadOnly
-    global bVerbose
-    global bSummaryOnly
-    global nFetchFID
-    global papszOptions
+    bVerbose = True
+    bSummaryOnly = False
+    nFetchFID = ogr.NullFID
     
     pszWHERE = None
     pszDataSource = None
@@ -163,6 +159,72 @@ def main(argv = None):
 
     if pszDataSource is None:
         return Usage()
+
+    return ogrinfo(bReadOnly,
+        bVerbose,
+        bSummaryOnly,
+        nFetchFID,
+        pszWHERE,
+        pszDataSource,
+        papszLayers,
+        poSpatialFilter,
+        nRepeatCount,
+        bAllLayers,
+        pszSQLStatement,
+        pszDialect,
+        options,
+        pszGeomField)
+
+
+def ogr_formats():
+    for iDriver in range(ogr.GetDriverCount()):
+        print( "  -> %s" % ogr.GetDriver(iDriver).GetName() )
+
+def ogr_version_info():
+    try:
+        return gdal.VersionInfo('RELEASE_NAME')
+    except:
+        return "Unknown"
+
+def ogr_version_num():
+    try:
+        return int(gdal.VersionInfo('VERSION_NUM'))
+    except:
+        return 1000
+
+def ogrinfo(readonly = False,
+            verbose = True,
+            summaryonly = False,
+            fetch_fid = ogr.NullFID,
+            where = None,
+            datasource_name = None,
+            layers = None,
+            spatial_filter = None,
+            repeat_count = 1,
+            all_layers = False,
+            sql_statement = None,
+            dialect = None,
+            options = {},
+            geomfield = None):
+
+    global bVerbose
+    global bSummaryOnly
+    global nFetchFID
+
+    bReadOnly = readonly
+    bVerbose = verbose
+    bSummaryOnly = summaryonly
+    nFetchFID = fetch_fid
+    pszWHERE = where
+    pszDataSource = datasource_name
+    bReadOnly = readonly
+    papszLayers = layers
+    poSpatialFilter = spatial_filter
+    nRepeatCount = repeat_count
+    bAllLayers = all_layers
+    pszSQLStatement = sql_statement
+    pszDialect = dialect
+    pszGeomField = geomfield
 
 #/* -------------------------------------------------------------------- */
 #/*      Open data source.                                               */
@@ -446,7 +508,7 @@ def DumpReadableFeature( poFeature, options = None ):
     if poFeature.GetStyleString() is not None:
 
         if 'DISPLAY_STYLE' not in options or EQUAL(options['DISPLAY_STYLE'], 'yes'):
-            print("  Style = %s" % GetStyleString() )
+            print("  Style = %s" % poFeature.GetStyleString() )
 
     nGeomFieldCount = poFeature.GetGeomFieldCount()
     if nGeomFieldCount > 0:
