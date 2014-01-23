@@ -52,12 +52,11 @@ def test_geojson_reverse_to_ili():
 <RoadsExdm2ien.RoadsExtended.StreetAxis TID="8">
 <Geometry>
 <POLYLINE>
-<COORD><C1>55.6></C1><C2>37.649></C2></COORD>
-<COORD><C1>15.573></C1><C2>25.785></C2></COORD>
+<COORD><C1>55.6</C1><C2>37.649</C2></COORD>
+<COORD><C1>15.573</C1><C2>25.785</C2></COORD>
 </POLYLINE>
 </Geometry>
 <Street>1</Street>
 <Precision>precise</Precision>
 </RoadsExdm2ien.RoadsExtended.StreetAxis>"""
-    print result
     assert expected in result
