@@ -173,7 +173,6 @@ def main(args = None, progress_func = TermProgress, progress_data = None):
     pfnProgress = None
     pProgressArg = None
     bClipSrc = False
-    bWrapDateline = False
     poClipSrc = None
     pszClipSrcDS = None
     pszClipSrcSQL = None
@@ -530,10 +529,112 @@ def main(args = None, progress_func = TermProgress, progress_data = None):
             print("FAILURE: cannot load dest clip geometry\n" )
             return Usage()
 
+    return ogr2ogr(
+        pszFormat,
+        pszDataSource,
+        pszDestDataSource,
+        papszLayers,
+        papszDSCO,
+        papszLCO,
+        bTransform,
+        bAppend,
+        bUpdate,
+        bOverwrite,
+        pszOutputSRSDef,
+        pszSourceSRSDef,
+        poOutputSRS,
+        bNullifyOutputSRS,
+        poSourceSRS,
+        pszNewLayerName,
+        pszWHERE,
+        poSpatialFilter,
+        pszSelect,
+        papszSelFields,
+        pszSQLStatement,
+        eGType,
+        bPromoteToMulti,
+        eGeomOp,
+        dfGeomOpParam,
+        papszFieldTypesToString,
+        bDisplayProgress,
+        progress_func,
+        progress_data,
+        bClipSrc,
+        poClipSrc,
+        pszClipSrcDS,
+        pszClipSrcSQL,
+        pszClipSrcLayer,
+        pszClipSrcWhere,
+        poClipDst,
+        pszClipDstDS,
+        pszClipDstSQL,
+        pszClipDstLayer,
+        pszClipDstWhere,
+        pszSrcEncoding,
+        pszDstEncoding,
+        bWrapDateline,
+        bExplodeCollections,
+        pszZField,
+        nCoordDim)
+
+def ogr2ogr(
+    pszFormat="ESRI Shapefile",
+    pszDataSource=None,
+    pszDestDataSource=None,
+    papszLayers=[],
+    papszDSCO=[],
+    papszLCO=[],
+    bTransform=False,
+    bAppend=False,
+    bUpdate=False,
+    bOverwrite=False,
+    pszOutputSRSDef=None,
+    pszSourceSRSDef=None,
+    poOutputSRS=None,
+    bNullifyOutputSRS = False,
+    poSourceSRS=None,
+    pszNewLayerName=None,
+    pszWHERE=None,
+    poSpatialFilter=None,
+    pszSelect=None,
+    papszSelFields=None,
+    pszSQLStatement=None,
+    eGType= -2,
+    bPromoteToMulti = False,
+    eGeomOp=GeomOperation.NONE,
+    dfGeomOpParam=0,
+    papszFieldTypesToString=[],
+    bDisplayProgress=False,
+    progress_func=None,
+    progress_data=None,
+    bClipSrc=False,
+    poClipSrc=None,
+    pszClipSrcDS=None,
+    pszClipSrcSQL=None,
+    pszClipSrcLayer=None,
+    pszClipSrcWhere=None,
+    poClipDst=None,
+    pszClipDstDS=None,
+    pszClipDstSQL=None,
+    pszClipDstLayer=None,
+    pszClipDstWhere=None,
+    pszSrcEncoding=None,
+    pszDstEncoding=None,
+    bWrapDateline=False,
+    bExplodeCollections=False,
+    pszZField=None,
+    nCoordDim=-1):
+
+    pfnProgress = None
+    pProgressArg = None
+
 #/* -------------------------------------------------------------------- */
 #/*      Open data source.                                               */
 #/* -------------------------------------------------------------------- */
-    poDS = ogr.Open( pszDataSource, False )
+    if isinstance(pszDataSource, basestring):
+        poDS = ogr.Open(pszDataSource, False)
+    else:
+        poDS = pszDataSource
 
 #/* -------------------------------------------------------------------- */
 #/*      Report failure                                                  */
