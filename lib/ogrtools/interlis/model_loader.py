@@ -1,7 +1,6 @@
 import os
+import tempfile
 import re
-import urllib2
-from xml.etree import ElementTree
 from java_exec import run_java
 
 
@@ -13,21 +12,8 @@ class IliModel:
 
     def __init__(self, name):
         self.name = name
-        self.version = None
-        self.path = None
-        self.local_filename = None
-
-    def load(self, repo):
-        if self.path is None:
-            print "Cannot load model '" + self.name + " with unkown path"
-            return
-
-        #TODO: lookup cache first
-        url = repo + self.path
-        print "Loading model '" + url + " ..."
-        fn = urllib2.urlopen(url)
-        #TODO: write in cache
-        return fn.read()
+        self.version = ""
+        self.uri = "http://interlis.sourcepole.ch/"
 
 
 class ModelLoader:
@@ -35,6 +21,7 @@ class ModelLoader:
 
     def __init__(self, fn):
         self._fn = fn
+        self._fmt = None
         self.models = None
 
     def detect_format(self):
@@ -54,9 +41,9 @@ class ModelLoader:
     def detect_models(self):
         """Find models in itf/xtf file"""
         self.models = None
-        fmt = self.detect_format()
+        self._fmt = self.detect_format()
         f = open(self._fn, "r")
-        if fmt == 'Interlis 1':
+        if self._fmt == 'Interlis 1':
             #Search for MODL xxx
             regex = re.compile(r'^MODL\s+(\w+)')
             for line in f:
@@ -64,7 +51,7 @@ class ModelLoader:
                 if m:
                     self.models = [IliModel(m.group(1))]
                     break
-        elif fmt == 'Interlis 2':
+        elif self._fmt == 'Interlis 2':
             #Search for <MODEL NAME="xxx"
             #Optimized for big files, but does't handle all cases
             self.models = []
@@ -83,62 +70,30 @@ class ModelLoader:
         f.close()
         return self.models
 
-    def repositories(self):
-        return ["http://models.interlis.ch/"]
+    def ilidirs(self):
+        return "%ILI_DIR;http://models.interlis.ch/;http://www.kogis.ch"
 
     def ili2c(self):
         return os.getenv("ILI2C", "ili2c.jar")
 
-    def lookup_model(self, model, repo):
-        url = repo + "ilimodels.xml"
-        print "Searching model '" + model.name + "' in " + url + " ..."
-        fn = urllib2.urlopen(url)
-        tree = ElementTree.parse(fn)
-        path = "xmlns:DATASECTION/xmlns:IliRepository09.RepositoryIndex/xmlns:IliRepository09.RepositoryIndex.ModelMetadata"
-        for node in tree.findall(path, NS):
-            name = node.find("xmlns:Name", NS)
-            if name is not None and name.text == model.name:
-                #TODO: compare Version
-                mpath = node.find("xmlns:File", NS)
-                if mpath is not None:
-                    model.path = mpath.text
-                    print "Found matching model."
-                    break
-        return model
-
-    def lookup_sites(self, model, repo):
-        model = self.lookup_model(model, repo)
-        if model is not None:
-            return model.load(repo)
-
-        #Check site
-        # url = repo + "ilisite.xml"
-        # print "Loading " + url + " ..."
-        # fn = urllib2.urlopen(url)
-        # tree = ElementTree.parse(fn)
-        # ns = {'xmlns': "http://www.interlis.ch/INTERLIS2.3"}
-
-        # parentsite = repo  # Should be in ilisite.xml according to spec
-        # peersites = []  # Not found in an existing ilisite.xml yet
-        # subsites = []
-        # path = "xmlns:DATASECTION/xmlns:IliSite09.SiteMetadata/xmlns:IliSite09.SiteMetadata.Site/xmlns:subsidiarySite/xmlns:IliSite09.RepositoryLocation_/xmlns:value"
-        # for location in tree.findall(path, NS):
-        #     subsites.append(location.text)
-        # return subsites
-
-    def load_models(self):
-        """Load models of itf/xtf from model repository"""
-        #http://www.interlis.ch/models/ModelRepository.pdf
+    def gen_lookup_ili(self):
         self.detect_models()
+        #if self._fmt == "Interlis 2":
+        ili = 'INTERLIS 2.3;\nMODEL Lookup AT "http://interlis.sourcepole.ch/" VERSION "" ='
         for model in self.models:
-            for repo in self.repositories():
-                print self.lookup_sites(model, repo)
+            ili += "  IMPORTS %s;\n" % model.name
+        ili += "END Lookup."
+        return ili
 
-        return None
-
-    def load_ilismeta_model(self):
-        #Call ilismeta service api with URL of ili model
-        return None
+    def create_ilismeta_model(self):
+        ili = self.gen_lookup_ili()
+        fh, ilifn = tempfile.mkstemp(suffix='.ili')
+        os.write(fh, ili)
+        os.close(fh)
+        imd = self._fn + '.imd'  # TODO: use main model as prefix
+        print self.convert_model([ilifn], imd)
+        os.remove(ilifn)
+        return imd
 
     def convert_model(self, ilifiles, outfile):
         """Convert ili model to ilismeta model."""
@@ -169,4 +124,4 @@ class ModelLoader:
         #-h|--help             Display this help text.
         #-u|--usage            Display short information about usage.
         #-v|--version          Display the version of ili2c.
-        return run_java(self.ili2c(), ["-oIMD", "--out", outfile] + ilifiles)
+        return run_java(self.ili2c(), ["-oIMD", "--ilidirs", "'" + self.ilidirs() + "'", "--out", outfile] + ilifiles)

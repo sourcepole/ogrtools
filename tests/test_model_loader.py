@@ -39,19 +39,7 @@ def test_detect_models_none():
     assert loader.detect_models() is None
 
 
-def xxtest_read_ilisite():
-    loader = ModelLoader("")
-    assert loader.lookup_sites("http://models.interlis.ch/") == [
-        'http://models.geo.admin.ch/',
-        'http://models.umleditor.org/', 'http://models.ikgeo.ch/']
-
-
-def test_model_loader():
-    loader = ModelLoader("./tests/data/ili/roads23.xtf")
-    print loader.load_models()
-
-
-def xxtest_model_conversion():
+def manualtest_model_conversion():
     loader = ModelLoader("")
     outfile = os.path.join(TEMPDIR, "tmpogrtools")
     loader.convert_model(["./tests/data/ili/Beispiel.ili"], outfile)
@@ -65,3 +53,16 @@ def xxtest_model_conversion():
         assert 'IlisMeta07.ModelData.Class TID="Test23_erweitert.FixpunkteKategorie1.LFP1"' in imd
         #Does include Test23.ili as well:
         assert 'IlisMeta07.ModelData.NumType TID="Test23.Genauigkeit"' in imd
+
+
+def test_lookup_ili():
+    loader = ModelLoader("./tests/data/ili/roads23.xtf")
+    assert "IMPORTS RoadsExdm2ben" in loader.gen_lookup_ili()
+
+
+def manualtest_ilismeta_from_xtf():
+    loader = ModelLoader("./tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.xtf")
+    outfile = loader.create_ilismeta_model()
+    with open(outfile) as file:
+        imd = file.read()
+        assert '<IlisMeta07.ModelData.Class TID="OeREBKRM09trsfr.Transferstruktur.ZustaendigeStelleGeometrie">' in imd
