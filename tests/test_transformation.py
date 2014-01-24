@@ -60,3 +60,17 @@ def test_geojson_reverse_to_ili():
 <Precision>precise</Precision>
 </RoadsExdm2ien.RoadsExtended.StreetAxis>"""
     assert expected in result
+
+
+def manualtest_ili_to_spatialite():
+    #ogr genconfig --format SQLite tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.xtf,tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.imd --model tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.imd >tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.cfg
+    trans = Transformation("tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.cfg",
+      "tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.xtf,tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.imd")
+    __, dstfile = tempfile.mkstemp()
+    os.remove(dstfile)
+    trans.transform(dstfile, "SQLite")
+    result = os.popen("echo .dump | sqlite3 %s" % dstfile).read()
+    print dstfile
+    #os.remove(dstfile)
+    #print result
+    assert False

@@ -59,6 +59,18 @@ class PgFormatHandler(FormatHandler):
         return {'SCHEMA': 'public'}
 
 
+class SpatiaLiteFormatHandler(FormatHandler):
+    def __init__(self):
+        FormatHandler.__init__(self)
+
+    def launder_name(self, src_name):
+        name = unicode(src_name).lower().encode('ascii', 'replace')
+        return re.compile("\W+", re.UNICODE).sub("_", name)
+
+    def default_ds_creation_options(self):
+        return {'SPATIALITE': 'YES'}
+
+
 class IliFormatHandler(FormatHandler):
     def __init__(self):
         FormatHandler.__init__(self)
@@ -83,6 +95,7 @@ class FormatHandlerRegistry:
         self._handlers = {}
         self.register('', FormatHandler())  # default
         self.register('PostgreSQL', PgFormatHandler())
+        self.register('SQLite', SpatiaLiteFormatHandler())
         self.register('Interlis 1', IliFormatHandler())
         self.register('Interlis 2', IliFormatHandler())
         self.register('GeoJSON', GeoJSONFormatHandler())
