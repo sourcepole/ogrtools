@@ -32,6 +32,8 @@ def test_detect_models_ili2():
     names = map(lambda model: model.name, models)
     assert names == [
         "CodeISO", "chGeoId10", "MultilingualText09", "OeREBKRM09", "OeREBKRM09vs", "OeREBKRM09trsfr"]
+    assert models[0].version == "20060808"
+    assert models[0].uri == "http://www.kogis.ch"
 
 
 def test_detect_models_none():

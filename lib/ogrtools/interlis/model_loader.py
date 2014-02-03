@@ -1,6 +1,8 @@
 import os
 import tempfile
+import mmap
 import re
+from xml.etree import ElementTree
 from java_exec import run_java
 
 
@@ -10,10 +12,10 @@ NS = {'xmlns': "http://www.interlis.ch/INTERLIS2.3"}
 class IliModel:
     """Metadata and link to model"""
 
-    def __init__(self, name):
+    def __init__(self, name, version="", uri="http://interlis.sourcepole.ch/"):
         self.name = name
-        self.version = ""
-        self.uri = "http://interlis.sourcepole.ch/"
+        self.version = version
+        self.uri = uri
 
 
 class ModelLoader:
@@ -53,20 +55,15 @@ class ModelLoader:
                     break
         elif self._fmt == 'Interlis 2':
             #Search for <MODEL NAME="xxx"
-            #Optimized for big files, but does't handle all cases
+            size = os.stat(self._fn).st_size
+            data = mmap.mmap(f.fileno(), size, access=mmap.ACCESS_READ)
             self.models = []
-            inmodels = False
-            regex = re.compile(r'<MODEL[^>]*\sNAME\s*=\s*"([^"]+)"|</MODELS>')
-            for line in f:
-                if not inmodels:
-                    inmodels = ("<MODELS>" in line)
-                if inmodels:
-                    for m in regex.finditer(line):
-                        if m.group(0) == '</MODELS>':
-                            break
-                        else:
-                            self.models.append(IliModel(m.group(1)))
-
+            m = re.search(r'<MODELS>.+?</MODELS>', data, re.DOTALL)
+            if m:
+                tree = ElementTree.fromstring(m.group())
+                for elem in tree.iterfind('MODEL'):
+                    model = IliModel(elem.get("NAME"), elem.get("VERSION"), elem.get("URI"))
+                    self.models.append(model)
         f.close()
         return self.models
 
@@ -79,7 +76,7 @@ class ModelLoader:
     def gen_lookup_ili(self):
         self.detect_models()
         #if self._fmt == "Interlis 2":
-        ili = 'INTERLIS 2.3;\nMODEL Lookup AT "http://interlis.sourcepole.ch/" VERSION "" ='
+        ili = 'INTERLIS 2.3;\nMODEL Lookup AT "http://interlis.sourcepole.ch/" VERSION "" =\n'
         for model in self.models:
             ili += "  IMPORTS %s;\n" % model.name
         ili += "END Lookup."
