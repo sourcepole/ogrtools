@@ -24,9 +24,9 @@ interlis library
 
 Extensions for the OGR [Interlis driver](http://www.gdal.org/ogr/drv_ili.html).
 
-* Loading Interlis models from model repositories
-* Automatic detection of used model
+* Automatic detection of used models in transfer files
 * Extracting enums from IlisMeta model
+* Loading and converting of Interlis models from model repositories
 
 
 ogrtransform library
@@ -357,10 +357,37 @@ ogr transform --reverse --config tests/data/ili/RoadsExdm2ien.cfg /tmp/roads23_f
 ogrprocessing QGIS plugin
 -------------------------
 
-Provides OGR functionality as QGIS SEXTANTE plugin. It was published for QGIS 1.8 and is now included into the core processing algorithms of QGIS 2.0.
+Provides OGR functionality as QGIS SEXTANTE plugin. It was published for QGIS 1.8 and is now included in the core processing algorithms of QGIS 2.0.
+
+
+Interlis QGIS plugin
+--------------------
+
+GUI for importing and exporting Interlis data with OGR/ogrtools. Includes Python libraries for easy installation. Currently tested with QGIS 2.0.
+
+
+Development
+-----------
+
+```
+git clone https://github.com/sourcepole/ogrtools.git
+```
+
+Running tests:
+```
+apt-get install python-nose
+```
+```
+nosetests
+```
+
+For running ogr commands from source tree:
+```
+alias ogr='PYTHONPATH=$(pwd)/lib $(pwd)/bin/ogr'
+```
 
 
 License
 -------
 
-ogrtools is Copyright © 2013 Sourceepole AG. It is free software, and may be redistributed under the terms specified in the MIT-LICENSE file.
+ogrtools is Copyright © 2012-2014 Sourceepole AG. It is free software, and may be redistributed under the terms specified in the LICENSE.txt file.
