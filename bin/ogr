@@ -11,11 +11,11 @@ from ogrtools.ogrtransform.transformation import Transformation
 
 def info(args):
     if not args.layers:
-        print ogrinfo(bReadOnly=True, bSummaryOnly=True, bAllLayers=True,
-                      pszDataSource=args.source)
+        print ogrinfo(readonly=True, summaryonly=True, all_layers=True,
+                      datasource_name=args.source)
     else:
-        print ogrinfo(bReadOnly=True, bSummaryOnly=True,
-                      pszDataSource=args.source, papszLayers=args.layers)
+        print ogrinfo(readonly=True, summaryonly=True,
+                      datasource_name=args.source, layers=args.layers)
     return 0
 
 
@@ -30,7 +30,7 @@ def version(args):
 
 
 def sql(args):
-    print ogrinfo(pszDataSource=args.source, pszSQLStatement=args.sql)
+    print ogrinfo(datasource_name=args.source, sql_statement=args.sql)
     return 0
 
 
