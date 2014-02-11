@@ -164,6 +164,20 @@ def imd_to_dot(fn):
         print "node [style=filled,colorscheme=accent8,fillcolor={}]".format(modelno)
         for node in model:
             tag = node.tag.replace("{http://www.interlis.ch/INTERLIS2.3}IlisMeta07.ModelData.", "")
+
+            multistr = ""
+            multi = node.find("xmlns:Multiplicity", ns)
+            if multi is not None:
+                min = ""
+                max = ""
+                minnode = multi.find("./*/xmlns:Min", ns)
+                if minnode is not None:
+                    min = minnode.text
+                maxnode = multi.find("./*/xmlns:Max", ns)
+                if maxnode is not None:
+                    max = maxnode.text
+                multistr = " [{min}..{max}]".format(min=min, max=max)
+
             if node.get("TID"):
                 tid = nodeid(node.get("TID"))
                 name = node.find("xmlns:Name", ns).text
@@ -171,15 +185,15 @@ def imd_to_dot(fn):
                     taggroup[tag] = []
                 taggroup[tag].append(tid)
                 display_attrs = DISPLAY_ATTRS.get(tag, "")
-                print tid + ' [label="' + name + "\\n" + tag + '" ' + display_attrs + "]"
+                print tid + ' [label="' + name + "\\n" + tag + multistr + '" ' + display_attrs + "]"
                 for refnode in node.findall("./*[@REF]"):
                     reftag = refnode.tag.replace("{http://www.interlis.ch/INTERLIS2.3}", "")
                     orderpos = refnode.get("ORDER_POS")
                     display_attrs = DISPLAY_ATTRS.get(reftag, "")
                     if orderpos:
-                        reftag = reftag + "[{}]".format(orderpos)
+                        reftag = reftag + "({})".format(orderpos)
                     if reftag not in IGNORED_EDGE_TAGS:
-                        print tid + " -> " + nodeid(refnode.get("REF")) + ' [label="' + reftag + '" ' + display_attrs + "]"
+                        print tid + " -> " + nodeid(refnode.get("REF")) + ' [label="' + reftag + multistr + '" ' + display_attrs + "]"
             else:
                 relnodes = node.findall("./*[@REF]")
                 n1 = nodeid(relnodes[0].get("REF"))
@@ -190,8 +204,8 @@ def imd_to_dot(fn):
                 orderpos = relnodes[0].get("ORDER_POS") or relnodes[1].get("ORDER_POS")
                 if tag not in IGNORED_EDGE_TAGS:
                     if orderpos:
-                        tag = tag + "[{}]".format(orderpos)
-                    print n1 + " -> " + n2 + ' [label="' + tag + '" style=dotted,color=blue,fontcolor=blue]'
+                        tag = tag + "({})".format(orderpos)
+                    print n1 + " -> " + n2 + ' [label="' + tag + multistr + '" style=dotted,color=blue,fontcolor=blue]'
         print "{ rank = same; " + ";".join(taggroup["Class"]) + " }"
         if "EnumType" in taggroup:
             print "{ rank = same; " + ";".join(taggroup["EnumType"]) + " }"
@@ -209,7 +223,7 @@ def main(argv):
         enum_tables = extract_enums_json(fn)
         print json.dumps(enum_tables, indent=2)
     elif output == 'dot':
-        #./ilismeta.py dot ../tests/data/ili/RoadsExdm2ien.imd | dot -Tsvg >../tests/data/ili/RoadsExdm2ien.imd.svg
+        #./lib/ogrtools/interlis/ilismeta.py dot tests/data/ili/RoadsExdm2ien.imd | dot -Tsvg >tests/data/ili/RoadsExdm2ien.imd.svg
         imd_to_dot(fn)
     return 0
 
