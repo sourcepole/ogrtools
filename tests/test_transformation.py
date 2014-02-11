@@ -74,3 +74,16 @@ def manualtest_ili_to_spatialite():
     #os.remove(dstfile)
     #print result
     assert False
+
+
+def test_ili_to_gml():
+    #ogr genconfig --format GML tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.xtf,tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.imd --model tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.imd >tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118-gml.cfg
+    trans = Transformation("tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.cfg",
+      "tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.xtf,tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.imd")
+    __, dstfile = tempfile.mkstemp()
+    os.remove(dstfile)
+    trans.transform(dstfile, "GML")
+    print dstfile
+    #os.remove(dstfile)
+    #print result
+    assert False

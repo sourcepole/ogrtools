@@ -46,6 +46,7 @@ def test_shape_config():
   "src_format": "ESRI Shapefile", 
   "dst_format": "PostgreSQL"
 }"""
+    print cfgjson
     assert cfgjson == expected
 
 
@@ -107,12 +108,16 @@ def test_ili_config():
     }, 
     "roadsexdm2ben_roads_lattrs": {
       "fields": {
-        "tid": {
-          "src": "TID", 
+        "ref_id": {
+          "src": "REF_ID", 
           "type": "String"
         }, 
         "lart": {
           "src": "LArt", 
+          "type": "String"
+        }, 
+        "ref_name": {
+          "src": "REF_NAME", 
           "type": "String"
         }
       }, 
@@ -155,6 +160,7 @@ def test_ili_config():
   "src_format": "Interlis 2", 
   "dst_format": "PostgreSQL"
 }"""
+    print cfgjson
     assert cfgjson == expected
 
 
@@ -177,4 +183,5 @@ def test_enums():
         }
       ]
     }"""
+    print cfgjson
     assert expected in cfgjson
