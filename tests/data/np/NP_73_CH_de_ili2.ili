@@ -1,0 +1,485 @@
+INTERLIS 2.3;
+
+MODEL Nutzungsplanung (de)
+AT "http://models.geo.admin.ch/ARE/"
+VERSION "2010-12-15"  =
+
+  DOMAIN
+
+    Abk_Text = TEXT*16;
+
+    BFS_Nr = 1 .. 9999;
+
+    Code = TEXT*10;
+
+    Datum = FORMAT INTERLIS.XMLDate "1970-1-1" .. "2999-12-31";
+
+    Geometrie_Grundlage = (
+      AV93,
+      PV74,
+      PN,
+      weitere
+    );
+
+    Grundnutzung_SIA = (
+      Wohnzonen_11(
+        Wohnzone_a_111,
+        Wohnzone_b_112,
+        Wohnzone_c_113,
+        Wohnzone_d_114,
+        weiterer_Zonentyp_115
+      ),
+      Arbeitszonen_12(
+        Arbeitszone_a_121,
+        Arbeitszone_b_122,
+        Arbeitszone_c_123,
+        weiterer_Zonentyp_124
+      ),
+      Mischzonen_13(
+        Wohn_und_Arbeitszone_a_131,
+        Wohn_und_Arbeitszone_b_132,
+        weiterer_Zonentyp_133
+      ),
+      Zentrumszonen_14(
+        allgemeine_Zentrumszone_141,
+        Kernzone_142,
+        Geschaeftszone_143,
+        weiterer_Zonentyp_144
+      ),
+      Zonen_fuer_oeffentliche_Nutzungen_15(
+        Zone_fuer_oeffentliche_Bauten_und_Anlagen_151,
+        Zone_fuer_oeffentlichen_Sport_und_Freizeitanlagen_152,
+        weiterer_Zonentyp_153
+      ),
+      eingeschraenkte_Bauzonen_16(
+        Gruenzone_161,
+        weiterer_Zonentyp_162
+      ),
+      Tourismus_und_Freizeitzonen_17(
+        Kurzone_171,
+        Hotelzone_172,
+        Campingzone_173,
+        weiterer_Zonentyp_174
+      ),
+      Verkehrszonen_18(
+        Strassenzone_181,
+        Bahnzone_182,
+        Flugplatzzone_183,
+        weiterer_Zonentyp_184
+      ),
+      weitere_Zonen_19(
+        Sonderbauzone_191,
+        weiterer_Zonentyp_192
+      ),
+      Allgemeine_Landwirtschaftszonen_21(
+        allgemeine_Landwirtschaftszone_211,
+        weiterer_Zonentyp_212
+      ),
+      Speziallandwirtschaftszonen_22(
+        Speziallandwirtschaftszone_221,
+        weiterer_Zonentyp_222
+      ),
+      Rebbauzonen_23(
+        Rebbauzone_231,
+        weiterer_Zonentyp_232
+      ),
+      Schutzzonen_fuer_Lebensraeume_und_Landschaften_31(
+        allgemeine_Schutzzone_311,
+        Naturschutzzone_kommunal_312,
+        Naturschutzzone_kantonal_313,
+        weiterer_Zonentyp_314
+      ),
+      Zonen_fuer_Baeche_Fluesse_Seen_und_ihre_Ufer_32(
+        Gewaesserzone_321,
+        weiterer_Zonentyp_322
+      ),
+      weitere_Zonen_nach_Art18_Abs1_RPG_41(
+        Zone_unkultivierbares_Land_411,
+        Strassenareal_412,
+        Bahnareal_413,
+        Flugplatzareal_414,
+        Abbauzone_415,
+        Deponiezone_416,
+        Abbau_und_Deponiezone_417,
+        weiterer_Zonentyp_418
+      ),
+      weitere_Zonen_nach_Art18_Abs2_RPG_42(
+        Reservezone_421,
+        weiterer_Zonentyp_422
+      ),
+      Waldzonen_43(
+        Wald_431,
+        weiterer_Zonentyp_432
+      ),
+      Zonen_fuer_Kleinsiedlung_44(
+        Weilerzone_441,
+        weiterer_Zonentyp_442
+      )
+    );
+
+    Name_Text = TEXT*60;
+
+    Rechtsstatus = (
+      inKraft,
+      laufendeAenderungen
+    );
+
+    Ueberl_Zonen_CH (FINAL) = (
+      ueberlagernde_Schutzzonen_61,
+      ueberlagernde_Nutzungszonen_62,
+      ueberlagernde_Gefahrenzonen_63,
+      ueberlagernde_Flaechenfestlegungen_64
+    );
+
+    URL = URI;
+
+    Verbindlichkeit = (
+      eigentuemerverbindlich,
+      orientierend,
+      hinweisend
+    );
+
+    Geometrie_Herkunft = (
+      Aufnahme,
+      Uebernahme_Koordinaten,
+      Planabgriff,
+      konstruktiv,
+      andere
+    );
+
+    Kt_Kz = TEXT*2;
+
+    LKoord = COORD 480000.000 .. 850000.000 CLOCKWISE, 60000.000 .. 320000.000 CLOCKWISE ,ROTATION 2 -> 1;
+
+    Einzelflaeche = SURFACE WITH (ARCS,STRAIGHTS) VERTEX LKoord WITHOUT OVERLAPS>0.05;
+
+    Gebietseinteilung = AREA WITH (ARCS,STRAIGHTS) VERTEX LKoord WITHOUT OVERLAPS>0.05;
+
+    Linienzug = POLYLINE WITH (ARCS,STRAIGHTS) VERTEX LKoord;
+
+    Langtext = TEXT*250;
+
+    Dossier_Text = TEXT*30;
+
+    Hauptnutzung_CH (FINAL) = (
+      Bauzonen_1(
+        Wohnzonen_11,
+        Arbeitszonen_12,
+        Mischzonen_13,
+        Zentrumszonen_14,
+        Zonen_fuer_oeffentliche_Nutzungen_15,
+        eingeschraenkte_Bauzonen_16,
+        Tourismus_und_Freizeitzonen_17,
+        Verkehrszonen_innerhalbBauzonen_18,
+        weitere_Zonen_19
+      ),
+      Landwirtschaftszonen_2(
+        allgemeine_Landwirtschaftszonen_21,
+        Speziallandwirtschaftszonen_22,
+        Rebbauzonen_23
+      ),
+      Schutzzonen_3(
+        Schutzzonen_fuer_Lebensraeume_und_Landschaften_31,
+        Zonen_fuer_Baeche_Fluesse_Seen_und_ihre_Ufer_32
+      ),
+      weitere_Zonen_4(
+        weitere_Zonen_ausserhalbBauzonen_41,
+        weitere_Zonen_Reservezonen_42,
+        Waldzonen_43,
+        Zonen_fuer_Kleinsiedlung_44
+      )
+    );
+
+    Ueberl_Zonen_SIA = (
+      Ueberl_Schutzzonen_61(
+        Ueberl_Ortsbildschutzzone_611,
+        Ueberl_Naturschutzzone_612,
+        Grundwasserschutzzone_613,
+        Landschaftsschutzzone_614,
+        Freihaltezone_615,
+        weiterer_Zonentyp_616
+      ),
+      Ueberl_Zonen_nach_Art_18_RPG_62(
+        Nutzungsanteilzone_621,
+        Ueberl_Abbauzone_622,
+        Ueberl_Deponiezone_623,
+        Ueberl_Tourismus_und_Erholungszone_624,
+        Zone_fuer_Verkehrszone_ueber_oder_unter_Bauten_625,
+        Zone_fuer_Bauten_ueber_oder_unter_Verkehrszonen_626,
+        Zone_fuer_Bauten_im_Gewaesserbereich_627,
+        Ueberl_Bauzone_628,
+        weiterer_Zonentyp_629
+      ),
+      Ueberl_Gefahrenzonen_nach_Art_18_RPG_63(
+        Zone_mit_Restgefaehrdung_631,
+        Zone_mit_geringer_Gefaehrdung_632,
+        Zone_mit_mittlerer_Gefaehrdung_633,
+        Zone_mit_erheblicher_Gefaehrdung_634
+      ),
+      Ueberl_Flaechenfestlegungen_keine_eigentliche_Zonen_64(
+        Bereich_Sondernutzungsplanungspflicht_641,
+        Bereich_rechtsgueltiger_Sondernutzungsplaene_642,
+        Bereich_einer_spaeteren_Erschliessungsetappe_643,
+        Archaeologische_Fundstelle_644,
+        Gebiet_mit_erdgeschichtlicher_Bedeutung_Geotop_645,
+        Bereich_Altlasten_646,
+        Bruecke_ueber_Gewaesser_647,
+        weitere_Flaechefestlegung_648
+      )
+    );
+
+    Linienbez_Festl_SIA = (
+      Baulinie_711,
+      Uferlinie_Bachlauf_712,
+      Allee_713,
+      Hecke_714,
+      projektierte_bewilligte_Verkehrswege_715,
+      weitere_Linienbez_Festl_716
+    );
+
+    Objektbez_Festl_SIA = (
+      Naturobjekt_811,
+      Denkmalschutz_und_Kulturobjekt_812(
+        kommunales_Objekt_8121,
+        kantonales_Objekt_8122
+      ),
+      weitere_Objektbez_Festl_813
+    );
+
+  STRUCTURE URL_ = value : MANDATORY URL; END URL_;
+
+  TOPIC Nutzungsplanung =
+
+    CLASS Grundnutzung_Zonenflaeche =
+      Geometrie : MANDATORY Nutzungsplanung.Gebietseinteilung;
+      Herkunft : MANDATORY Nutzungsplanung.Geometrie_Herkunft;
+      Qualitaet : MANDATORY Nutzungsplanung.Geometrie_Grundlage;
+      Bemerkungen : Nutzungsplanung.Langtext;
+    END Grundnutzung_Zonenflaeche;
+
+    CLASS Ueberlagernde_Zonenflaeche =
+      Geometrie : MANDATORY Nutzungsplanung.Einzelflaeche;
+      Herkunft : MANDATORY Nutzungsplanung.Geometrie_Herkunft;
+      Qualitaet : MANDATORY Nutzungsplanung.Geometrie_Grundlage;
+      Bemerkungen : Nutzungsplanung.Langtext;
+    END Ueberlagernde_Zonenflaeche;
+
+    CLASS Linienbezogene_Festlegung =
+      Geometrie : MANDATORY Nutzungsplanung.Linienzug;
+      Herkunft : MANDATORY Nutzungsplanung.Geometrie_Herkunft;
+      Qualitaet : MANDATORY Nutzungsplanung.Geometrie_Grundlage;
+      Bemerkungen : Nutzungsplanung.Langtext;
+    END Linienbezogene_Festlegung;
+
+    CLASS Objektbezogene_Festlegung =
+      Geometrie : MANDATORY Nutzungsplanung.LKoord;
+      Herkunft : MANDATORY Nutzungsplanung.Geometrie_Herkunft;
+      Qualitaet : MANDATORY Nutzungsplanung.Geometrie_Grundlage;
+      Bemerkungen : Nutzungsplanung.Langtext;
+    END Objektbezogene_Festlegung;
+
+    CLASS Mutationshinweis =
+      Identifikator : MANDATORY Nutzungsplanung.Abk_Text;
+      Erfassungsdatum : Nutzungsplanung.Datum;
+      Erfasser : Nutzungsplanung.Name_Text;
+      Bemerkungen : Nutzungsplanung.Langtext;
+      UNIQUE Identifikator;
+    END Mutationshinweis;
+
+    ASSOCIATION M1 =
+      Grundn_Zone -- {0..*} Grundnutzung_Zonenflaeche;
+      Mutation -- {1} Mutationshinweis;
+    END M1;
+
+    ASSOCIATION M2 =
+      Ueberl_Zone -- {0..*} Ueberlagernde_Zonenflaeche;
+      Mutation -- {1} Mutationshinweis;
+    END M2;
+
+    ASSOCIATION M3 =
+      Linienbez_Festl -- {0..*} Linienbezogene_Festlegung;
+      Mutation -- {1} Mutationshinweis;
+    END M3;
+
+    ASSOCIATION M4 =
+      Objektbez_Festl -- {0..*} Objektbezogene_Festlegung;
+      Mutation -- {1} Mutationshinweis;
+    END M4;
+
+    CLASS Grundnutzung_Zonentyp =
+      Identifikator : MANDATORY Nutzungsplanung.Code;
+      Zonentyp : MANDATORY Nutzungsplanung.Name_Text;
+      Abkuerzung : Nutzungsplanung.Abk_Text;
+      Verbindlichkeit : MANDATORY Nutzungsplanung.Verbindlichkeit;
+      Bemerkungen : Nutzungsplanung.Langtext;
+      UNIQUE Identifikator;
+    END Grundnutzung_Zonentyp;
+
+    CLASS Ueberlagernder_Zonentyp =
+      Identifikator : MANDATORY Nutzungsplanung.Code;
+      Zonentyp : MANDATORY Nutzungsplanung.Name_Text;
+      Abkuerzung : Nutzungsplanung.Abk_Text;
+      Verbindlichkeit : MANDATORY Nutzungsplanung.Verbindlichkeit;
+      Bemerkungen : Nutzungsplanung.Langtext;
+      UNIQUE Identifikator;
+    END Ueberlagernder_Zonentyp;
+
+    CLASS Linienbezogener_Festlegungstyp =
+      Identifikator : MANDATORY Nutzungsplanung.Code;
+      Festl_Typ : MANDATORY Nutzungsplanung.Name_Text;
+      Abkuerzung : Nutzungsplanung.Abk_Text;
+      Verbindlichkeit : MANDATORY Nutzungsplanung.Verbindlichkeit;
+      Bemerkungen : Nutzungsplanung.Langtext;
+      UNIQUE Identifikator;
+    END Linienbezogener_Festlegungstyp;
+
+    CLASS Objektbezogener_Festlegungstyp =
+      Identifikator : MANDATORY Nutzungsplanung.Code;
+      Festl_Typ : MANDATORY Nutzungsplanung.Name_Text;
+      Abkuerzung : Nutzungsplanung.Abk_Text;
+      Verbindlichkeit : MANDATORY Nutzungsplanung.Verbindlichkeit;
+      Bemerkungen : Nutzungsplanung.Langtext;
+      UNIQUE Identifikator;
+    END Objektbezogener_Festlegungstyp;
+
+    ASSOCIATION G1 =
+      Grundn_Zone_1 -- {0..*} Grundnutzung_Zonenflaeche;
+      Zonentyp_1 -- {1} Grundnutzung_Zonentyp;
+    END G1;
+
+    ASSOCIATION G2 =
+      Ueberl_Zone -- {0..*} Ueberlagernde_Zonenflaeche;
+      Zonentyp -- {1} Ueberlagernder_Zonentyp;
+    END G2;
+
+    ASSOCIATION G3 =
+      Linientyp -- {0..*} Linienbezogene_Festlegung;
+      Typ -- {1} Linienbezogener_Festlegungstyp;
+    END G3;
+
+    ASSOCIATION G4 =
+      Objekt -- {0..*} Objektbezogene_Festlegung;
+      Typ -- {1} Objektbezogener_Festlegungstyp;
+    END G4;
+
+    CLASS Dokument =
+      Titel : MANDATORY Nutzungsplanung.Langtext;
+      OffiziellerTitel : Nutzungsplanung.Langtext;
+      Abkuerzung : Nutzungsplanung.Abk_Text;
+      Kanton : Nutzungsplanung.Kt_Kz;
+      Gemeinde : Nutzungsplanung.BFS_Nr;
+      OffizielleNr : MANDATORY Nutzungsplanung.Dossier_Text;
+      publiziertAb : MANDATORY Nutzungsplanung.Datum;
+      Rechtsstatus : MANDATORY Nutzungsplanung.Rechtsstatus;
+      TextImWeb : Nutzungsplanung.URL;
+      Dokument : BAG {0..*} OF Nutzungsplanung.URL_;
+      UNIQUE OffizielleNr;
+    END Dokument;
+
+    ASSOCIATION R1 =
+      Vorschrift -- {1..*} Dokument;
+      Grundn_Zone -- {0..*} Grundnutzung_Zonentyp;
+    END R1;
+
+    ASSOCIATION R2 =
+      Vorschrift -- {1..*} Dokument;
+      Ueberl_Zone -- {0..*} Ueberlagernder_Zonentyp;
+    END R2;
+
+    ASSOCIATION R3 =
+      Vorschrift -- {1..*} Dokument;
+      Linienbez_Festl -- {0..*} Linienbezogener_Festlegungstyp;
+    END R3;
+
+    ASSOCIATION R4 =
+      Vorschrift -- {1..*} Dokument;
+      Objektbez_Festl -- {0..*} Objektbezogener_Festlegungstyp;
+    END R4;
+
+    CLASS Grundnutzung_Zonentyp_Kt =
+      Identifikator : MANDATORY Nutzungsplanung.Code;
+      Zonentyp_Kt : MANDATORY Nutzungsplanung.Name_Text;
+      Abkuerzung : Nutzungsplanung.Abk_Text;
+      Bemerkungen : Nutzungsplanung.Langtext;
+      Hauptnutzung_CH : MANDATORY Nutzungsplanung.Hauptnutzung_CH;
+      Zonentyp_SIA : Nutzungsplanung.Grundnutzung_SIA;
+      UNIQUE Identifikator;
+    END Grundnutzung_Zonentyp_Kt;
+
+    CLASS Ueberlagernder_Zonentyp_Kt =
+      Identifikator : MANDATORY Nutzungsplanung.Code;
+      Zonentyp_Kt : MANDATORY Nutzungsplanung.Name_Text;
+      Abkuerzung : Nutzungsplanung.Abk_Text;
+      Bemerkungen : Nutzungsplanung.Langtext;
+      Ueberl_Hauptn_CH : MANDATORY Nutzungsplanung.Ueberl_Zonen_CH;
+      Ueberl_Zonentyp_SIA : Nutzungsplanung.Ueberl_Zonen_SIA;
+      UNIQUE Identifikator;
+    END Ueberlagernder_Zonentyp_Kt;
+
+    CLASS Linienbezogener_Festlegungstyp_Kt =
+      Identifikator : MANDATORY Nutzungsplanung.Code;
+      Festl_Typ_Kt : MANDATORY Nutzungsplanung.Name_Text;
+      Abkuerzung : Nutzungsplanung.Abk_Text;
+      Bemerkungen : Nutzungsplanung.Langtext;
+      Festl_Typ_SIA : Nutzungsplanung.Linienbez_Festl_SIA;
+      UNIQUE Identifikator;
+    END Linienbezogener_Festlegungstyp_Kt;
+
+    CLASS Objektbezogener_Festlegungstyp_Kt =
+      Identifikator : MANDATORY Nutzungsplanung.Code;
+      Festl_Typ_Kt : MANDATORY Nutzungsplanung.Name_Text;
+      Abkuerzung : Nutzungsplanung.Abk_Text;
+      Bemerkungen : Nutzungsplanung.Langtext;
+      Festl_Typ_SIA : Nutzungsplanung.Objektbez_Festl_SIA;
+      UNIQUE Identifikator;
+    END Objektbezogener_Festlegungstyp_Kt;
+
+    ASSOCIATION K1 =
+      Zonentyp_2 -- {0..*} Grundnutzung_Zonentyp;
+      Zonentyp_Kt_2 -- {1} Grundnutzung_Zonentyp_Kt;
+    END K1;
+
+    ASSOCIATION K2 =
+      Zonentyp -- {0..*} Ueberlagernder_Zonentyp;
+      Zonentyp_Kt -- {1} Ueberlagernder_Zonentyp_Kt;
+    END K2;
+
+    ASSOCIATION K3 =
+      Linien_Typ -- {0..*} Linienbezogener_Festlegungstyp;
+      Linien_Typ_Kt -- {1} Linienbezogener_Festlegungstyp_Kt;
+    END K3;
+
+    ASSOCIATION K4 =
+      Festl_Typ -- {0..*} Objektbezogener_Festlegungstyp;
+      Festl_Typ_Kt -- {1} Objektbezogener_Festlegungstyp_Kt;
+    END K4;
+
+  END Nutzungsplanung;
+
+  TOPIC Metadaten =
+
+    CLASS Datenbestand =
+      Datensatzidentifikator : MANDATORY Nutzungsplanung.Abk_Text;
+      Datenstand : MANDATORY Nutzungsplanung.Datum;
+      Lieferdatum : Nutzungsplanung.Datum;
+      UNIQUE Datensatzidentifikator;
+    END Datenbestand;
+
+    CLASS Organisation =
+      Name : MANDATORY Nutzungsplanung.Name_Text;
+      OrgImWeb : Nutzungsplanung.URL;
+    END Organisation;
+
+    ASSOCIATION zustaendigeStelle_Bestand =
+      zustaendigeStelle -<> {1} Organisation;
+      Bestand_1 -- {0..*} Datenbestand;
+    END zustaendigeStelle_Bestand;
+
+    ASSOCIATION Buero_Bestand =
+      Buero -<> {1} Organisation;
+      Bestand_2 -- {0..*} Datenbestand;
+    END Buero_Bestand;
+
+  END Metadaten;
+
+END Nutzungsplanung.

@@ -1,5 +1,6 @@
 import os
 import tempfile
+import re
 import codecs
 from ogrtools.ogrtransform.transformation import Transformation
 
@@ -7,7 +8,7 @@ from ogrtools.ogrtransform.transformation import Transformation
 def test_shape_to_geojson():
     #ogr genconfig --format PostgreSQL tests/data/osm/railway.shp >tests/data/osm/railway.cfg
     trans = Transformation("tests/data/osm/railway.cfg", "tests/data/osm/railway.shp")
-    __, dstfile = tempfile.mkstemp()
+    __, dstfile = tempfile.mkstemp(suffix='.json')
     os.remove(dstfile)
     trans.transform(dstfile, "GeoJSON")
     result = codecs.open(dstfile, encoding='utf-8').read()
@@ -29,7 +30,7 @@ def test_ili_to_geojson():
     #ogr genconfig --format PostgreSQL tests/data/ili/roads23.xtf,tests/data/ili/RoadsExdm2ien.imd --model tests/data/ili/RoadsExdm2ien.imd >tests/data/ili/RoadsExdm2ien.cfg
     trans = Transformation("tests/data/ili/RoadsExdm2ien.cfg",
       "tests/data/ili/roads23.xtf,tests/data/ili/RoadsExdm2ien.imd")
-    __, dstfile = tempfile.mkstemp()
+    __, dstfile = tempfile.mkstemp(suffix='.json')
     os.remove(dstfile)
     trans.transform(dstfile, "GeoJSON", layers=["streetaxis"])
     result = codecs.open(dstfile, encoding='utf-8').read()
@@ -41,7 +42,7 @@ def test_geojson_reverse_to_ili():
     #ogr transform --format GeoJSON --config tests/data/ili/RoadsExdm2ien.cfg tests/data/ili/RoadsExdm2ien_streetaxis.json tests/data/ili/roads23.xtf,tests/data/ili/RoadsExdm2ien.imd streetaxis
     trans = Transformation("tests/data/ili/RoadsExdm2ien.cfg",
       "tests/data/ili/RoadsExdm2ien_streetaxis.json")
-    __, dstfile = tempfile.mkstemp()
+    __, dstfile = tempfile.mkstemp(suffix='.xtf')
     #os.remove(dstfile)
     trans.transform_reverse(dstfile+",tests/data/ili/RoadsExdm2ien.imd",
       layers=["RoadsExdm2ien.RoadsExtended.StreetAxis"])
@@ -66,24 +67,58 @@ def manualtest_ili_to_spatialite():
     #ogr genconfig --format SQLite tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.xtf,tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.imd --model tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.imd >tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.cfg
     trans = Transformation("tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.cfg",
       "tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.xtf,tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.imd")
-    __, dstfile = tempfile.mkstemp()
+    __, dstfile = tempfile.mkstemp(suffix='.sqlite')
     os.remove(dstfile)
     trans.transform(dstfile, "SQLite")
-    result = os.popen("echo .dump | sqlite3 %s" % dstfile).read()
     print dstfile
-    #os.remove(dstfile)
+    result = os.popen("echo .dump | sqlite3 %s" % dstfile).read()
     #print result
     assert False
+    os.remove(dstfile)
 
 
-def test_ili_to_gml():
+def manualtest_ili_with_struct_to_gml():
     #ogr genconfig --format GML tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.xtf,tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.imd --model tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.imd >tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118-gml.cfg
     trans = Transformation("tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.cfg",
       "tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.xtf,tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.imd")
-    __, dstfile = tempfile.mkstemp()
+    __, dstfile = tempfile.mkstemp(suffix='.gml')
     os.remove(dstfile)
     trans.transform(dstfile, "GML")
     print dstfile
-    #os.remove(dstfile)
-    #print result
     assert False
+    os.remove(dstfile)
+
+
+def test_ili_to_gml():
+    #ogr genconfig --format GML tests/data/np/NP_Example.xtf,tests/data/np/NP_73_CH_de_ili2.imd --model tests/data/np/NP_73_CH_de_ili2.imd >tests/data/np/NP_73_CH_de_ili2.cfg
+    trans = Transformation("tests/data/np/NP_73_CH_de_ili2.cfg",
+      "tests/data/np/NP_Example.xtf,tests/data/np/NP_73_CH_de_ili2.imd")
+    __, dstfile = tempfile.mkstemp(suffix='.gml')
+    os.remove(dstfile)
+    trans.transform(dstfile, "GML")
+    print dstfile
+    gml = codecs.open(dstfile, encoding='utf-8').read()
+
+    #GML -> XTF
+    __, xtffile = tempfile.mkstemp(suffix='.xtf')
+    trans.transform_reverse(xtffile+",tests/data/np/NP_73_CH_de_ili2.imd")
+    print xtffile
+    #xtf = codecs.open(xtffile, encoding='utf-8').read()
+
+    # XTF -> GML
+    trans2 = Transformation("tests/data/np/NP_73_CH_de_ili2.cfg",
+      xtffile + ",tests/data/np/NP_73_CH_de_ili2.imd")
+    __, gmlfile2 = tempfile.mkstemp(suffix='.gml')
+    trans.transform(gmlfile2, "GML")
+    print gmlfile2
+    gml2 = codecs.open(gmlfile2, encoding='utf-8').read()
+
+
+    gml = re.sub(r'tmp.+.xsd', 'tmpXXX.xsd', gml, count=1)
+    gml2 = re.sub(r'tmp.+.xsd', 'tmpXXX.xsd', gml2, count=1)
+    assert gml == gml2
+
+    # cleanup
+    os.remove(dstfile)
+    os.remove(xtffile)
+    os.remove(gmlfile2)
