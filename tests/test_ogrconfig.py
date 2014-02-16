@@ -3,7 +3,9 @@ from ogrtools.ogrtransform.ogrconfig import OgrConfig
 
 def test_shape_config():
     cfg = OgrConfig(ds="tests/data/osm/railway.shp")
+    assert not cfg.is_loaded()
     cfgjson = cfg.generate_config(dst_format='PostgreSQL')
+    assert cfg.is_loaded()
     expected = """{
   "//": "OGR transformation configuration", 
   "dst_dsco": {}, 

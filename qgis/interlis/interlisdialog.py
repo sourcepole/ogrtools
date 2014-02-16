@@ -28,7 +28,6 @@ from ui_interlis import Ui_Interlis
 import os.path
 import tempfile
 from ogrtools.ogrtransform.ogrconfig import OgrConfig
-from ogrtools.ogrtransform.transformation import Transformation
 
 
 class InterlisDialog(QtGui.QDialog):
@@ -77,6 +76,9 @@ class InterlisDialog(QtGui.QDialog):
                 ds = ds + k + "='" + v + "' "
         return ds
 
+    def iliDs(self):
+        return self.ui.mDataLineEdit.text() + ',' + self.ui.mModelLineEdit.text()
+
     def dbConnectionList(self):
         connection_names = []
         settings = QSettings()
@@ -91,7 +93,8 @@ class InterlisDialog(QtGui.QDialog):
         #show file dialog and remember last directory
         settings = QSettings()
         lastDirectoryString = None  # settings.value("/qgis/plugins/interlis/datadir", type=str)
-        dataFilePath = QFileDialog.getOpenFileName(None, "Open Interlis data file", lastDirectoryString, "*.itf *.ITF *.xtf *.XTF *.xml")
+        dataFilePath = QFileDialog.getOpenFileName(None, "Open Interlis data file", lastDirectoryString,
+                                                   "*.itf *.ITF *.xtf *.XTF *.xml")
         if dataFilePath is None:
             return  # dialog canceled
         settings.setValue("/qgis/plugins/interlis/datadir", QFileInfo(dataFilePath).absolutePath())
@@ -103,7 +106,8 @@ class InterlisDialog(QtGui.QDialog):
         #show file dialog and remember last directory
         settings = QSettings()
         lastDirectoryString = None  # settings.value("/qgis/plugins/interlis2/modeldir", type=str)
-        modelFilePath = QFileDialog.getOpenFileName(None, "Open Interlis data file", lastDirectoryString, "*.imd *.IMD")
+        modelFilePath = QFileDialog.getOpenFileName(None, "Open Interlis data file", lastDirectoryString,
+                                                    "*.imd *.IMD")
         if modelFilePath is None:
             return  # dialog canceled
         settings.setValue("/qgis/plugins/interlis/modeldir", QFileInfo(modelFilePath).absolutePath())
@@ -113,18 +117,34 @@ class InterlisDialog(QtGui.QDialog):
     def on_mImportButton_clicked(self):
         self.importtodb()
 
-    def importtodb(self):
-        format = 'PostgreSQL'
-        ilids = self.ui.mDataLineEdit.text() + ',' + self.ui.mModelLineEdit.text()
-        QgsMessageLog.logMessage(ilids, "Interlis", QgsMessageLog.INFO)
-        trans = OgrConfig(ds=ilids, model=self.ui.mModelLineEdit.text())
+    @pyqtSignature('')  # avoid two connections
+    def on_mExportButton_clicked(self):
+        self.exporttoxtf()
+
+    def _ogr_config(self, ds):
         ogrconfig = self.ui.mConfigLineEdit.text()
-        if not ogrconfig:
+        if ogrconfig:
+            cfg = OgrConfig(ds=ds, config=ogrconfig)
+        else:
+            cfg = OgrConfig(ds=ds, model=self.ui.mModelLineEdit.text())
+        return cfg
+
+    def importtodb(self):
+        QgsMessageLog.logMessage(self.iliDs(), "Interlis", QgsMessageLog.INFO)
+        cfg = self._ogr_config(self.iliDs())
+        if not cfg.is_loaded():
             ogrconfig = os.path.join(tempfile.gettempdir(), "ogrconfig.json")
-            cfgjson = trans.generate_config(format, outfile=ogrconfig, layer_list=[])
+            format = 'PostgreSQL'
+            cfgjson = cfg.generate_config(format, outfile=ogrconfig, layer_list=[])
             QgsMessageLog.logMessage(cfgjson, "Interlis", QgsMessageLog.INFO)
             self.ui.mConfigLineEdit.setText(ogrconfig)
-        trans = Transformation(ogrconfig, ilids)
-        trans.transform(dest=self.ogrDs(), debug=True)
+        cfg.transform(dest=self.ogrDs(), debug=True)
         self._interlis.messageLogWidget().show()
         QgsMessageLog.logMessage("Import finished", "Interlis", QgsMessageLog.INFO)
+        self.ui.mExportButton.setEnabled(True)
+
+    def exporttoxtf(self):
+        cfg = self._ogr_config(self.ogrDs())
+        cfg.transform_reverse(dest=self.iliDs(), debug=True)
+        QgsMessageLog.logMessage("Export to '%s' finished" % self.ui.mDataLineEdit.text(),
+                                 "Interlis", QgsMessageLog.INFO)

@@ -69,6 +69,9 @@ class OgrConfig:
                 config = json.load(file)
         return config
 
+    def is_loaded(self):
+        return (self._config is not None)
+
     def open(self):
         self._ds = ogr.Open(self._ds_fn, update=False)
         if self._ds is None:
