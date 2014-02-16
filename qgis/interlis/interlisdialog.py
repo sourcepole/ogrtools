@@ -32,8 +32,9 @@ from ogrtools.ogrtransform.transformation import Transformation
 
 
 class InterlisDialog(QtGui.QDialog):
-    def __init__(self):
+    def __init__(self, interlis):
         QtGui.QDialog.__init__(self)
+        self._interlis = interlis
         # Set up the user interface from Designer.
         self.ui = Ui_Interlis()
         self.ui.setupUi(self)
@@ -116,10 +117,14 @@ class InterlisDialog(QtGui.QDialog):
         format = 'PostgreSQL'
         ilids = self.ui.mDataLineEdit.text() + ',' + self.ui.mModelLineEdit.text()
         QgsMessageLog.logMessage(ilids, "Interlis", QgsMessageLog.INFO)
-        ogrconfig = os.path.join(tempfile.gettempdir(), "ogrconfig.json")
-        QgsMessageLog.logMessage(ogrconfig, "Interlis", QgsMessageLog.INFO)
         trans = OgrConfig(ds=ilids, model=self.ui.mModelLineEdit.text())
-        cfgjson = trans.generate_config(format, outfile=ogrconfig, layer_list=[])
-        QgsMessageLog.logMessage(cfgjson, "Interlis", QgsMessageLog.INFO)
+        ogrconfig = self.ui.mConfigLineEdit.text()
+        if not ogrconfig:
+            ogrconfig = os.path.join(tempfile.gettempdir(), "ogrconfig.json")
+            cfgjson = trans.generate_config(format, outfile=ogrconfig, layer_list=[])
+            QgsMessageLog.logMessage(cfgjson, "Interlis", QgsMessageLog.INFO)
+            self.ui.mConfigLineEdit.setText(ogrconfig)
         trans = Transformation(ogrconfig, ilids)
         trans.transform(dest=self.ogrDs(), debug=True)
+        self._interlis.messageLogWidget().show()
+        QgsMessageLog.logMessage("Import finished", "Interlis", QgsMessageLog.INFO)

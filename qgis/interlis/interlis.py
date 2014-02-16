@@ -20,9 +20,9 @@
  ***************************************************************************/
 """
 # Import the PyQt and QGIS libraries
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
+from PyQt4.QtCore import QSettings, QCoreApplication, QTranslator, qVersion
+from PyQt4.QtGui import QAction, QIcon, QDockWidget
+#from qgis.core import *
 # Initialize Qt resources from file resources.py
 import resources_rc
 # Import the code for the dialog
@@ -49,7 +49,7 @@ class Interlis:
                 QCoreApplication.installTranslator(self.translator)
 
         # Create the dialog (after translation) and keep reference
-        self.dlg = InterlisDialog()
+        self.dlg = InterlisDialog(self)
 
     def initGui(self):
         # Create action that will start plugin configuration
@@ -61,12 +61,15 @@ class Interlis:
 
         # Add toolbar button and menu item
         self.iface.addToolBarIcon(self.action)
-        self.iface.addPluginToMenu(u"&interlis", self.action)
+        self.iface.addPluginToMenu(u"&Interlis", self.action)
 
     def unload(self):
         # Remove the plugin menu item and icon
-        self.iface.removePluginMenu(u"&interlis", self.action)
+        self.iface.removePluginMenu(u"&Interlis", self.action)
         self.iface.removeToolBarIcon(self.action)
+
+    def messageLogWidget(self):
+        return self.iface.mainWindow().findChild(QDockWidget, 'MessageLog')
 
     # run method that performs all the real work
     def run(self):
