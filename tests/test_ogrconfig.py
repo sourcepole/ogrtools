@@ -4,6 +4,7 @@ from ogrtools.ogrtransform.ogrconfig import OgrConfig
 def test_shape_config():
     cfg = OgrConfig(ds="tests/data/osm/railway.shp")
     assert not cfg.is_loaded()
+    assert cfg.layer_names() == []
     cfgjson = cfg.generate_config(dst_format='PostgreSQL')
     assert cfg.is_loaded()
     expected = """{
@@ -164,6 +165,8 @@ def test_ili_config():
 }"""
     print cfgjson
     assert cfgjson == expected
+    print cfg.layer_names()
+    assert "roadsexdm2ien_roadsextended_roadsign" in cfg.layer_names()
 
 
 def test_enums():

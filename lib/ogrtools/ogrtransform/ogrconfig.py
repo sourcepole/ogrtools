@@ -186,6 +186,12 @@ class OgrConfig:
             options.append(key + "=" + value)
         return options
 
+    def layer_names(self):
+        if self._config and 'layers' in self._config:
+            return self._config['layers'].keys()
+        else:
+            return []
+
     def generate_vrt(self, dst_format=None):
         #if dst_format is None:
         #    dst_format = self.dst_format()
@@ -265,7 +271,7 @@ class OgrConfig:
         vrt = self.generate_vrt(dst_format=format)
         if debug:
             print prettify(vrt)
-        ds = self.tmp_datasource(vrt)
+        ds = self._tmp_datasource(vrt)
         dst_format = format or self.dst_format()
         dsco = []
         if dst_format == self.dst_format():
@@ -275,23 +281,23 @@ class OgrConfig:
             lco = self.layer_creation_options()
         ogr2ogr(pszFormat=str(dst_format), pszDataSource=ds, pszDestDataSource=dest,
                 bOverwrite=True, papszDSCO=dsco, papszLCO=lco, papszLayers=layers)  # poOutputSRS=srs, poSourceSRS=srs
-        self.free_tmp_datasource()
+        self._free_tmp_datasource()
 
     def transform_reverse(self, dest, format=None, layers=[], debug=False):
         vrt = self.generate_reverse_vrt(dst_format=format)
         if debug:
             print prettify(vrt)
-        ds = self.tmp_datasource(vrt)
+        ds = self._tmp_datasource(vrt)
         dst_format = format or self.src_format()
         ogr2ogr(pszFormat=str(dst_format), pszDataSource=ds,
                 pszDestDataSource=dest, bOverwrite=True, papszLayers=layers)
-        self.free_tmp_datasource()
+        self._free_tmp_datasource()
 
     def write_enum_tables(self, dest, format=None, debug=False):
         gml = self.generate_enum_gml()
         if debug:
             print prettify(gml)
-        ds = self.tmp_datasource(gml)
+        ds = self._tmp_datasource(gml)
         dst_format = format or self.dst_format()
         dsco = []
         if dst_format == self.dst_format():
@@ -301,20 +307,20 @@ class OgrConfig:
             lco = self.layer_creation_options()
         ogr2ogr(pszFormat=str(dst_format), pszDataSource=ds,
                 pszDestDataSource=dest, bOverwrite=True, papszDSCO=dsco, papszLCO=lco)
-        self.free_tmp_datasource()
+        self._free_tmp_datasource()
 
-    def tmp_memfile(self, data):
-        self._tmp_memfile = tempfile.mktemp('.vrt', 'ogr_', '/vsimem')
+    def _tmp_memfile(self, data):
+        self._vsimem_tmp = tempfile.mktemp('.vrt', 'ogr_', '/vsimem')
         # Create in-memory file
-        gdal.FileFromMemBuffer(self._tmp_memfile, data)
-        return self._tmp_memfile
+        gdal.FileFromMemBuffer(self._vsimem_tmp, data)
+        return self._vsimem_tmp
 
-    def free_tmp_datasource(self):
+    def _free_tmp_datasource(self):
         # Free memory associated with the in-memory file
-        gdal.Unlink(self._tmp_memfile)
+        gdal.Unlink(self._vsimem_tmp)
 
-    def tmp_datasource(self, data):
-        #Call free_tmp_datasource after closing datasource to free memeroy
-        vrt = self.tmp_memfile(data)
+    def _tmp_datasource(self, data):
+        #Call _free_tmp_datasource after closing datasource to free memeroy
+        vrt = self._tmp_memfile(data)
         ds = ogr.Open(vrt)
         return ds

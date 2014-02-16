@@ -105,7 +105,23 @@ def test_ili_to_gml():
     __, xtffile = tempfile.mkstemp(suffix='.xtf')
     trans.transform_reverse(xtffile + ",tests/data/np/NP_73_CH_de_ili2.imd")
     print xtffile
-    #xtf = codecs.open(xtffile, encoding='utf-8').read()
+    xtf = codecs.open(xtffile, encoding='utf-8').read()
+    zonentyp_kt = """<Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt TID="xz4e43cb280000000a">
+<Identifikator>142</Identifikator>
+<Zonentyp_Kt>Kernzone</Zonentyp_Kt>
+<Abkuerzung>K</Abkuerzung>
+<Bemerkungen>Kernzone</Bemerkungen>
+<Hauptnutzung_CH>Bauzonen_1.Zentrumszonen_14</Hauptnutzung_CH>
+<Zonentyp_SIA>Zentrumszonen_14.Kernzone_142</Zonentyp_SIA>
+</Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt>"""
+    assert zonentyp_kt in xtf
+    assert "<COORD><C1>694511.547</C1><C2>247816.271</C2></COORD>" in xtf
+    geometry_type = """<Geometrie>
+<SURFACE>
+<BOUNDARY>
+<POLYLINE>
+<COORD>"""
+    assert geometry_type in xtf
 
     # XTF -> GML
     trans2 = OgrConfig(config="tests/data/np/NP_73_CH_de_ili2.cfg",

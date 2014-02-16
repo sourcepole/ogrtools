@@ -25,7 +25,7 @@ QGISDIR=.qgis2
 # Makefile for a PyQGIS plugin 
 
 # translation
-SOURCES = interlis.py ui_interlis.py __init__.py interlisdialog.py
+SOURCES = interlis.py ui_interlis.py __init__.py interlisdialog.py sublayersdialog.py
 #TRANSLATIONS = i18n/interlis_en.ts
 TRANSLATIONS = 
 
@@ -37,7 +37,7 @@ PY_FILES = interlis.py interlisdialog.py __init__.py
 
 EXTRAS = icon.png metadata.txt
 
-UI_FILES = ui_interlis.py
+UI_FILES = ui_interlis.py ui_sublayersdialog.py
 
 RESOURCE_FILES = resources_rc.py
 

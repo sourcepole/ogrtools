@@ -22,18 +22,19 @@
 
 from PyQt4 import QtGui
 from PyQt4.QtCore import pyqtSignature, QSettings, QFileInfo
-from PyQt4.QtGui import QFileDialog
-from qgis.core import QgsMessageLog
+from PyQt4.QtGui import QFileDialog, QMessageBox, QDialog
+from qgis.core import QgsMessageLog, QgsVectorLayer
 from ui_interlis import Ui_Interlis
+from sublayersdialog import SublayersDialog
 import os.path
 import tempfile
 from ogrtools.ogrtransform.ogrconfig import OgrConfig
 
 
 class InterlisDialog(QtGui.QDialog):
-    def __init__(self, interlis):
+    def __init__(self, plugin):
         QtGui.QDialog.__init__(self)
-        self._interlis = interlis
+        self._plugin = plugin
         # Set up the user interface from Designer.
         self.ui = Ui_Interlis()
         self.ui.setupUi(self)
@@ -115,7 +116,10 @@ class InterlisDialog(QtGui.QDialog):
 
     @pyqtSignature('')  # avoid two connections
     def on_mImportButton_clicked(self):
-        self.importtodb()
+        if self.ui.cbDbConnections.currentIndex() == 0:
+            self.importtoqgis()
+        else:
+            self.importtodb()
 
     @pyqtSignature('')  # avoid two connections
     def on_mExportButton_clicked(self):
@@ -129,6 +133,21 @@ class InterlisDialog(QtGui.QDialog):
             cfg = OgrConfig(ds=ds, model=self.ui.mModelLineEdit.text())
         return cfg
 
+    def importtoqgis(self):
+        dataSourceUri = self.iliDs()
+        subLayerVectorLayer = QgsVectorLayer(dataSourceUri, "interlis_sublayers", "ogr")
+        subLayerProvider = subLayerVectorLayer.dataProvider()
+        if not subLayerProvider:
+            QMessageBox.critical(None, "Error accessing interlis sublayers",
+                                 "A problem occured during access of the sublayers")
+            return
+        subLayerList = subLayerProvider.subLayers()
+        subLayerDialog = SublayersDialog(subLayerList)
+        if subLayerDialog.exec_() == QDialog.Accepted:
+            for layername in subLayerDialog.subLayerNames():
+                    #add a new ogr layer for each selected sublayer
+                self._plugin.iface.addVectorLayer(dataSourceUri + "|layername=" + layername, layername, "ogr")
+
     def importtodb(self):
         QgsMessageLog.logMessage(self.iliDs(), "Interlis", QgsMessageLog.INFO)
         cfg = self._ogr_config(self.iliDs())
@@ -139,7 +158,7 @@ class InterlisDialog(QtGui.QDialog):
             QgsMessageLog.logMessage(cfgjson, "Interlis", QgsMessageLog.INFO)
             self.ui.mConfigLineEdit.setText(ogrconfig)
         cfg.transform(dest=self.ogrDs(), debug=True)
-        self._interlis.messageLogWidget().show()
+        self._plugin.messageLogWidget().show()
         QgsMessageLog.logMessage("Import finished", "Interlis", QgsMessageLog.INFO)
         self.ui.mExportButton.setEnabled(True)
 
