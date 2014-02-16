@@ -1,10 +1,15 @@
 import json
 from xml.etree import ElementTree
+import tempfile
 from format_handler import FormatHandlerRegistry
+from ..pyogr.ogr2ogr import ogr2ogr
+from ..interlis.ilismeta import prettify
 try:
     from osgeo import ogr
+    from osgeo import gdal
 except ImportError:
     import ogr
+    import gdal
 
 # Mapping of OGR integer geometry types to GeoJSON type names. (from Fiona)
 
@@ -252,3 +257,61 @@ class OgrConfig:
                         node = ElementTree.SubElement(feature_node, 'ogr:{0}'.format(colname))
                         node.text = str(value)
         return ElementTree.tostring(xml, 'utf-8')
+
+    def transform(self, dest, format=None, layers=[], debug=False):
+        vrt = self.generate_vrt(dst_format=format)
+        if debug:
+            print prettify(vrt)
+        ds = self.tmp_datasource(vrt)
+        dst_format = format or self.dst_format()
+        dsco = []
+        if dst_format == self.dst_format():
+            dsco = self.ds_creation_options()
+        lco = []
+        if dst_format == self.dst_format():
+            lco = self.layer_creation_options()
+        ogr2ogr(pszFormat=str(dst_format), pszDataSource=ds, pszDestDataSource=dest,
+                bOverwrite=True, papszDSCO=dsco, papszLCO=lco, papszLayers=layers)  # poOutputSRS=srs, poSourceSRS=srs
+        self.free_tmp_datasource()
+
+    def transform_reverse(self, dest, format=None, layers=[], debug=False):
+        vrt = self.generate_reverse_vrt(dst_format=format)
+        if debug:
+            print prettify(vrt)
+        ds = self.tmp_datasource(vrt)
+        dst_format = format or self.src_format()
+        ogr2ogr(pszFormat=str(dst_format), pszDataSource=ds,
+                pszDestDataSource=dest, bOverwrite=True, papszLayers=layers)
+        self.free_tmp_datasource()
+
+    def write_enum_tables(self, dest, format=None, debug=False):
+        gml = self.generate_enum_gml()
+        if debug:
+            print prettify(gml)
+        ds = self.tmp_datasource(gml)
+        dst_format = format or self.dst_format()
+        dsco = []
+        if dst_format == self.dst_format():
+            dsco = self.ds_creation_options()
+        lco = []
+        if dst_format == self.dst_format():
+            lco = self.layer_creation_options()
+        ogr2ogr(pszFormat=str(dst_format), pszDataSource=ds,
+                pszDestDataSource=dest, bOverwrite=True, papszDSCO=dsco, papszLCO=lco)
+        self.free_tmp_datasource()
+
+    def tmp_memfile(self, data):
+        self._tmp_memfile = tempfile.mktemp('.vrt', 'ogr_', '/vsimem')
+        # Create in-memory file
+        gdal.FileFromMemBuffer(self._tmp_memfile, data)
+        return self._tmp_memfile
+
+    def free_tmp_datasource(self):
+        # Free memory associated with the in-memory file
+        gdal.Unlink(self._tmp_memfile)
+
+    def tmp_datasource(self, data):
+        #Call free_tmp_datasource after closing datasource to free memeroy
+        vrt = self.tmp_memfile(data)
+        ds = ogr.Open(vrt)
+        return ds
