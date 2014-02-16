@@ -123,3 +123,8 @@ clean:
 # build documentation with sphinx
 doc: 
 	cd help; make html
+
+# Publish new version:
+# VERSION=master make package
+# scp interlis.zip builder@builder:www/qgis/beta/
+# ssh builder@builder qgis-plugin-repo-scan http://build.sourcepole.ch/qgis /home/builder/www/qgis
