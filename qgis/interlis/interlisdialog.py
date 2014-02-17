@@ -161,13 +161,24 @@ class InterlisDialog(QtGui.QDialog):
             cfgjson = cfg.generate_config(format, outfile=ogrconfig, layer_list=[])
             QgsMessageLog.logMessage(cfgjson, "Interlis", QgsMessageLog.INFO)
             self.ui.mConfigLineEdit.setText(ogrconfig)
-        cfg.transform(dest=self.ogrDs(), debug=True)
+        ogroutput = cfg.transform(dest=self.ogrDs(), debug=True)
         self._plugin.messageLogWidget().show()
+        self._log_output(ogroutput)
         QgsMessageLog.logMessage("Import finished", "Interlis", QgsMessageLog.INFO)
         self.ui.mExportButton.setEnabled(True)
 
     def exporttoxtf(self):
         cfg = self._ogr_config(self.ogrDs())
-        cfg.transform_reverse(dest=self.iliDs(), debug=True)
+        ogroutput = cfg.transform_reverse(dest=self.iliDs(), debug=True)
+        self._log_output(ogroutput)
         QgsMessageLog.logMessage("Export to '%s' finished" % self.ui.mDataLineEdit.text(),
                                  "Interlis", QgsMessageLog.INFO)
+
+    def _log_output(self, output, lines_per_msg=None):
+        if lines_per_msg is None:
+            QgsMessageLog.logMessage(output, "Interlis", QgsMessageLog.INFO)
+        else:
+            lines = output.splitlines()
+            for i in range(0, len(lines), lines_per_msg):
+                msg = "\n".join(lines[i:i + lines_per_msg])
+                QgsMessageLog.logMessage(msg, "Interlis", QgsMessageLog.INFO)

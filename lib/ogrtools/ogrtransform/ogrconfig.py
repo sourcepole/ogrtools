@@ -1,6 +1,7 @@
 import json
 from xml.etree import ElementTree
 import tempfile
+import os
 from format_handler import FormatHandlerRegistry
 from ..pyogr.ogr2ogr import ogr2ogr
 from ..interlis.ilismeta import prettify
@@ -267,6 +268,25 @@ class OgrConfig:
                         node.text = str(value)
         return ElementTree.tostring(xml, 'utf-8')
 
+    def _set_ogr_debug_flag(self, debug):
+        os.environ["CPL_DEBUG"] = 'ON' if debug else 'OFF'
+
+    def _activate_ogr_log(self):
+        # Send OGR C lib output to file
+        (ogrlogfd, ogrlogfn) = tempfile.mkstemp()
+        os.close(ogrlogfd)
+        os.environ["CPL_LOG"] = ogrlogfn
+        os.environ["CPL_LOG_ERRORS"] = "ON"
+        return ogrlogfn
+
+    def _close_ogr_log(self, ogrlogfn):
+        f = open(ogrlogfn, 'r')
+        ogroutput = f.read()
+        f.close()
+        os.unlink(ogrlogfn)
+        os.environ["CPL_LOG_ERRORS"] = "OFF"
+        return ogroutput
+
     def transform(self, dest, format=None, layers=[], debug=False):
         vrt = self.generate_vrt(dst_format=format)
         #if debug:
@@ -279,9 +299,12 @@ class OgrConfig:
         lco = []
         if dst_format == self.dst_format():
             lco = self.layer_creation_options()
+        self._set_ogr_debug_flag(debug)
+        ogrlogfn = self._activate_ogr_log()
         ogr2ogr(pszFormat=str(dst_format), pszDataSource=ds, pszDestDataSource=dest,
                 bOverwrite=True, papszDSCO=dsco, papszLCO=lco, papszLayers=layers)  # poOutputSRS=srs, poSourceSRS=srs
         self._free_tmp_datasource()
+        return self._close_ogr_log(ogrlogfn)
 
     def transform_reverse(self, dest, format=None, layers=[], debug=False):
         vrt = self.generate_reverse_vrt(dst_format=format)
@@ -289,9 +312,12 @@ class OgrConfig:
         #    print prettify(vrt)
         ds = self._tmp_datasource(vrt)
         dst_format = format or self.src_format()
+        self._set_ogr_debug_flag(debug)
+        ogrlogfn = self._activate_ogr_log()
         ogr2ogr(pszFormat=str(dst_format), pszDataSource=ds,
                 pszDestDataSource=dest, bOverwrite=True, papszLayers=layers)
         self._free_tmp_datasource()
+        return self._close_ogr_log(ogrlogfn)
 
     def write_enum_tables(self, dest, format=None, debug=False):
         gml = self.generate_enum_gml()
