@@ -68,7 +68,7 @@ class InterlisDialog(QtGui.QDialog):
             'host': settings.value("host", type=str),
             'port': settings.value("port", type=str),
             'dbname': settings.value("database", type=str),
-            'username': settings.value("username", type=str),
+            'user': settings.value("username", type=str),
             'password': settings.value("password", type=str)
         }
         ds = 'PG:'
@@ -141,12 +141,16 @@ class InterlisDialog(QtGui.QDialog):
             QMessageBox.critical(None, "Error accessing interlis sublayers",
                                  "A problem occured during access of the sublayers")
             return
-        subLayerList = subLayerProvider.subLayers()
-        subLayerDialog = SublayersDialog(subLayerList)
-        if subLayerDialog.exec_() == QDialog.Accepted:
-            for layername in subLayerDialog.subLayerNames():
-                    #add a new ogr layer for each selected sublayer
-                self._plugin.iface.addVectorLayer(dataSourceUri + "|layername=" + layername, layername, "ogr")
+        #QGIS 1.8:
+        #subLayerList = subLayerProvider.subLayers()
+        #subLayerDialog = SublayersDialog(subLayerList)
+        #if subLayerDialog.exec_() == QDialog.Accepted:
+        #    for layername in subLayerDialog.subLayerNames():
+        #            #add a new ogr layer for each selected sublayer
+        #        self._plugin.iface.addVectorLayer(dataSourceUri + "|layername=" + layername, layername, "ogr")
+        #QGIS 2: Sublayer dialog opens automatically
+        #Bug in 2.0 causes crash when adding sublayers
+        self._plugin.iface.addVectorLayer(dataSourceUri, "Interlis layer", "ogr")
 
     def importtodb(self):
         QgsMessageLog.logMessage(self.iliDs(), "Interlis", QgsMessageLog.INFO)

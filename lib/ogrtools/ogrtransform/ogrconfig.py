@@ -269,8 +269,8 @@ class OgrConfig:
 
     def transform(self, dest, format=None, layers=[], debug=False):
         vrt = self.generate_vrt(dst_format=format)
-        if debug:
-            print prettify(vrt)
+        #if debug:
+        #    print prettify(vrt)
         ds = self._tmp_datasource(vrt)
         dst_format = format or self.dst_format()
         dsco = []
@@ -285,8 +285,8 @@ class OgrConfig:
 
     def transform_reverse(self, dest, format=None, layers=[], debug=False):
         vrt = self.generate_reverse_vrt(dst_format=format)
-        if debug:
-            print prettify(vrt)
+        #if debug:
+        #    print prettify(vrt)
         ds = self._tmp_datasource(vrt)
         dst_format = format or self.src_format()
         ogr2ogr(pszFormat=str(dst_format), pszDataSource=ds,
@@ -295,8 +295,8 @@ class OgrConfig:
 
     def write_enum_tables(self, dest, format=None, debug=False):
         gml = self.generate_enum_gml()
-        if debug:
-            print prettify(gml)
+        #if debug:
+        #    print prettify(gml)
         ds = self._tmp_datasource(gml)
         dst_format = format or self.dst_format()
         dsco = []
