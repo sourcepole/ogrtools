@@ -94,9 +94,11 @@ package: compile
 		git archive --prefix=$(PLUGINNAME)/ -o $(PLUGINNAME).zip $(VERSION)
 		#Add symlinked lib dirs
 		rm -rf $(PLUGINNAME)
-		mkdir -p $(PLUGINNAME)
+		unzip $(PLUGINNAME).zip
+		rm $(PLUGINNAME)/ogrtools
 		cp -r ../../lib/ogrtools $(PLUGINNAME)/
-		zip -r -i '*.py' -q -g $(PLUGINNAME).zip $(PLUGINNAME)
+		rm $(PLUGINNAME).zip
+		zip -r -q $(PLUGINNAME).zip $(PLUGINNAME) -x '*.pyc' '*.bak'
 		rm -rf $(PLUGINNAME)
 		echo "Created package: $(PLUGINNAME).zip"
 
