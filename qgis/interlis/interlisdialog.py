@@ -24,6 +24,7 @@ from PyQt4 import QtGui
 from PyQt4.QtCore import pyqtSignature, QSettings, QFileInfo
 from PyQt4.QtGui import QFileDialog, QMessageBox, QDialog
 from qgis.core import QgsMessageLog, QgsVectorLayer
+from qgis.gui import QgsMessageBar
 from ui_interlis import Ui_Interlis
 from sublayersdialog import SublayersDialog
 import os.path
@@ -44,13 +45,13 @@ class InterlisDialog(QtGui.QDialog):
         self.ui.mConfigButton.setEnabled(False)
         self.ui.mConfigLineEdit.setEnabled(False)
         self.ui.cbResetData.setEnabled(False)
-
-    def show(self):
         #Initialize DB connection drop-down
         self.ui.cbDbConnections.clear()
         self.ui.cbDbConnections.addItem("QGIS Layer")
         self.ui.cbDbConnections.addItems(self.dbConnectionList())
-        QtGui.QDialog.show(self)
+
+    def setup(self):
+        self.ui.mDataLineEdit.setText("")
 
     def dataSourceUri(self):
         if self.ui.mDataLineEdit.text().isEmpty():
@@ -151,6 +152,9 @@ class InterlisDialog(QtGui.QDialog):
         #QGIS 2: Sublayer dialog opens automatically
         #Bug in 2.0 causes crash when adding sublayers
         self._plugin.iface.addVectorLayer(dataSourceUri, "Interlis layer", "ogr")
+        self.accept()
+        self._plugin.iface.messageBar().pushMessage("Interlis", "Import finished",
+                                                    level=QgsMessageBar.INFO, duration=2)
 
     def importtodb(self):
         QgsMessageLog.logMessage(self.iliDs(), "Interlis", QgsMessageLog.INFO)
@@ -166,6 +170,9 @@ class InterlisDialog(QtGui.QDialog):
         self._log_output(ogroutput)
         QgsMessageLog.logMessage("Import finished", "Interlis", QgsMessageLog.INFO)
         self.ui.mExportButton.setEnabled(True)
+        self.accept()
+        self._plugin.iface.messageBar().pushMessage("Interlis", "Import finished",
+                                                    level=QgsMessageBar.INFO, duration=2)
 
     def exporttoxtf(self):
         cfg = self._ogr_config(self.ogrDs())

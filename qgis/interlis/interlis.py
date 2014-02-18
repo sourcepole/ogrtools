@@ -71,9 +71,6 @@ class Interlis:
     def messageLogWidget(self):
         return self.iface.mainWindow().findChild(QDockWidget, 'MessageLog')
 
-    # run method that performs all the real work
     def run(self):
-        # show the dialog
-        self.dlg.show()
-        # Run the dialog event loop
+        self.dlg.setup()
         self.dlg.exec_()
