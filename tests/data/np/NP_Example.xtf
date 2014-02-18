@@ -1,2014 +1,2014 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<TRANSFER xmlns="http://www.interlis.ch/INTERLIS2.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
-<HEADERSECTION VERSION="2.3" SENDER="GEOS Pro" >
-<MODELS>
-<MODEL NAME="Nutzungsplanung" URI="http://models.geo.admin.ch/ARE/" VERSION="2010-12-15" /></MODELS>
-<ALIAS />
-</HEADERSECTION>
-<DATASECTION>
-<Nutzungsplanung.Nutzungsplanung BID = "xxx0" KIND="FULL">
-<Nutzungsplanung.Nutzungsplanung.Mutationshinweis TID ="xz4e43d386e7880000">
-<Identifikator>1</Identifikator>
-<Erfassungsdatum>2011-08-11</Erfassungsdatum>
-<Bemerkungen>Demo</Bemerkungen>
-</Nutzungsplanung.Nutzungsplanung.Mutationshinweis>
-<Nutzungsplanung.Nutzungsplanung.Dokument TID ="xz4e43cb2800000000">
-<Titel>BZ Ordnung</Titel>
-<OffiziellerTitel>Bau und Zonenordnung Uster</OffiziellerTitel>
-<Abkuerzung>BZ</Abkuerzung>
-<Kanton>ZH</Kanton>
-<Gemeinde>198</Gemeinde>
-<OffizielleNr>1</OffizielleNr>
-<publiziertAb>1990-40-1</publiziertAb>
-<Rechtsstatus>inKraft</Rechtsstatus>
-</Nutzungsplanung.Nutzungsplanung.Dokument>
-<Nutzungsplanung.Nutzungsplanung.Dokument TID ="xz4e43cb2800000001">
-<Titel>Naturschutz</Titel>
-<OffiziellerTitel>Naturschutzgebiete N&#xe4;nnikon</OffiziellerTitel>
-<Abkuerzung>NHSV</Abkuerzung>
-<Kanton>ZH</Kanton>
-<Gemeinde>198</Gemeinde>
-<OffizielleNr>2</OffizielleNr>
-<publiziertAb>2011-08-01</publiziertAb>
-<Rechtsstatus>laufendeAenderungen</Rechtsstatus>
-</Nutzungsplanung.Nutzungsplanung.Dokument>
-<Nutzungsplanung.Nutzungsplanung.Dokument TID ="xz4e43cb2800000002">
-<Titel>Nutzungzonen</Titel>
-<OffiziellerTitel>Bundesgesetz &#xfc;ber die Raumplanung</OffiziellerTitel>
-<Abkuerzung>RPG</Abkuerzung>
-<Kanton>CH</Kanton>
-<OffizielleNr>SR 700</OffizielleNr>
-<publiziertAb>2003-01-29</publiziertAb>
-<Rechtsstatus>inKraft</Rechtsstatus>
-</Nutzungsplanung.Nutzungsplanung.Dokument>
-<Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt TID ="xz4e43cb2800000003">
-<Identifikator>111</Identifikator>
-<Zonentyp_Kt>Wohnzone W1</Zonentyp_Kt>
-<Abkuerzung>W1</Abkuerzung>
-<Bemerkungen>Wohnzonen -1-geschossig</Bemerkungen>
-<Hauptnutzung_CH>Bauzonen_1.Wohnzonen_11</Hauptnutzung_CH>
-<Zonentyp_SIA>Wohnzonen_11.Wohnzone_a_111</Zonentyp_SIA>
-</Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt>
-<Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt TID ="xz4e43cb2800000004">
-<Identifikator>112</Identifikator>
-<Zonentyp_Kt>Wohnzone W2</Zonentyp_Kt>
-<Abkuerzung>W2</Abkuerzung>
-<Bemerkungen>Wohnzonen -2-geschossig</Bemerkungen>
-<Hauptnutzung_CH>Bauzonen_1.Wohnzonen_11</Hauptnutzung_CH>
-<Zonentyp_SIA>Wohnzonen_11.Wohnzone_b_112</Zonentyp_SIA>
-</Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt>
-<Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt TID ="xz4e43cb2800000005">
-<Identifikator>113</Identifikator>
-<Zonentyp_Kt>Wohnzone W3</Zonentyp_Kt>
-<Abkuerzung>W3</Abkuerzung>
-<Bemerkungen>Wohnzonen -3-geschossig</Bemerkungen>
-<Hauptnutzung_CH>Bauzonen_1.Wohnzonen_11</Hauptnutzung_CH>
-<Zonentyp_SIA>Wohnzonen_11.Wohnzone_c_113</Zonentyp_SIA>
-</Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt>
-<Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt TID ="xz4e43cb2800000006">
-<Identifikator>114</Identifikator>
-<Zonentyp_Kt>Wohnzone W4</Zonentyp_Kt>
-<Abkuerzung>W4</Abkuerzung>
-<Bemerkungen>Wohnzonen -4-geschossig</Bemerkungen>
-<Hauptnutzung_CH>Bauzonen_1.Wohnzonen_11</Hauptnutzung_CH>
-<Zonentyp_SIA>Wohnzonen_11.Wohnzone_d_114</Zonentyp_SIA>
-</Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt>
-<Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt TID ="xz4e43cb2800000007">
-<Identifikator>121</Identifikator>
-<Zonentyp_Kt>Gewerbezone</Zonentyp_Kt>
-<Abkuerzung>G</Abkuerzung>
-<Bemerkungen>Gewerbezone</Bemerkungen>
-<Hauptnutzung_CH>Bauzonen_1.Arbeitszonen_12</Hauptnutzung_CH>
-<Zonentyp_SIA>Arbeitszonen_12.Arbeitszone_a_121</Zonentyp_SIA>
-</Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt>
-<Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt TID ="xz4e43cb2800000008">
-<Identifikator>122</Identifikator>
-<Zonentyp_Kt>Industriezone</Zonentyp_Kt>
-<Abkuerzung>I</Abkuerzung>
-<Bemerkungen>Industriezone</Bemerkungen>
-<Hauptnutzung_CH>Bauzonen_1.Arbeitszonen_12</Hauptnutzung_CH>
-<Zonentyp_SIA>Arbeitszonen_12.Arbeitszone_b_122</Zonentyp_SIA>
-</Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt>
-<Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt TID ="xz4e43cb2800000009">
-<Identifikator>141</Identifikator>
-<Zonentyp_Kt>Zentrumszone</Zonentyp_Kt>
-<Abkuerzung>Z</Abkuerzung>
-<Bemerkungen>Zentrumszone</Bemerkungen>
-<Hauptnutzung_CH>Bauzonen_1.Zentrumszonen_14</Hauptnutzung_CH>
-<Zonentyp_SIA>Zentrumszonen_14.allgemeine_Zentrumszone_141</Zonentyp_SIA>
-</Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt>
-<Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt TID ="xz4e43cb280000000a">
-<Identifikator>142</Identifikator>
-<Zonentyp_Kt>Kernzone</Zonentyp_Kt>
-<Abkuerzung>K</Abkuerzung>
-<Bemerkungen>Kernzone</Bemerkungen>
-<Hauptnutzung_CH>Bauzonen_1.Zentrumszonen_14</Hauptnutzung_CH>
-<Zonentyp_SIA>Zentrumszonen_14.Kernzone_142</Zonentyp_SIA>
-</Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt>
-<Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt TID ="xz4e43cb280000000b">
-<Identifikator>151</Identifikator>
-<Zonentyp_Kt>&#xd6;ffentliche Bauten A</Zonentyp_Kt>
-<Abkuerzung>Oe</Abkuerzung>
-<Bemerkungen>Zone f&#xfc;r &#xf6;ffentliche Bauten und Anlagen</Bemerkungen>
-<Hauptnutzung_CH>Bauzonen_1.Zonen_fuer_oeffentliche_Nutzungen_15</Hauptnutzung_CH>
-<Zonentyp_SIA>Zonen_fuer_oeffentliche_Nutzungen_15.Zone_fuer_oeffentliche_Bauten_und_Anlagen_151</Zonentyp_SIA>
-</Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt>
-<Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt TID ="xz4e43cb280000000c">
-<Identifikator>152</Identifikator>
-<Zonentyp_Kt>&#xd6;ffentliche Bauten FZ</Zonentyp_Kt>
-<Abkuerzung>Oe</Abkuerzung>
-<Bemerkungen>Zone f&#xfc;r &#xf6;ffentlichen Sport und Freizeitanlagen</Bemerkungen>
-<Hauptnutzung_CH>Bauzonen_1.Zonen_fuer_oeffentliche_Nutzungen_15</Hauptnutzung_CH>
-<Zonentyp_SIA>Zonen_fuer_oeffentliche_Nutzungen_15.Zone_fuer_oeffentlichen_Sport_und_Freizeitanlagen_152</Zonentyp_SIA>
-</Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt>
-<Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt TID ="xz4e43cb280000000d">
-<Identifikator>162</Identifikator>
-<Zonentyp_Kt>Freihaltezone</Zonentyp_Kt>
-<Abkuerzung>F</Abkuerzung>
-<Bemerkungen>Freihaltezone</Bemerkungen>
-<Hauptnutzung_CH>Bauzonen_1.eingeschraenkte_Bauzonen_16</Hauptnutzung_CH>
-<Zonentyp_SIA>eingeschraenkte_Bauzonen_16.weiterer_Zonentyp_162</Zonentyp_SIA>
-</Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt>
-<Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt TID ="xz4e43cb280000000e">
-<Identifikator>421</Identifikator>
-<Zonentyp_Kt>Reservezone</Zonentyp_Kt>
-<Abkuerzung>R</Abkuerzung>
-<Bemerkungen>Reservezone</Bemerkungen>
-<Hauptnutzung_CH>weitere_Zonen_4.weitere_Zonen_Reservezonen_42</Hauptnutzung_CH>
-<Zonentyp_SIA>weitere_Zonen_nach_Art18_Abs2_RPG_42.Reservezone_421</Zonentyp_SIA>
-</Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt>
-<Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp TID ="xz4e43cb280000000f">
-<Identifikator>111</Identifikator>
-<Zonentyp>111</Zonentyp>
-<Abkuerzung>L2/30 II</Abkuerzung>
-<Verbindlichkeit>eigentuemerverbindlich</Verbindlichkeit>
-<Bemerkungen>Wohnzonen - Landhauszone, 2-geschossig</Bemerkungen>
-<Zonentyp_Kt_2 REF="xz4e43cb2800000003"/>
-</Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp>
-<Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp TID ="xz4e43cb2800000010">
-<Identifikator>1121</Identifikator>
-<Zonentyp>112</Zonentyp>
-<Abkuerzung>W2/30 II</Abkuerzung>
-<Verbindlichkeit>eigentuemerverbindlich</Verbindlichkeit>
-<Bemerkungen>Wohnzonen - 2-geschossig</Bemerkungen>
-<Zonentyp_Kt_2 REF="xz4e43cb2800000004"/>
-</Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp>
-<Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp TID ="xz4e43cb2800000011">
-<Identifikator>1122</Identifikator>
-<Zonentyp>112</Zonentyp>
-<Abkuerzung>W2/40 II</Abkuerzung>
-<Verbindlichkeit>eigentuemerverbindlich</Verbindlichkeit>
-<Bemerkungen>Wohnzonen - 2-geschossig</Bemerkungen>
-<Zonentyp_Kt_2 REF="xz4e43cb2800000004"/>
-</Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp>
-<Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp TID ="xz4e43cb2800000012">
-<Identifikator>1123</Identifikator>
-<Zonentyp>112</Zonentyp>
-<Abkuerzung>W2/40G III</Abkuerzung>
-<Verbindlichkeit>eigentuemerverbindlich</Verbindlichkeit>
-<Bemerkungen>Wohnzonen - 2-geschossig, m.G.erl.</Bemerkungen>
-<Zonentyp_Kt_2 REF="xz4e43cb2800000004"/>
-</Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp>
-<Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp TID ="xz4e43cb2800000013">
-<Identifikator>1124</Identifikator>
-<Zonentyp>112</Zonentyp>
-<Abkuerzung>W2/50G III</Abkuerzung>
-<Verbindlichkeit>eigentuemerverbindlich</Verbindlichkeit>
-<Bemerkungen>Wohnzonen - 2-geschossig, m.G.erl.</Bemerkungen>
-<Zonentyp_Kt_2 REF="xz4e43cb2800000004"/>
-</Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp>
-<Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp TID ="xz4e43cb2800000014">
-<Identifikator>1131</Identifikator>
-<Zonentyp>113</Zonentyp>
-<Abkuerzung>W3/50 II</Abkuerzung>
-<Verbindlichkeit>eigentuemerverbindlich</Verbindlichkeit>
-<Bemerkungen>Wohnzonen - 3-geschossig</Bemerkungen>
-<Zonentyp_Kt_2 REF="xz4e43cb2800000005"/>
-</Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp>
-<Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp TID ="xz4e43cb2800000015">
-<Identifikator>1132</Identifikator>
-<Zonentyp>113</Zonentyp>
-<Abkuerzung>W3/50G III</Abkuerzung>
-<Verbindlichkeit>eigentuemerverbindlich</Verbindlichkeit>
-<Bemerkungen>Wohnzonen - 3-geschossig, m.G.erl.</Bemerkungen>
-<Zonentyp_Kt_2 REF="xz4e43cb2800000005"/>
-</Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp>
-<Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp TID ="xz4e43cb2800000016">
-<Identifikator>1133</Identifikator>
-<Zonentyp>113</Zonentyp>
-<Abkuerzung>W3/70G III</Abkuerzung>
-<Verbindlichkeit>eigentuemerverbindlich</Verbindlichkeit>
-<Bemerkungen>Wohnzonen - 3-geschossig, m.G.erl.</Bemerkungen>
-<Zonentyp_Kt_2 REF="xz4e43cb2800000005"/>
-</Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp>
-<Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp TID ="xz4e43cefd62f80000">
-<Identifikator>421</Identifikator>
-<Zonentyp>421</Zonentyp>
-<Abkuerzung>R</Abkuerzung>
-<Verbindlichkeit>eigentuemerverbindlich</Verbindlichkeit>
-<Bemerkungen>Reservezone</Bemerkungen>
-<Zonentyp_Kt_2 REF="xz4e43cb280000000e"/>
-</Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp>
-<Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp TID ="xz4e43cf4362f80003">
-<Identifikator>162</Identifikator>
-<Zonentyp>162</Zonentyp>
-<Abkuerzung>F</Abkuerzung>
-<Verbindlichkeit>eigentuemerverbindlich</Verbindlichkeit>
-<Bemerkungen>Freihaltezone</Bemerkungen>
-<Zonentyp_Kt_2 REF="xz4e43cb280000000d"/>
-</Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp>
-<Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonenflaeche TID ="xz4e43d44ae7880005">
-<Geometrie>
-<SURFACE>
-<BOUNDARY>
-<POLYLINE>
-<COORD>
-<C1>  694511.547</C1>
-<C2>  247816.271</C2>
-</COORD>
-<COORD>
-<C1>  694533.508</C1>
-<C2>  247782.974</C2>
-</COORD>
-<COORD>
-<C1>  694535.414</C1>
-<C2>  247780.101</C2>
-</COORD>
-<COORD>
-<C1>  694538.417</C1>
-<C2>  247775.527</C2>
-</COORD>
-<COORD>
-<C1>  694549.639</C1>
-<C2>  247758.523</C2>
-</COORD>
-<COORD>
-<C1>  694558.798</C1>
-<C2>  247744.644</C2>
-</COORD>
-<COORD>
-<C1>  694572.005</C1>
-<C2>  247724.587</C2>
-</COORD>
-<COORD>
-<C1>  694570.668</C1>
-<C2>  247721.874</C2>
-</COORD>
-<COORD>
-<C1>  694554.152</C1>
-<C2>  247688.349</C2>
-</COORD>
-<COORD>
-<C1>  694555.844</C1>
-<C2>  247687.289</C2>
-</COORD>
-<COORD>
-<C1>  694545.656</C1>
-<C2>  247666.581</C2>
-</COORD>
-<COORD>
-<C1>  694517.111</C1>
-<C2>  247683.047</C2>
-</COORD>
-<COORD>
-<C1>  694509.953</C1>
-<C2>  247666.438</C2>
-</COORD>
-<COORD>
-<C1>  694509.433</C1>
-<C2>  247665.561</C2>
-</COORD>
-<COORD>
-<C1>  694497.883</C1>
-<C2>  247672.617</C2>
-</COORD>
-<COORD>
-<C1>  694492.620</C1>
-<C2>  247675.064</C2>
-</COORD>
-<COORD>
-<C1>  694488.616</C1>
-<C2>  247657.769</C2>
-</COORD>
-<COORD>
-<C1>  694481.719</C1>
-<C2>  247646.005</C2>
-</COORD>
-<COORD>
-<C1>  694475.422</C1>
-<C2>  247635.262</C2>
-</COORD>
-<COORD>
-<C1>  694536.108</C1>
-<C2>  247597.236</C2>
-</COORD>
-<COORD>
-<C1>  694585.416</C1>
-<C2>  247566.339</C2>
-</COORD>
-<COORD>
-<C1>  694587.873</C1>
-<C2>  247564.799</C2>
-</COORD>
-<COORD>
-<C1>  694587.251</C1>
-<C2>  247562.138</C2>
-</COORD>
-<COORD>
-<C1>  694584.301</C1>
-<C2>  247548.468</C2>
-</COORD>
-<COORD>
-<C1>  694581.586</C1>
-<C2>  247534.791</C2>
-</COORD>
-<COORD>
-<C1>  694579.066</C1>
-<C2>  247521.057</C2>
-</COORD>
-<COORD>
-<C1>  694578.807</C1>
-<C2>  247519.516</C2>
-</COORD>
-<COORD>
-<C1>  694576.215</C1>
-<C2>  247520.717</C2>
-</COORD>
-<COORD>
-<C1>  694544.460</C1>
-<C2>  247535.435</C2>
-</COORD>
-<COORD>
-<C1>  694533.380</C1>
-<C2>  247492.555</C2>
-</COORD>
-<COORD>
-<C1>  694500.746</C1>
-<C2>  247515.550</C2>
-</COORD>
-<COORD>
-<C1>  694473.005</C1>
-<C2>  247476.224</C2>
-</COORD>
-<COORD>
-<C1>  694471.821</C1>
-<C2>  247474.545</C2>
-</COORD>
-<COORD>
-<C1>  694470.369</C1>
-<C2>  247472.486</C2>
-</COORD>
-<COORD>
-<C1>  694468.916</C1>
-<C2>  247470.427</C2>
-</COORD>
-<COORD>
-<C1>  694464.632</C1>
-<C2>  247474.445</C2>
-</COORD>
-<COORD>
-<C1>  694455.269</C1>
-<C2>  247484.168</C2>
-</COORD>
-<COORD>
-<C1>  694449.365</C1>
-<C2>  247485.873</C2>
-</COORD>
-<COORD>
-<C1>  694438.666</C1>
-<C2>  247483.009</C2>
-</COORD>
-<COORD>
-<C1>  694415.880</C1>
-<C2>  247458.051</C2>
-</COORD>
-<COORD>
-<C1>  694393.634</C1>
-<C2>  247433.684</C2>
-</COORD>
-<COORD>
-<C1>  694366.401</C1>
-<C2>  247403.855</C2>
-</COORD>
-<COORD>
-<C1>  694363.785</C1>
-<C2>  247406.447</C2>
-</COORD>
-<COORD>
-<C1>  694351.420</C1>
-<C2>  247418.711</C2>
-</COORD>
-<COORD>
-<C1>  694290.669</C1>
-<C2>  247478.951</C2>
-</COORD>
-<COORD>
-<C1>  694245.308</C1>
-<C2>  247523.930</C2>
-</COORD>
-<COORD>
-<C1>  694237.769</C1>
-<C2>  247525.771</C2>
-</COORD>
-<COORD>
-<C1>  694230.997</C1>
-<C2>  247527.425</C2>
-</COORD>
-<COORD>
-<C1>  694226.677</C1>
-<C2>  247528.480</C2>
-</COORD>
-<COORD>
-<C1>  694207.359</C1>
-<C2>  247533.199</C2>
-</COORD>
-<COORD>
-<C1>  694171.567</C1>
-<C2>  247540.978</C2>
-</COORD>
-<COORD>
-<C1>  694134.733</C1>
-<C2>  247549.445</C2>
-</COORD>
-<COORD>
-<C1>  694097.895</C1>
-<C2>  247557.944</C2>
-</COORD>
-<COORD>
-<C1>  694094.854</C1>
-<C2>  247558.876</C2>
-</COORD>
-<COORD>
-<C1>  694083.050</C1>
-<C2>  247562.494</C2>
-</COORD>
-<COORD>
-<C1>  694071.241</C1>
-<C2>  247566.113</C2>
-</COORD>
-<COORD>
-<C1>  694071.565</C1>
-<C2>  247568.286</C2>
-</COORD>
-<COORD>
-<C1>  694071.905</C1>
-<C2>  247570.457</C2>
-</COORD>
-<COORD>
-<C1>  694072.261</C1>
-<C2>  247572.625</C2>
-</COORD>
-<COORD>
-<C1>  694072.632</C1>
-<C2>  247574.790</C2>
-</COORD>
-<COORD>
-<C1>  694073.020</C1>
-<C2>  247576.953</C2>
-</COORD>
-<COORD>
-<C1>  694073.423</C1>
-<C2>  247579.113</C2>
-</COORD>
-<COORD>
-<C1>  694073.423</C1>
-<C2>  247579.114</C2>
-</COORD>
-<COORD>
-<C1>  694073.842</C1>
-<C2>  247581.270</C2>
-</COORD>
-<COORD>
-<C1>  694074.276</C1>
-<C2>  247583.424</C2>
-</COORD>
-<COORD>
-<C1>  694074.726</C1>
-<C2>  247585.574</C2>
-</COORD>
-<COORD>
-<C1>  694075.192</C1>
-<C2>  247587.721</C2>
-</COORD>
-<COORD>
-<C1>  694075.673</C1>
-<C2>  247589.865</C2>
-</COORD>
-<COORD>
-<C1>  694076.170</C1>
-<C2>  247592.005</C2>
-</COORD>
-<COORD>
-<C1>  694076.171</C1>
-<C2>  247592.008</C2>
-</COORD>
-<COORD>
-<C1>  694076.199</C1>
-<C2>  247592.151</C2>
-</COORD>
-<COORD>
-<C1>  694076.224</C1>
-<C2>  247592.295</C2>
-</COORD>
-<COORD>
-<C1>  694076.247</C1>
-<C2>  247592.439</C2>
-</COORD>
-<COORD>
-<C1>  694076.268</C1>
-<C2>  247592.584</C2>
-</COORD>
-<COORD>
-<C1>  694076.286</C1>
-<C2>  247592.729</C2>
-</COORD>
-<COORD>
-<C1>  694076.301</C1>
-<C2>  247592.874</C2>
-</COORD>
-<COORD>
-<C1>  694076.314</C1>
-<C2>  247593.020</C2>
-</COORD>
-<COORD>
-<C1>  694076.324</C1>
-<C2>  247593.165</C2>
-</COORD>
-<COORD>
-<C1>  694076.332</C1>
-<C2>  247593.311</C2>
-</COORD>
-<COORD>
-<C1>  694076.337</C1>
-<C2>  247593.457</C2>
-</COORD>
-<COORD>
-<C1>  694076.340</C1>
-<C2>  247593.603</C2>
-</COORD>
-<COORD>
-<C1>  694076.340</C1>
-<C2>  247593.749</C2>
-</COORD>
-<COORD>
-<C1>  694076.338</C1>
-<C2>  247593.895</C2>
-</COORD>
-<COORD>
-<C1>  694076.333</C1>
-<C2>  247594.041</C2>
-</COORD>
-<COORD>
-<C1>  694076.325</C1>
-<C2>  247594.187</C2>
-</COORD>
-<COORD>
-<C1>  694076.315</C1>
-<C2>  247594.332</C2>
-</COORD>
-<COORD>
-<C1>  694076.303</C1>
-<C2>  247594.478</C2>
-</COORD>
-<COORD>
-<C1>  694076.287</C1>
-<C2>  247594.623</C2>
-</COORD>
-<COORD>
-<C1>  694076.270</C1>
-<C2>  247594.768</C2>
-</COORD>
-<COORD>
-<C1>  694076.250</C1>
-<C2>  247594.913</C2>
-</COORD>
-<COORD>
-<C1>  694076.227</C1>
-<C2>  247595.057</C2>
-</COORD>
-<COORD>
-<C1>  694076.202</C1>
-<C2>  247595.201</C2>
-</COORD>
-<COORD>
-<C1>  694076.174</C1>
-<C2>  247595.344</C2>
-</COORD>
-<COORD>
-<C1>  694076.144</C1>
-<C2>  247595.487</C2>
-</COORD>
-<COORD>
-<C1>  694076.111</C1>
-<C2>  247595.629</C2>
-</COORD>
-<COORD>
-<C1>  694076.076</C1>
-<C2>  247595.771</C2>
-</COORD>
-<COORD>
-<C1>  694076.038</C1>
-<C2>  247595.912</C2>
-</COORD>
-<COORD>
-<C1>  694075.998</C1>
-<C2>  247596.053</C2>
-</COORD>
-<COORD>
-<C1>  694075.955</C1>
-<C2>  247596.192</C2>
-</COORD>
-<COORD>
-<C1>  694075.910</C1>
-<C2>  247596.331</C2>
-</COORD>
-<COORD>
-<C1>  694075.868</C1>
-<C2>  247596.455</C2>
-</COORD>
-<COORD>
-<C1>  694075.863</C1>
-<C2>  247596.469</C2>
-</COORD>
-<COORD>
-<C1>  694075.813</C1>
-<C2>  247596.607</C2>
-</COORD>
-<COORD>
-<C1>  694075.761</C1>
-<C2>  247596.743</C2>
-</COORD>
-<COORD>
-<C1>  694075.706</C1>
-<C2>  247596.878</C2>
-</COORD>
-<COORD>
-<C1>  694075.649</C1>
-<C2>  247597.013</C2>
-</COORD>
-<COORD>
-<C1>  694075.590</C1>
-<C2>  247597.146</C2>
-</COORD>
-<COORD>
-<C1>  694075.529</C1>
-<C2>  247597.279</C2>
-</COORD>
-<COORD>
-<C1>  694075.465</C1>
-<C2>  247597.410</C2>
-</COORD>
-<COORD>
-<C1>  694075.398</C1>
-<C2>  247597.540</C2>
-</COORD>
-<COORD>
-<C1>  694075.330</C1>
-<C2>  247597.669</C2>
-</COORD>
-<COORD>
-<C1>  694075.259</C1>
-<C2>  247597.797</C2>
-</COORD>
-<COORD>
-<C1>  694075.186</C1>
-<C2>  247597.924</C2>
-</COORD>
-<COORD>
-<C1>  694075.111</C1>
-<C2>  247598.049</C2>
-</COORD>
-<COORD>
-<C1>  694075.034</C1>
-<C2>  247598.173</C2>
-</COORD>
-<COORD>
-<C1>  694074.955</C1>
-<C2>  247598.295</C2>
-</COORD>
-<COORD>
-<C1>  694074.873</C1>
-<C2>  247598.416</C2>
-</COORD>
-<COORD>
-<C1>  694074.789</C1>
-<C2>  247598.536</C2>
-</COORD>
-<COORD>
-<C1>  694074.704</C1>
-<C2>  247598.654</C2>
-</COORD>
-<COORD>
-<C1>  694074.616</C1>
-<C2>  247598.771</C2>
-</COORD>
-<COORD>
-<C1>  694074.526</C1>
-<C2>  247598.886</C2>
-</COORD>
-<COORD>
-<C1>  694074.434</C1>
-<C2>  247599.000</C2>
-</COORD>
-<COORD>
-<C1>  694074.341</C1>
-<C2>  247599.112</C2>
-</COORD>
-<COORD>
-<C1>  694074.245</C1>
-<C2>  247599.222</C2>
-</COORD>
-<COORD>
-<C1>  694074.147</C1>
-<C2>  247599.330</C2>
-</COORD>
-<COORD>
-<C1>  694074.048</C1>
-<C2>  247599.437</C2>
-</COORD>
-<COORD>
-<C1>  694073.946</C1>
-<C2>  247599.543</C2>
-</COORD>
-<COORD>
-<C1>  694073.843</C1>
-<C2>  247599.646</C2>
-</COORD>
-<COORD>
-<C1>  694073.738</C1>
-<C2>  247599.747</C2>
-</COORD>
-<COORD>
-<C1>  694073.632</C1>
-<C2>  247599.847</C2>
-</COORD>
-<COORD>
-<C1>  694073.523</C1>
-<C2>  247599.945</C2>
-</COORD>
-<COORD>
-<C1>  694073.413</C1>
-<C2>  247600.041</C2>
-</COORD>
-<COORD>
-<C1>  694073.325</C1>
-<C2>  247600.115</C2>
-</COORD>
-<COORD>
-<C1>  694072.810</C1>
-<C2>  247600.503</C2>
-</COORD>
-<COORD>
-<C1>  694087.460</C1>
-<C2>  247623.784</C2>
-</COORD>
-<COORD>
-<C1>  694092.834</C1>
-<C2>  247632.324</C2>
-</COORD>
-<COORD>
-<C1>  694144.936</C1>
-<C2>  247713.309</C2>
-</COORD>
-<COORD>
-<C1>  694139.465</C1>
-<C2>  247717.676</C2>
-</COORD>
-<COORD>
-<C1>  694129.649</C1>
-<C2>  247725.511</C2>
-</COORD>
-<COORD>
-<C1>  694105.654</C1>
-<C2>  247744.664</C2>
-</COORD>
-<COORD>
-<C1>  694103.706</C1>
-<C2>  247746.219</C2>
-</COORD>
-<COORD>
-<C1>  694098.084</C1>
-<C2>  247750.706</C2>
-</COORD>
-<COORD>
-<C1>  694094.915</C1>
-<C2>  247753.236</C2>
-</COORD>
-<COORD>
-<C1>  694076.905</C1>
-<C2>  247767.612</C2>
-</COORD>
-<COORD>
-<C1>  694072.366</C1>
-<C2>  247771.235</C2>
-</COORD>
-<COORD>
-<C1>  694059.189</C1>
-<C2>  247781.753</C2>
-</COORD>
-<COORD>
-<C1>  694039.832</C1>
-<C2>  247797.204</C2>
-</COORD>
-<COORD>
-<C1>  694019.596</C1>
-<C2>  247813.356</C2>
-</COORD>
-<COORD>
-<C1>  693990.221</C1>
-<C2>  247836.803</C2>
-</COORD>
-<COORD>
-<C1>  693981.181</C1>
-<C2>  247844.019</C2>
-</COORD>
-<COORD>
-<C1>  693960.927</C1>
-<C2>  247860.186</C2>
-</COORD>
-<COORD>
-<C1>  693951.719</C1>
-<C2>  247867.536</C2>
-</COORD>
-<COORD>
-<C1>  693949.452</C1>
-<C2>  247869.345</C2>
-</COORD>
-<COORD>
-<C1>  693940.414</C1>
-<C2>  247876.559</C2>
-</COORD>
-<COORD>
-<C1>  693919.251</C1>
-<C2>  247893.452</C2>
-</COORD>
-<COORD>
-<C1>  693901.594</C1>
-<C2>  247907.546</C2>
-</COORD>
-<COORD>
-<C1>  693900.430</C1>
-<C2>  247908.193</C2>
-</COORD>
-<COORD>
-<C1>  693896.846</C1>
-<C2>  247910.184</C2>
-</COORD>
-<COORD>
-<C1>  693906.767</C1>
-<C2>  247928.410</C2>
-</COORD>
-<COORD>
-<C1>  693926.053</C1>
-<C2>  247963.986</C2>
-</COORD>
-<COORD>
-<C1>  693949.916</C1>
-<C2>  248008.479</C2>
-</COORD>
-<COORD>
-<C1>  693954.815</C1>
-<C2>  248006.107</C2>
-</COORD>
-<COORD>
-<C1>  693965.418</C1>
-<C2>  248028.916</C2>
-</COORD>
-<COORD>
-<C1>  693968.030</C1>
-<C2>  248034.536</C2>
-</COORD>
-<COORD>
-<C1>  693968.444</C1>
-<C2>  248035.427</C2>
-</COORD>
-<COORD>
-<C1>  693974.351</C1>
-<C2>  248047.703</C2>
-</COORD>
-<COORD>
-<C1>  693976.867</C1>
-<C2>  248052.933</C2>
-</COORD>
-<COORD>
-<C1>  693981.494</C1>
-<C2>  248062.550</C2>
-</COORD>
-<COORD>
-<C1>  693982.213</C1>
-<C2>  248064.045</C2>
-</COORD>
-<COORD>
-<C1>  693984.393</C1>
-<C2>  248066.966</C2>
-</COORD>
-<COORD>
-<C1>  693987.395</C1>
-<C2>  248070.989</C2>
-</COORD>
-<COORD>
-<C1>  693992.240</C1>
-<C2>  248075.149</C2>
-</COORD>
-<COORD>
-<C1>  693999.811</C1>
-<C2>  248081.651</C2>
-</COORD>
-<COORD>
-<C1>  694005.421</C1>
-<C2>  248086.516</C2>
-</COORD>
-<COORD>
-<C1>  694010.910</C1>
-<C2>  248091.246</C2>
-</COORD>
-<COORD>
-<C1>  694019.332</C1>
-<C2>  248098.507</C2>
-</COORD>
-<COORD>
-<C1>  694021.644</C1>
-<C2>  248100.500</C2>
-</COORD>
-<COORD>
-<C1>  694025.340</C1>
-<C2>  248104.701</C2>
-</COORD>
-<COORD>
-<C1>  694029.792</C1>
-<C2>  248109.761</C2>
-</COORD>
-<COORD>
-<C1>  694038.882</C1>
-<C2>  248120.880</C2>
-</COORD>
-<COORD>
-<C1>  694055.543</C1>
-<C2>  248141.257</C2>
-</COORD>
-<COORD>
-<C1>  694063.651</C1>
-<C2>  248150.073</C2>
-</COORD>
-<COORD>
-<C1>  694064.337</C1>
-<C2>  248150.819</C2>
-</COORD>
-<COORD>
-<C1>  694071.923</C1>
-<C2>  248157.193</C2>
-</COORD>
-<COORD>
-<C1>  694101.409</C1>
-<C2>  248181.383</C2>
-</COORD>
-<COORD>
-<C1>  694137.791</C1>
-<C2>  248211.172</C2>
-</COORD>
-<COORD>
-<C1>  694142.942</C1>
-<C2>  248215.432</C2>
-</COORD>
-<COORD>
-<C1>  694177.171</C1>
-<C2>  248243.437</C2>
-</COORD>
-<COORD>
-<C1>  694209.024</C1>
-<C2>  248269.497</C2>
-</COORD>
-<COORD>
-<C1>  694211.348</C1>
-<C2>  248271.398</C2>
-</COORD>
-<COORD>
-<C1>  694230.333</C1>
-<C2>  248242.609</C2>
-</COORD>
-<COORD>
-<C1>  694237.914</C1>
-<C2>  248231.122</C2>
-</COORD>
-<COORD>
-<C1>  694257.855</C1>
-<C2>  248200.906</C2>
-</COORD>
-<COORD>
-<C1>  694258.730</C1>
-<C2>  248199.578</C2>
-</COORD>
-<COORD>
-<C1>  694271.346</C1>
-<C2>  248180.432</C2>
-</COORD>
-<COORD>
-<C1>  694285.371</C1>
-<C2>  248159.149</C2>
-</COORD>
-<COORD>
-<C1>  694287.331</C1>
-<C2>  248156.178</C2>
-</COORD>
-<COORD>
-<C1>  694296.618</C1>
-<C2>  248142.095</C2>
-</COORD>
-<COORD>
-<C1>  694305.697</C1>
-<C2>  248128.329</C2>
-</COORD>
-<COORD>
-<C1>  694307.541</C1>
-<C2>  248125.533</C2>
-</COORD>
-<COORD>
-<C1>  694312.898</C1>
-<C2>  248117.411</C2>
-</COORD>
-<COORD>
-<C1>  694329.943</C1>
-<C2>  248091.554</C2>
-</COORD>
-<COORD>
-<C1>  694340.406</C1>
-<C2>  248075.683</C2>
-</COORD>
-<COORD>
-<C1>  694342.197</C1>
-<C2>  248072.969</C2>
-</COORD>
-<COORD>
-<C1>  694354.641</C1>
-<C2>  248054.109</C2>
-</COORD>
-<COORD>
-<C1>  694367.947</C1>
-<C2>  248033.943</C2>
-</COORD>
-<COORD>
-<C1>  694374.817</C1>
-<C2>  248023.531</C2>
-</COORD>
-<COORD>
-<C1>  694381.517</C1>
-<C2>  248013.377</C2>
-</COORD>
-<COORD>
-<C1>  694393.330</C1>
-<C2>  247995.475</C2>
-</COORD>
-<COORD>
-<C1>  694395.477</C1>
-<C2>  247992.221</C2>
-</COORD>
-<COORD>
-<C1>  694423.014</C1>
-<C2>  247950.470</C2>
-</COORD>
-<COORD>
-<C1>  694438.450</C1>
-<C2>  247927.043</C2>
-</COORD>
-<COORD>
-<C1>  694439.134</C1>
-<C2>  247926.005</C2>
-</COORD>
-<COORD>
-<C1>  694450.525</C1>
-<C2>  247908.716</C2>
-</COORD>
-<COORD>
-<C1>  694476.779</C1>
-<C2>  247868.997</C2>
-</COORD>
-<COORD>
-<C1>  694483.089</C1>
-<C2>  247859.413</C2>
-</COORD>
-<COORD>
-<C1>  694489.503</C1>
-<C2>  247849.672</C2>
-</COORD>
-<COORD>
-<C1>  694387.239</C1>
-<C2>  247631.817</C2>
-</COORD>
-<COORD>
-<C1>  694511.547</C1>
-<C2>  247816.271</C2>
-</COORD>
-</POLYLINE>
-</BOUNDARY>
-<BOUNDARY>
-<POLYLINE>
-<COORD>
-<C1>  694387.453</C1>
-<C2>  247601.689</C2>
-</COORD>
-<COORD>
-<C1>  694387.239</C1>
-<C2>  247631.817</C2>
-</COORD>
-<COORD>
-<C1>  694387.225</C1>
-<C2>  247633.810</C2>
-</COORD>
-<COORD>
-<C1>  694390.427</C1>
-<C2>  247685.786</C2>
-</COORD>
-<COORD>
-<C1>  694389.216</C1>
-<C2>  247702.740</C2>
-</COORD>
-<COORD>
-<C1>  694387.606</C1>
-<C2>  247710.427</C2>
-</COORD>
-<COORD>
-<C1>  694384.572</C1>
-<C2>  247724.916</C2>
-</COORD>
-<COORD>
-<C1>  694381.276</C1>
-<C2>  247740.653</C2>
-</COORD>
-<COORD>
-<C1>  694367.973</C1>
-<C2>  247725.306</C2>
-</COORD>
-<COORD>
-<C1>  694217.670</C1>
-<C2>  247551.913</C2>
-</COORD>
-<COORD>
-<C1>  694234.287</C1>
-<C2>  247537.509</C2>
-</COORD>
-<COORD>
-<C1>  694237.109</C1>
-<C2>  247535.063</C2>
-</COORD>
-<COORD>
-<C1>  694238.019</C1>
-<C2>  247530.831</C2>
-</COORD>
-<COORD>
-<C1>  694246.173</C1>
-<C2>  247528.828</C2>
-</COORD>
-<COORD>
-<C1>  694255.956</C1>
-<C2>  247527.564</C2>
-</COORD>
-<COORD>
-<C1>  694265.926</C1>
-<C2>  247527.354</C2>
-</COORD>
-<COORD>
-<C1>  694300.282</C1>
-<C2>  247530.024</C2>
-</COORD>
-<COORD>
-<C1>  694325.016</C1>
-<C2>  247531.994</C2>
-</COORD>
-<COORD>
-<C1>  694333.856</C1>
-<C2>  247532.698</C2>
-</COORD>
-<COORD>
-<C1>  694334.950</C1>
-<C2>  247532.785</C2>
-</COORD>
-<COORD>
-<C1>  694340.357</C1>
-<C2>  247533.450</C2>
-</COORD>
-<COORD>
-<C1>  694355.632</C1>
-<C2>  247535.329</C2>
-</COORD>
-<COORD>
-<C1>  694356.333</C1>
-<C2>  247535.535</C2>
-</COORD>
-<COORD>
-<C1>  694366.256</C1>
-<C2>  247538.447</C2>
-</COORD>
-<COORD>
-<C1>  694371.585</C1>
-<C2>  247541.657</C2>
-</COORD>
-<COORD>
-<C1>  694380.151</C1>
-<C2>  247546.816</C2>
-</COORD>
-<COORD>
-<C1>  694392.849</C1>
-<C2>  247552.891</C2>
-</COORD>
-<COORD>
-<C1>  694388.702</C1>
-<C2>  247558.518</C2>
-</COORD>
-<COORD>
-<C1>  694386.524</C1>
-<C2>  247565.128</C2>
-</COORD>
-<COORD>
-<C1>  694387.142</C1>
-<C2>  247590.724</C2>
-</COORD>
-<COORD>
-<C1>  694387.453</C1>
-<C2>  247601.689</C2>
-</COORD>
-</POLYLINE>
-</BOUNDARY>
-</SURFACE>
-</Geometrie>
-<Herkunft>Planabgriff</Herkunft>
-<Qualitaet>AV93</Qualitaet>
-<Mutation REF="xz4e43d386e7880000"/>
-<Zonentyp_1 REF="xz4e43cb280000000f"/>
-</Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonenflaeche>
-<Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonenflaeche TID ="xz4e43d61be7880006">
-<Geometrie>
-<SURFACE>
-<BOUNDARY>
-<POLYLINE>
-<COORD>
-<C1>  694725.185</C1>
-<C2>  247937.338</C2>
-</COORD>
-<COORD>
-<C1>  694686.319</C1>
-<C2>  247878.838</C2>
-</COORD>
-<COORD>
-<C1>  694659.428</C1>
-<C2>  247868.847</C2>
-</COORD>
-<COORD>
-<C1>  694638.700</C1>
-<C2>  247879.154</C2>
-</COORD>
-<COORD>
-<C1>  694602.797</C1>
-<C2>  247841.053</C2>
-</COORD>
-<COORD>
-<C1>  694600.722</C1>
-<C2>  247838.851</C2>
-</COORD>
-<COORD>
-<C1>  694598.674</C1>
-<C2>  247839.352</C2>
-</COORD>
-<COORD>
-<C1>  694586.353</C1>
-<C2>  247845.299</C2>
-</COORD>
-<COORD>
-<C1>  694566.319</C1>
-<C2>  247861.007</C2>
-</COORD>
-<COORD>
-<C1>  694546.204</C1>
-<C2>  247879.672</C2>
-</COORD>
-<COORD>
-<C1>  694524.196</C1>
-<C2>  247900.155</C2>
-</COORD>
-<COORD>
-<C1>  694521.488</C1>
-<C2>  247902.675</C2>
-</COORD>
-<COORD>
-<C1>  694569.950</C1>
-<C2>  247957.273</C2>
-</COORD>
-<COORD>
-<C1>  694604.812</C1>
-<C2>  247997.946</C2>
-</COORD>
-<COORD>
-<C1>  694637.107</C1>
-<C2>  248038.229</C2>
-</COORD>
-<COORD>
-<C1>  694644.420</C1>
-<C2>  248041.267</C2>
-</COORD>
-<COORD>
-<C1>  694644.560</C1>
-<C2>  248041.324</C2>
-</COORD>
-<COORD>
-<C1>  694644.723</C1>
-<C2>  248041.387</C2>
-</COORD>
-<COORD>
-<C1>  694644.886</C1>
-<C2>  248041.447</C2>
-</COORD>
-<COORD>
-<C1>  694645.051</C1>
-<C2>  248041.505</C2>
-</COORD>
-<COORD>
-<C1>  694645.217</C1>
-<C2>  248041.559</C2>
-</COORD>
-<COORD>
-<C1>  694645.384</C1>
-<C2>  248041.611</C2>
-</COORD>
-<COORD>
-<C1>  694645.552</C1>
-<C2>  248041.660</C2>
-</COORD>
-<COORD>
-<C1>  694645.720</C1>
-<C2>  248041.705</C2>
-</COORD>
-<COORD>
-<C1>  694645.889</C1>
-<C2>  248041.748</C2>
-</COORD>
-<COORD>
-<C1>  694646.059</C1>
-<C2>  248041.788</C2>
-</COORD>
-<COORD>
-<C1>  694646.230</C1>
-<C2>  248041.825</C2>
-</COORD>
-<COORD>
-<C1>  694646.401</C1>
-<C2>  248041.859</C2>
-</COORD>
-<COORD>
-<C1>  694646.573</C1>
-<C2>  248041.890</C2>
-</COORD>
-<COORD>
-<C1>  694646.746</C1>
-<C2>  248041.918</C2>
-</COORD>
-<COORD>
-<C1>  694646.918</C1>
-<C2>  248041.942</C2>
-</COORD>
-<COORD>
-<C1>  694647.092</C1>
-<C2>  248041.964</C2>
-</COORD>
-<COORD>
-<C1>  694647.265</C1>
-<C2>  248041.983</C2>
-</COORD>
-<COORD>
-<C1>  694647.439</C1>
-<C2>  248041.999</C2>
-</COORD>
-<COORD>
-<C1>  694647.613</C1>
-<C2>  248042.012</C2>
-</COORD>
-<COORD>
-<C1>  694647.788</C1>
-<C2>  248042.021</C2>
-</COORD>
-<COORD>
-<C1>  694647.962</C1>
-<C2>  248042.028</C2>
-</COORD>
-<COORD>
-<C1>  694648.137</C1>
-<C2>  248042.032</C2>
-</COORD>
-<COORD>
-<C1>  694648.311</C1>
-<C2>  248042.032</C2>
-</COORD>
-<COORD>
-<C1>  694648.486</C1>
-<C2>  248042.030</C2>
-</COORD>
-<COORD>
-<C1>  694648.660</C1>
-<C2>  248042.024</C2>
-</COORD>
-<COORD>
-<C1>  694648.672</C1>
-<C2>  248042.024</C2>
-</COORD>
-<COORD>
-<C1>  694648.835</C1>
-<C2>  248042.016</C2>
-</COORD>
-<COORD>
-<C1>  694649.009</C1>
-<C2>  248042.004</C2>
-</COORD>
-<COORD>
-<C1>  694649.183</C1>
-<C2>  248041.990</C2>
-</COORD>
-<COORD>
-<C1>  694649.357</C1>
-<C2>  248041.972</C2>
-</COORD>
-<COORD>
-<C1>  694649.530</C1>
-<C2>  248041.951</C2>
-</COORD>
-<COORD>
-<C1>  694649.703</C1>
-<C2>  248041.928</C2>
-</COORD>
-<COORD>
-<C1>  694649.875</C1>
-<C2>  248041.901</C2>
-</COORD>
-<COORD>
-<C1>  694650.047</C1>
-<C2>  248041.871</C2>
-</COORD>
-<COORD>
-<C1>  694650.219</C1>
-<C2>  248041.839</C2>
-</COORD>
-<COORD>
-<C1>  694650.390</C1>
-<C2>  248041.803</C2>
-</COORD>
-<COORD>
-<C1>  694650.560</C1>
-<C2>  248041.764</C2>
-</COORD>
-<COORD>
-<C1>  694650.730</C1>
-<C2>  248041.722</C2>
-</COORD>
-<COORD>
-<C1>  694650.899</C1>
-<C2>  248041.678</C2>
-</COORD>
-<COORD>
-<C1>  694651.067</C1>
-<C2>  248041.630</C2>
-</COORD>
-<COORD>
-<C1>  694651.234</C1>
-<C2>  248041.580</C2>
-</COORD>
-<COORD>
-<C1>  694651.400</C1>
-<C2>  248041.526</C2>
-</COORD>
-<COORD>
-<C1>  694651.565</C1>
-<C2>  248041.470</C2>
-</COORD>
-<COORD>
-<C1>  694651.729</C1>
-<C2>  248041.411</C2>
-</COORD>
-<COORD>
-<C1>  694651.893</C1>
-<C2>  248041.349</C2>
-</COORD>
-<COORD>
-<C1>  694652.055</C1>
-<C2>  248041.284</C2>
-</COORD>
-<COORD>
-<C1>  694652.216</C1>
-<C2>  248041.216</C2>
-</COORD>
-<COORD>
-<C1>  694652.375</C1>
-<C2>  248041.146</C2>
-</COORD>
-<COORD>
-<C1>  694652.534</C1>
-<C2>  248041.073</C2>
-</COORD>
-<COORD>
-<C1>  694652.691</C1>
-<C2>  248040.997</C2>
-</COORD>
-<COORD>
-<C1>  694652.847</C1>
-<C2>  248040.918</C2>
-</COORD>
-<COORD>
-<C1>  694675.948</C1>
-<C2>  248028.984</C2>
-</COORD>
-<COORD>
-<C1>  694676.571</C1>
-<C2>  248028.666</C2>
-</COORD>
-<COORD>
-<C1>  694677.700</C1>
-<C2>  248028.076</C2>
-</COORD>
-<COORD>
-<C1>  694678.821</C1>
-<C2>  248027.472</C2>
-</COORD>
-<COORD>
-<C1>  694679.935</C1>
-<C2>  248026.854</C2>
-</COORD>
-<COORD>
-<C1>  694681.041</C1>
-<C2>  248026.222</C2>
-</COORD>
-<COORD>
-<C1>  694682.139</C1>
-<C2>  248025.576</C2>
-</COORD>
-<COORD>
-<C1>  694682.930</C1>
-<C2>  248025.099</C2>
-</COORD>
-<COORD>
-<C1>  694683.229</C1>
-<C2>  248024.916</C2>
-</COORD>
-<COORD>
-<C1>  694684.310</C1>
-<C2>  248024.243</C2>
-</COORD>
-<COORD>
-<C1>  694685.383</C1>
-<C2>  248023.556</C2>
-</COORD>
-<COORD>
-<C1>  694686.447</C1>
-<C2>  248022.856</C2>
-</COORD>
-<COORD>
-<C1>  694687.502</C1>
-<C2>  248022.143</C2>
-</COORD>
-<COORD>
-<C1>  694688.548</C1>
-<C2>  248021.416</C2>
-</COORD>
-<COORD>
-<C1>  694689.585</C1>
-<C2>  248020.676</C2>
-</COORD>
-<COORD>
-<C1>  694706.191</C1>
-<C2>  248009.045</C2>
-</COORD>
-<COORD>
-<C1>  694705.670</C1>
-<C2>  248008.367</C2>
-</COORD>
-<COORD>
-<C1>  694672.306</C1>
-<C2>  247964.984</C2>
-</COORD>
-<COORD>
-<C1>  694669.850</C1>
-<C2>  247961.789</C2>
-</COORD>
-<COORD>
-<C1>  694686.834</C1>
-<C2>  247954.762</C2>
-</COORD>
-<COORD>
-<C1>  694704.026</C1>
-<C2>  247946.952</C2>
-</COORD>
-<COORD>
-<C1>  694725.185</C1>
-<C2>  247937.338</C2>
-</COORD>
-</POLYLINE>
-</BOUNDARY>
-</SURFACE>
-</Geometrie>
-<Herkunft>Aufnahme</Herkunft>
-<Qualitaet>AV93</Qualitaet>
-<Mutation REF="xz4e43d386e7880000"/>
-<Zonentyp_1 REF="xz4e43cb2800000010"/>
-</Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonenflaeche>
-<Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonenflaeche TID ="xz4e43d63ce7880007">
-<Geometrie>
-<SURFACE>
-<BOUNDARY>
-<POLYLINE>
-<COORD>
-<C1>  694501.184</C1>
-<C2>  247259.717</C2>
-</COORD>
-<COORD>
-<C1>  694473.394</C1>
-<C2>  247224.882</C2>
-</COORD>
-<COORD>
-<C1>  694473.354</C1>
-<C2>  247187.742</C2>
-</COORD>
-<COORD>
-<C1>  694464.179</C1>
-<C2>  247176.980</C2>
-</COORD>
-<COORD>
-<C1>  694459.895</C1>
-<C2>  247171.954</C2>
-</COORD>
-<COORD>
-<C1>  694456.753</C1>
-<C2>  247167.184</C2>
-</COORD>
-<COORD>
-<C1>  694455.158</C1>
-<C2>  247168.330</C2>
-</COORD>
-<COORD>
-<C1>  694452.489</C1>
-<C2>  247170.262</C2>
-</COORD>
-<COORD>
-<C1>  694449.829</C1>
-<C2>  247172.208</C2>
-</COORD>
-<COORD>
-<C1>  694447.179</C1>
-<C2>  247174.167</C2>
-</COORD>
-<COORD>
-<C1>  694444.539</C1>
-<C2>  247176.138</C2>
-</COORD>
-<COORD>
-<C1>  694441.908</C1>
-<C2>  247178.122</C2>
-</COORD>
-<COORD>
-<C1>  694439.286</C1>
-<C2>  247180.120</C2>
-</COORD>
-<COORD>
-<C1>  694437.452</C1>
-<C2>  247181.529</C2>
-</COORD>
-<COORD>
-<C1>  694436.675</C1>
-<C2>  247182.129</C2>
-</COORD>
-<COORD>
-<C1>  694434.073</C1>
-<C2>  247184.152</C2>
-</COORD>
-<COORD>
-<C1>  694431.481</C1>
-<C2>  247186.187</C2>
-</COORD>
-<COORD>
-<C1>  694428.899</C1>
-<C2>  247188.234</C2>
-</COORD>
-<COORD>
-<C1>  694426.327</C1>
-<C2>  247190.294</C2>
-</COORD>
-<COORD>
-<C1>  694423.765</C1>
-<C2>  247192.367</C2>
-</COORD>
-<COORD>
-<C1>  694421.213</C1>
-<C2>  247194.452</C2>
-</COORD>
-<COORD>
-<C1>  694418.671</C1>
-<C2>  247196.549</C2>
-</COORD>
-<COORD>
-<C1>  694403.892</C1>
-<C2>  247208.882</C2>
-</COORD>
-<COORD>
-<C1>  694392.488</C1>
-<C2>  247218.746</C2>
-</COORD>
-<COORD>
-<C1>  694380.345</C1>
-<C2>  247229.790</C2>
-</COORD>
-<COORD>
-<C1>  694358.053</C1>
-<C2>  247251.511</C2>
-</COORD>
-<COORD>
-<C1>  694355.961</C1>
-<C2>  247253.648</C2>
-</COORD>
-<COORD>
-<C1>  694355.490</C1>
-<C2>  247254.133</C2>
-</COORD>
-<COORD>
-<C1>  694353.266</C1>
-<C2>  247256.432</C2>
-</COORD>
-<COORD>
-<C1>  694351.055</C1>
-<C2>  247258.742</C2>
-</COORD>
-<COORD>
-<C1>  694348.855</C1>
-<C2>  247261.063</C2>
-</COORD>
-<COORD>
-<C1>  694347.990</C1>
-<C2>  247261.982</C2>
-</COORD>
-<COORD>
-<C1>  694346.666</C1>
-<C2>  247263.396</C2>
-</COORD>
-<COORD>
-<C1>  694344.489</C1>
-<C2>  247265.739</C2>
-</COORD>
-<COORD>
-<C1>  694342.324</C1>
-<C2>  247268.093</C2>
-</COORD>
-<COORD>
-<C1>  694340.171</C1>
-<C2>  247270.458</C2>
-</COORD>
-<COORD>
-<C1>  694330.449</C1>
-<C2>  247282.212</C2>
-</COORD>
-<COORD>
-<C1>  694340.876</C1>
-<C2>  247291.698</C2>
-</COORD>
-<COORD>
-<C1>  694347.486</C1>
-<C2>  247297.599</C2>
-</COORD>
-<COORD>
-<C1>  694351.160</C1>
-<C2>  247301.028</C2>
-</COORD>
-<COORD>
-<C1>  694364.400</C1>
-<C2>  247313.057</C2>
-</COORD>
-<COORD>
-<C1>  694382.350</C1>
-<C2>  247329.877</C2>
-</COORD>
-<COORD>
-<C1>  694387.122</C1>
-<C2>  247326.747</C2>
-</COORD>
-<COORD>
-<C1>  694421.396</C1>
-<C2>  247304.265</C2>
-</COORD>
-<COORD>
-<C1>  694424.349</C1>
-<C2>  247302.328</C2>
-</COORD>
-<COORD>
-<C1>  694429.195</C1>
-<C2>  247313.122</C2>
-</COORD>
-<COORD>
-<C1>  694494.938</C1>
-<C2>  247378.352</C2>
-</COORD>
-<COORD>
-<C1>  694497.065</C1>
-<C2>  247375.542</C2>
-</COORD>
-<COORD>
-<C1>  694514.532</C1>
-<C2>  247352.464</C2>
-</COORD>
-<COORD>
-<C1>  694515.263</C1>
-<C2>  247351.512</C2>
-</COORD>
-<COORD>
-<C1>  694516.006</C1>
-<C2>  247350.570</C2>
-</COORD>
-<COORD>
-<C1>  694516.761</C1>
-<C2>  247349.638</C2>
-</COORD>
-<COORD>
-<C1>  694517.529</C1>
-<C2>  247348.716</C2>
-</COORD>
-<COORD>
-<C1>  694518.310</C1>
-<C2>  247347.805</C2>
-</COORD>
-<COORD>
-<C1>  694519.102</C1>
-<C2>  247346.904</C2>
-</COORD>
-<COORD>
-<C1>  694519.906</C1>
-<C2>  247346.013</C2>
-</COORD>
-<COORD>
-<C1>  694520.722</C1>
-<C2>  247345.134</C2>
-</COORD>
-<COORD>
-<C1>  694521.550</C1>
-<C2>  247344.265</C2>
-</COORD>
-<COORD>
-<C1>  694522.389</C1>
-<C2>  247343.408</C2>
-</COORD>
-<COORD>
-<C1>  694523.240</C1>
-<C2>  247342.561</C2>
-</COORD>
-<COORD>
-<C1>  694524.102</C1>
-<C2>  247341.727</C2>
-</COORD>
-<COORD>
-<C1>  694524.974</C1>
-<C2>  247340.903</C2>
-</COORD>
-<COORD>
-<C1>  694525.858</C1>
-<C2>  247340.092</C2>
-</COORD>
-<COORD>
-<C1>  694526.753</C1>
-<C2>  247339.292</C2>
-</COORD>
-<COORD>
-<C1>  694526.756</C1>
-<C2>  247339.289</C2>
-</COORD>
-<COORD>
-<C1>  694527.658</C1>
-<C2>  247338.504</C2>
-</COORD>
-<COORD>
-<C1>  694528.573</C1>
-<C2>  247337.729</C2>
-</COORD>
-<COORD>
-<C1>  694529.499</C1>
-<C2>  247336.965</C2>
-</COORD>
-<COORD>
-<C1>  694530.435</C1>
-<C2>  247336.215</C2>
-</COORD>
-<COORD>
-<C1>  694531.381</C1>
-<C2>  247335.476</C2>
-</COORD>
-<COORD>
-<C1>  694532.336</C1>
-<C2>  247334.751</C2>
-</COORD>
-<COORD>
-<C1>  694533.301</C1>
-<C2>  247334.038</C2>
-</COORD>
-<COORD>
-<C1>  694534.276</C1>
-<C2>  247333.338</C2>
-</COORD>
-<COORD>
-<C1>  694535.260</C1>
-<C2>  247332.651</C2>
-</COORD>
-<COORD>
-<C1>  694536.253</C1>
-<C2>  247331.977</C2>
-</COORD>
-<COORD>
-<C1>  694537.254</C1>
-<C2>  247331.317</C2>
-</COORD>
-<COORD>
-<C1>  694538.265</C1>
-<C2>  247330.670</C2>
-</COORD>
-<COORD>
-<C1>  694539.284</C1>
-<C2>  247330.037</C2>
-</COORD>
-<COORD>
-<C1>  694540.311</C1>
-<C2>  247329.417</C2>
-</COORD>
-<COORD>
-<C1>  694541.347</C1>
-<C2>  247328.811</C2>
-</COORD>
-<COORD>
-<C1>  694541.355</C1>
-<C2>  247328.806</C2>
-</COORD>
-<COORD>
-<C1>  694551.890</C1>
-<C2>  247323.277</C2>
-</COORD>
-<COORD>
-<C1>  694556.383</C1>
-<C2>  247321.428</C2>
-</COORD>
-<COORD>
-<C1>  694550.523</C1>
-<C2>  247314.877</C2>
-</COORD>
-<COORD>
-<C1>  694501.184</C1>
-<C2>  247259.717</C2>
-</COORD>
-</POLYLINE>
-</BOUNDARY>
-</SURFACE>
-</Geometrie>
-<Herkunft>Aufnahme</Herkunft>
-<Qualitaet>AV93</Qualitaet>
-<Mutation REF="xz4e43d386e7880000"/>
-<Zonentyp_1 REF="xz4e43cb2800000014"/>
-</Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonenflaeche>
-<Nutzungsplanung.Nutzungsplanung.R1 TID ="xz4e43cb2800000017">
-<Vorschrift REF="xz4e43cb2800000000"/>
-<Grundn_Zone REF="xz4e43cb280000000f"/>
-</Nutzungsplanung.Nutzungsplanung.R1>
-<Nutzungsplanung.Nutzungsplanung.R1 TID ="xz4e43cb2800000018">
-<Vorschrift REF="xz4e43cb2800000000"/>
-<Grundn_Zone REF="xz4e43cb2800000010"/>
-</Nutzungsplanung.Nutzungsplanung.R1>
-<Nutzungsplanung.Nutzungsplanung.R1 TID ="xz4e43cb2800000019">
-<Vorschrift REF="xz4e43cb2800000002"/>
-<Grundn_Zone REF="xz4e43cb2800000010"/>
-</Nutzungsplanung.Nutzungsplanung.R1>
-<Nutzungsplanung.Nutzungsplanung.R1 TID ="xz4e43cb280000001a">
-<Vorschrift REF="xz4e43cb2800000000"/>
-<Grundn_Zone REF="xz4e43cb2800000011"/>
-</Nutzungsplanung.Nutzungsplanung.R1>
-<Nutzungsplanung.Nutzungsplanung.R1 TID ="xz4e43cb280000001b">
-<Vorschrift REF="xz4e43cb2800000000"/>
-<Grundn_Zone REF="xz4e43cb2800000013"/>
-</Nutzungsplanung.Nutzungsplanung.R1>
-<Nutzungsplanung.Nutzungsplanung.R1 TID ="xz4e43cb280000001c">
-<Vorschrift REF="xz4e43cb2800000000"/>
-<Grundn_Zone REF="xz4e43cb2800000012"/>
-</Nutzungsplanung.Nutzungsplanung.R1>
-<Nutzungsplanung.Nutzungsplanung.R1 TID ="xz4e43cb280000001d">
-<Vorschrift REF="xz4e43cb2800000000"/>
-<Grundn_Zone REF="xz4e43cb2800000014"/>
-</Nutzungsplanung.Nutzungsplanung.R1>
-<Nutzungsplanung.Nutzungsplanung.R1 TID ="xz4e43cb280000001e">
-<Vorschrift REF="xz4e43cb2800000000"/>
-<Grundn_Zone REF="xz4e43cb2800000016"/>
-</Nutzungsplanung.Nutzungsplanung.R1>
-<Nutzungsplanung.Nutzungsplanung.R1 TID ="xz4e43cb280000001f">
-<Vorschrift REF="xz4e43cb2800000000"/>
-<Grundn_Zone REF="xz4e43cb2800000015"/>
-</Nutzungsplanung.Nutzungsplanung.R1>
-<Nutzungsplanung.Nutzungsplanung.R1 TID ="xz4e43cf0b62f80001">
-<Vorschrift REF="xz4e43cb2800000000"/>
-<Grundn_Zone REF="xz4e43cefd62f80000"/>
-</Nutzungsplanung.Nutzungsplanung.R1>
-<Nutzungsplanung.Nutzungsplanung.R1 TID ="xz4e43cf1462f80002">
-<Vorschrift REF="xz4e43cb2800000002"/>
-<Grundn_Zone REF="xz4e43cefd62f80000"/>
-</Nutzungsplanung.Nutzungsplanung.R1>
-<Nutzungsplanung.Nutzungsplanung.R1 TID ="xz4e43cf4a62f80004">
-<Vorschrift REF="xz4e43cb2800000000"/>
-<Grundn_Zone REF="xz4e43cf4362f80003"/>
-</Nutzungsplanung.Nutzungsplanung.R1>
-</Nutzungsplanung.Nutzungsplanung>
-<Nutzungsplanung.Metadaten BID = "xxx1" KIND="FULL">
-</Nutzungsplanung.Metadaten>
-</DATASECTION>
+<?xml version="1.0" encoding="UTF-8"?>
+<TRANSFER xmlns="http://www.interlis.ch/INTERLIS2.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <HEADERSECTION VERSION="2.3" SENDER="GEOS Pro">
+    <MODELS>
+      <MODEL NAME="Nutzungsplanung" URI="http://models.geo.admin.ch/ARE/" VERSION="2010-12-15" />
+    </MODELS>
+    <ALIAS />
+  </HEADERSECTION>
+  <DATASECTION>
+    <Nutzungsplanung.Nutzungsplanung BID="xxx0" KIND="FULL">
+      <Nutzungsplanung.Nutzungsplanung.Mutationshinweis TID="xz4e43d386e7880000">
+        <Identifikator>1</Identifikator>
+        <Erfassungsdatum>2011-08-11</Erfassungsdatum>
+        <Bemerkungen>Demo</Bemerkungen>
+      </Nutzungsplanung.Nutzungsplanung.Mutationshinweis>
+      <Nutzungsplanung.Nutzungsplanung.Dokument TID="xz4e43cb2800000000">
+        <Titel>BZ Ordnung</Titel>
+        <OffiziellerTitel>Bau und Zonenordnung Uster</OffiziellerTitel>
+        <Abkuerzung>BZ</Abkuerzung>
+        <Kanton>ZH</Kanton>
+        <Gemeinde>198</Gemeinde>
+        <OffizielleNr>1</OffizielleNr>
+        <publiziertAb>1990-40-1</publiziertAb>
+        <Rechtsstatus>inKraft</Rechtsstatus>
+      </Nutzungsplanung.Nutzungsplanung.Dokument>
+      <Nutzungsplanung.Nutzungsplanung.Dokument TID="xz4e43cb2800000001">
+        <Titel>Naturschutz</Titel>
+        <OffiziellerTitel>Naturschutzgebiete Nännikon</OffiziellerTitel>
+        <Abkuerzung>NHSV</Abkuerzung>
+        <Kanton>ZH</Kanton>
+        <Gemeinde>198</Gemeinde>
+        <OffizielleNr>2</OffizielleNr>
+        <publiziertAb>2011-08-01</publiziertAb>
+        <Rechtsstatus>laufendeAenderungen</Rechtsstatus>
+      </Nutzungsplanung.Nutzungsplanung.Dokument>
+      <Nutzungsplanung.Nutzungsplanung.Dokument TID="xz4e43cb2800000002">
+        <Titel>Nutzungzonen</Titel>
+        <OffiziellerTitel>Bundesgesetz über die Raumplanung</OffiziellerTitel>
+        <Abkuerzung>RPG</Abkuerzung>
+        <Kanton>CH</Kanton>
+        <OffizielleNr>SR 700</OffizielleNr>
+        <publiziertAb>2003-01-29</publiziertAb>
+        <Rechtsstatus>inKraft</Rechtsstatus>
+      </Nutzungsplanung.Nutzungsplanung.Dokument>
+      <Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt TID="xz4e43cb2800000003">
+        <Identifikator>111</Identifikator>
+        <Zonentyp_Kt>Wohnzone W1</Zonentyp_Kt>
+        <Abkuerzung>W1</Abkuerzung>
+        <Bemerkungen>Wohnzonen -1-geschossig</Bemerkungen>
+        <Hauptnutzung_CH>Bauzonen_1.Wohnzonen_11</Hauptnutzung_CH>
+        <Zonentyp_SIA>Wohnzonen_11.Wohnzone_a_111</Zonentyp_SIA>
+      </Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt>
+      <Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt TID="xz4e43cb2800000004">
+        <Identifikator>112</Identifikator>
+        <Zonentyp_Kt>Wohnzone W2</Zonentyp_Kt>
+        <Abkuerzung>W2</Abkuerzung>
+        <Bemerkungen>Wohnzonen -2-geschossig</Bemerkungen>
+        <Hauptnutzung_CH>Bauzonen_1.Wohnzonen_11</Hauptnutzung_CH>
+        <Zonentyp_SIA>Wohnzonen_11.Wohnzone_b_112</Zonentyp_SIA>
+      </Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt>
+      <Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt TID="xz4e43cb2800000005">
+        <Identifikator>113</Identifikator>
+        <Zonentyp_Kt>Wohnzone W3</Zonentyp_Kt>
+        <Abkuerzung>W3</Abkuerzung>
+        <Bemerkungen>Wohnzonen -3-geschossig</Bemerkungen>
+        <Hauptnutzung_CH>Bauzonen_1.Wohnzonen_11</Hauptnutzung_CH>
+        <Zonentyp_SIA>Wohnzonen_11.Wohnzone_c_113</Zonentyp_SIA>
+      </Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt>
+      <Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt TID="xz4e43cb2800000006">
+        <Identifikator>114</Identifikator>
+        <Zonentyp_Kt>Wohnzone W4</Zonentyp_Kt>
+        <Abkuerzung>W4</Abkuerzung>
+        <Bemerkungen>Wohnzonen -4-geschossig</Bemerkungen>
+        <Hauptnutzung_CH>Bauzonen_1.Wohnzonen_11</Hauptnutzung_CH>
+        <Zonentyp_SIA>Wohnzonen_11.Wohnzone_d_114</Zonentyp_SIA>
+      </Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt>
+      <Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt TID="xz4e43cb2800000007">
+        <Identifikator>121</Identifikator>
+        <Zonentyp_Kt>Gewerbezone</Zonentyp_Kt>
+        <Abkuerzung>G</Abkuerzung>
+        <Bemerkungen>Gewerbezone</Bemerkungen>
+        <Hauptnutzung_CH>Bauzonen_1.Arbeitszonen_12</Hauptnutzung_CH>
+        <Zonentyp_SIA>Arbeitszonen_12.Arbeitszone_a_121</Zonentyp_SIA>
+      </Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt>
+      <Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt TID="xz4e43cb2800000008">
+        <Identifikator>122</Identifikator>
+        <Zonentyp_Kt>Industriezone</Zonentyp_Kt>
+        <Abkuerzung>I</Abkuerzung>
+        <Bemerkungen>Industriezone</Bemerkungen>
+        <Hauptnutzung_CH>Bauzonen_1.Arbeitszonen_12</Hauptnutzung_CH>
+        <Zonentyp_SIA>Arbeitszonen_12.Arbeitszone_b_122</Zonentyp_SIA>
+      </Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt>
+      <Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt TID="xz4e43cb2800000009">
+        <Identifikator>141</Identifikator>
+        <Zonentyp_Kt>Zentrumszone</Zonentyp_Kt>
+        <Abkuerzung>Z</Abkuerzung>
+        <Bemerkungen>Zentrumszone</Bemerkungen>
+        <Hauptnutzung_CH>Bauzonen_1.Zentrumszonen_14</Hauptnutzung_CH>
+        <Zonentyp_SIA>Zentrumszonen_14.allgemeine_Zentrumszone_141</Zonentyp_SIA>
+      </Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt>
+      <Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt TID="xz4e43cb280000000a">
+        <Identifikator>142</Identifikator>
+        <Zonentyp_Kt>Kernzone</Zonentyp_Kt>
+        <Abkuerzung>K</Abkuerzung>
+        <Bemerkungen>Kernzone</Bemerkungen>
+        <Hauptnutzung_CH>Bauzonen_1.Zentrumszonen_14</Hauptnutzung_CH>
+        <Zonentyp_SIA>Zentrumszonen_14.Kernzone_142</Zonentyp_SIA>
+      </Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt>
+      <Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt TID="xz4e43cb280000000b">
+        <Identifikator>151</Identifikator>
+        <Zonentyp_Kt>Öffentliche Bauten A</Zonentyp_Kt>
+        <Abkuerzung>Oe</Abkuerzung>
+        <Bemerkungen>Zone für öffentliche Bauten und Anlagen</Bemerkungen>
+        <Hauptnutzung_CH>Bauzonen_1.Zonen_fuer_oeffentliche_Nutzungen_15</Hauptnutzung_CH>
+        <Zonentyp_SIA>Zonen_fuer_oeffentliche_Nutzungen_15.Zone_fuer_oeffentliche_Bauten_und_Anlagen_151</Zonentyp_SIA>
+      </Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt>
+      <Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt TID="xz4e43cb280000000c">
+        <Identifikator>152</Identifikator>
+        <Zonentyp_Kt>Öffentliche Bauten FZ</Zonentyp_Kt>
+        <Abkuerzung>Oe</Abkuerzung>
+        <Bemerkungen>Zone für öffentlichen Sport und Freizeitanlagen</Bemerkungen>
+        <Hauptnutzung_CH>Bauzonen_1.Zonen_fuer_oeffentliche_Nutzungen_15</Hauptnutzung_CH>
+        <Zonentyp_SIA>Zonen_fuer_oeffentliche_Nutzungen_15.Zone_fuer_oeffentlichen_Sport_und_Freizeitanlagen_152</Zonentyp_SIA>
+      </Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt>
+      <Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt TID="xz4e43cb280000000d">
+        <Identifikator>162</Identifikator>
+        <Zonentyp_Kt>Freihaltezone</Zonentyp_Kt>
+        <Abkuerzung>F</Abkuerzung>
+        <Bemerkungen>Freihaltezone</Bemerkungen>
+        <Hauptnutzung_CH>Bauzonen_1.eingeschraenkte_Bauzonen_16</Hauptnutzung_CH>
+        <Zonentyp_SIA>eingeschraenkte_Bauzonen_16.weiterer_Zonentyp_162</Zonentyp_SIA>
+      </Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt>
+      <Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt TID="xz4e43cb280000000e">
+        <Identifikator>421</Identifikator>
+        <Zonentyp_Kt>Reservezone</Zonentyp_Kt>
+        <Abkuerzung>R</Abkuerzung>
+        <Bemerkungen>Reservezone</Bemerkungen>
+        <Hauptnutzung_CH>weitere_Zonen_4.weitere_Zonen_Reservezonen_42</Hauptnutzung_CH>
+        <Zonentyp_SIA>weitere_Zonen_nach_Art18_Abs2_RPG_42.Reservezone_421</Zonentyp_SIA>
+      </Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt>
+      <Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp TID="xz4e43cb280000000f">
+        <Identifikator>111</Identifikator>
+        <Zonentyp>111</Zonentyp>
+        <Abkuerzung>L2/30 II</Abkuerzung>
+        <Verbindlichkeit>eigentuemerverbindlich</Verbindlichkeit>
+        <Bemerkungen>Wohnzonen - Landhauszone, 2-geschossig</Bemerkungen>
+        <Zonentyp_Kt_2 REF="xz4e43cb2800000003" />
+      </Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp>
+      <Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp TID="xz4e43cb2800000010">
+        <Identifikator>1121</Identifikator>
+        <Zonentyp>112</Zonentyp>
+        <Abkuerzung>W2/30 II</Abkuerzung>
+        <Verbindlichkeit>eigentuemerverbindlich</Verbindlichkeit>
+        <Bemerkungen>Wohnzonen - 2-geschossig</Bemerkungen>
+        <Zonentyp_Kt_2 REF="xz4e43cb2800000004" />
+      </Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp>
+      <Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp TID="xz4e43cb2800000011">
+        <Identifikator>1122</Identifikator>
+        <Zonentyp>112</Zonentyp>
+        <Abkuerzung>W2/40 II</Abkuerzung>
+        <Verbindlichkeit>eigentuemerverbindlich</Verbindlichkeit>
+        <Bemerkungen>Wohnzonen - 2-geschossig</Bemerkungen>
+        <Zonentyp_Kt_2 REF="xz4e43cb2800000004" />
+      </Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp>
+      <Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp TID="xz4e43cb2800000012">
+        <Identifikator>1123</Identifikator>
+        <Zonentyp>112</Zonentyp>
+        <Abkuerzung>W2/40G III</Abkuerzung>
+        <Verbindlichkeit>eigentuemerverbindlich</Verbindlichkeit>
+        <Bemerkungen>Wohnzonen - 2-geschossig, m.G.erl.</Bemerkungen>
+        <Zonentyp_Kt_2 REF="xz4e43cb2800000004" />
+      </Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp>
+      <Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp TID="xz4e43cb2800000013">
+        <Identifikator>1124</Identifikator>
+        <Zonentyp>112</Zonentyp>
+        <Abkuerzung>W2/50G III</Abkuerzung>
+        <Verbindlichkeit>eigentuemerverbindlich</Verbindlichkeit>
+        <Bemerkungen>Wohnzonen - 2-geschossig, m.G.erl.</Bemerkungen>
+        <Zonentyp_Kt_2 REF="xz4e43cb2800000004" />
+      </Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp>
+      <Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp TID="xz4e43cb2800000014">
+        <Identifikator>1131</Identifikator>
+        <Zonentyp>113</Zonentyp>
+        <Abkuerzung>W3/50 II</Abkuerzung>
+        <Verbindlichkeit>eigentuemerverbindlich</Verbindlichkeit>
+        <Bemerkungen>Wohnzonen - 3-geschossig</Bemerkungen>
+        <Zonentyp_Kt_2 REF="xz4e43cb2800000005" />
+      </Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp>
+      <Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp TID="xz4e43cb2800000015">
+        <Identifikator>1132</Identifikator>
+        <Zonentyp>113</Zonentyp>
+        <Abkuerzung>W3/50G III</Abkuerzung>
+        <Verbindlichkeit>eigentuemerverbindlich</Verbindlichkeit>
+        <Bemerkungen>Wohnzonen - 3-geschossig, m.G.erl.</Bemerkungen>
+        <Zonentyp_Kt_2 REF="xz4e43cb2800000005" />
+      </Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp>
+      <Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp TID="xz4e43cb2800000016">
+        <Identifikator>1133</Identifikator>
+        <Zonentyp>113</Zonentyp>
+        <Abkuerzung>W3/70G III</Abkuerzung>
+        <Verbindlichkeit>eigentuemerverbindlich</Verbindlichkeit>
+        <Bemerkungen>Wohnzonen - 3-geschossig, m.G.erl.</Bemerkungen>
+        <Zonentyp_Kt_2 REF="xz4e43cb2800000005" />
+      </Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp>
+      <Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp TID="xz4e43cefd62f80000">
+        <Identifikator>421</Identifikator>
+        <Zonentyp>421</Zonentyp>
+        <Abkuerzung>R</Abkuerzung>
+        <Verbindlichkeit>eigentuemerverbindlich</Verbindlichkeit>
+        <Bemerkungen>Reservezone</Bemerkungen>
+        <Zonentyp_Kt_2 REF="xz4e43cb280000000e" />
+      </Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp>
+      <Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp TID="xz4e43cf4362f80003">
+        <Identifikator>162</Identifikator>
+        <Zonentyp>162</Zonentyp>
+        <Abkuerzung>F</Abkuerzung>
+        <Verbindlichkeit>eigentuemerverbindlich</Verbindlichkeit>
+        <Bemerkungen>Freihaltezone</Bemerkungen>
+        <Zonentyp_Kt_2 REF="xz4e43cb280000000d" />
+      </Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp>
+      <Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonenflaeche TID="xz4e43d44ae7880005">
+        <Geometrie>
+          <SURFACE>
+            <BOUNDARY>
+              <POLYLINE>
+                <COORD>
+                  <C1>694511.547</C1>
+                  <C2>247816.271</C2>
+                </COORD>
+                <COORD>
+                  <C1>694533.508</C1>
+                  <C2>247782.974</C2>
+                </COORD>
+                <COORD>
+                  <C1>694535.414</C1>
+                  <C2>247780.101</C2>
+                </COORD>
+                <COORD>
+                  <C1>694538.417</C1>
+                  <C2>247775.527</C2>
+                </COORD>
+                <COORD>
+                  <C1>694549.639</C1>
+                  <C2>247758.523</C2>
+                </COORD>
+                <COORD>
+                  <C1>694558.798</C1>
+                  <C2>247744.644</C2>
+                </COORD>
+                <COORD>
+                  <C1>694572.005</C1>
+                  <C2>247724.587</C2>
+                </COORD>
+                <COORD>
+                  <C1>694570.668</C1>
+                  <C2>247721.874</C2>
+                </COORD>
+                <COORD>
+                  <C1>694554.152</C1>
+                  <C2>247688.349</C2>
+                </COORD>
+                <COORD>
+                  <C1>694555.844</C1>
+                  <C2>247687.289</C2>
+                </COORD>
+                <COORD>
+                  <C1>694545.656</C1>
+                  <C2>247666.581</C2>
+                </COORD>
+                <COORD>
+                  <C1>694517.111</C1>
+                  <C2>247683.047</C2>
+                </COORD>
+                <COORD>
+                  <C1>694509.953</C1>
+                  <C2>247666.438</C2>
+                </COORD>
+                <COORD>
+                  <C1>694509.433</C1>
+                  <C2>247665.561</C2>
+                </COORD>
+                <COORD>
+                  <C1>694497.883</C1>
+                  <C2>247672.617</C2>
+                </COORD>
+                <COORD>
+                  <C1>694492.620</C1>
+                  <C2>247675.064</C2>
+                </COORD>
+                <COORD>
+                  <C1>694488.616</C1>
+                  <C2>247657.769</C2>
+                </COORD>
+                <COORD>
+                  <C1>694481.719</C1>
+                  <C2>247646.005</C2>
+                </COORD>
+                <COORD>
+                  <C1>694475.422</C1>
+                  <C2>247635.262</C2>
+                </COORD>
+                <COORD>
+                  <C1>694536.108</C1>
+                  <C2>247597.236</C2>
+                </COORD>
+                <COORD>
+                  <C1>694585.416</C1>
+                  <C2>247566.339</C2>
+                </COORD>
+                <COORD>
+                  <C1>694587.873</C1>
+                  <C2>247564.799</C2>
+                </COORD>
+                <COORD>
+                  <C1>694587.251</C1>
+                  <C2>247562.138</C2>
+                </COORD>
+                <COORD>
+                  <C1>694584.301</C1>
+                  <C2>247548.468</C2>
+                </COORD>
+                <COORD>
+                  <C1>694581.586</C1>
+                  <C2>247534.791</C2>
+                </COORD>
+                <COORD>
+                  <C1>694579.066</C1>
+                  <C2>247521.057</C2>
+                </COORD>
+                <COORD>
+                  <C1>694578.807</C1>
+                  <C2>247519.516</C2>
+                </COORD>
+                <COORD>
+                  <C1>694576.215</C1>
+                  <C2>247520.717</C2>
+                </COORD>
+                <COORD>
+                  <C1>694544.460</C1>
+                  <C2>247535.435</C2>
+                </COORD>
+                <COORD>
+                  <C1>694533.380</C1>
+                  <C2>247492.555</C2>
+                </COORD>
+                <COORD>
+                  <C1>694500.746</C1>
+                  <C2>247515.550</C2>
+                </COORD>
+                <COORD>
+                  <C1>694473.005</C1>
+                  <C2>247476.224</C2>
+                </COORD>
+                <COORD>
+                  <C1>694471.821</C1>
+                  <C2>247474.545</C2>
+                </COORD>
+                <COORD>
+                  <C1>694470.369</C1>
+                  <C2>247472.486</C2>
+                </COORD>
+                <COORD>
+                  <C1>694468.916</C1>
+                  <C2>247470.427</C2>
+                </COORD>
+                <COORD>
+                  <C1>694464.632</C1>
+                  <C2>247474.445</C2>
+                </COORD>
+                <COORD>
+                  <C1>694455.269</C1>
+                  <C2>247484.168</C2>
+                </COORD>
+                <COORD>
+                  <C1>694449.365</C1>
+                  <C2>247485.873</C2>
+                </COORD>
+                <COORD>
+                  <C1>694438.666</C1>
+                  <C2>247483.009</C2>
+                </COORD>
+                <COORD>
+                  <C1>694415.880</C1>
+                  <C2>247458.051</C2>
+                </COORD>
+                <COORD>
+                  <C1>694393.634</C1>
+                  <C2>247433.684</C2>
+                </COORD>
+                <COORD>
+                  <C1>694366.401</C1>
+                  <C2>247403.855</C2>
+                </COORD>
+                <COORD>
+                  <C1>694363.785</C1>
+                  <C2>247406.447</C2>
+                </COORD>
+                <COORD>
+                  <C1>694351.420</C1>
+                  <C2>247418.711</C2>
+                </COORD>
+                <COORD>
+                  <C1>694290.669</C1>
+                  <C2>247478.951</C2>
+                </COORD>
+                <COORD>
+                  <C1>694245.308</C1>
+                  <C2>247523.930</C2>
+                </COORD>
+                <COORD>
+                  <C1>694237.769</C1>
+                  <C2>247525.771</C2>
+                </COORD>
+                <COORD>
+                  <C1>694230.997</C1>
+                  <C2>247527.425</C2>
+                </COORD>
+                <COORD>
+                  <C1>694226.677</C1>
+                  <C2>247528.480</C2>
+                </COORD>
+                <COORD>
+                  <C1>694207.359</C1>
+                  <C2>247533.199</C2>
+                </COORD>
+                <COORD>
+                  <C1>694171.567</C1>
+                  <C2>247540.978</C2>
+                </COORD>
+                <COORD>
+                  <C1>694134.733</C1>
+                  <C2>247549.445</C2>
+                </COORD>
+                <COORD>
+                  <C1>694097.895</C1>
+                  <C2>247557.944</C2>
+                </COORD>
+                <COORD>
+                  <C1>694094.854</C1>
+                  <C2>247558.876</C2>
+                </COORD>
+                <COORD>
+                  <C1>694083.050</C1>
+                  <C2>247562.494</C2>
+                </COORD>
+                <COORD>
+                  <C1>694071.241</C1>
+                  <C2>247566.113</C2>
+                </COORD>
+                <COORD>
+                  <C1>694071.565</C1>
+                  <C2>247568.286</C2>
+                </COORD>
+                <COORD>
+                  <C1>694071.905</C1>
+                  <C2>247570.457</C2>
+                </COORD>
+                <COORD>
+                  <C1>694072.261</C1>
+                  <C2>247572.625</C2>
+                </COORD>
+                <COORD>
+                  <C1>694072.632</C1>
+                  <C2>247574.790</C2>
+                </COORD>
+                <COORD>
+                  <C1>694073.020</C1>
+                  <C2>247576.953</C2>
+                </COORD>
+                <COORD>
+                  <C1>694073.423</C1>
+                  <C2>247579.113</C2>
+                </COORD>
+                <COORD>
+                  <C1>694073.423</C1>
+                  <C2>247579.114</C2>
+                </COORD>
+                <COORD>
+                  <C1>694073.842</C1>
+                  <C2>247581.270</C2>
+                </COORD>
+                <COORD>
+                  <C1>694074.276</C1>
+                  <C2>247583.424</C2>
+                </COORD>
+                <COORD>
+                  <C1>694074.726</C1>
+                  <C2>247585.574</C2>
+                </COORD>
+                <COORD>
+                  <C1>694075.192</C1>
+                  <C2>247587.721</C2>
+                </COORD>
+                <COORD>
+                  <C1>694075.673</C1>
+                  <C2>247589.865</C2>
+                </COORD>
+                <COORD>
+                  <C1>694076.170</C1>
+                  <C2>247592.005</C2>
+                </COORD>
+                <COORD>
+                  <C1>694076.171</C1>
+                  <C2>247592.008</C2>
+                </COORD>
+                <COORD>
+                  <C1>694076.199</C1>
+                  <C2>247592.151</C2>
+                </COORD>
+                <COORD>
+                  <C1>694076.224</C1>
+                  <C2>247592.295</C2>
+                </COORD>
+                <COORD>
+                  <C1>694076.247</C1>
+                  <C2>247592.439</C2>
+                </COORD>
+                <COORD>
+                  <C1>694076.268</C1>
+                  <C2>247592.584</C2>
+                </COORD>
+                <COORD>
+                  <C1>694076.286</C1>
+                  <C2>247592.729</C2>
+                </COORD>
+                <COORD>
+                  <C1>694076.301</C1>
+                  <C2>247592.874</C2>
+                </COORD>
+                <COORD>
+                  <C1>694076.314</C1>
+                  <C2>247593.020</C2>
+                </COORD>
+                <COORD>
+                  <C1>694076.324</C1>
+                  <C2>247593.165</C2>
+                </COORD>
+                <COORD>
+                  <C1>694076.332</C1>
+                  <C2>247593.311</C2>
+                </COORD>
+                <COORD>
+                  <C1>694076.337</C1>
+                  <C2>247593.457</C2>
+                </COORD>
+                <COORD>
+                  <C1>694076.340</C1>
+                  <C2>247593.603</C2>
+                </COORD>
+                <COORD>
+                  <C1>694076.340</C1>
+                  <C2>247593.749</C2>
+                </COORD>
+                <COORD>
+                  <C1>694076.338</C1>
+                  <C2>247593.895</C2>
+                </COORD>
+                <COORD>
+                  <C1>694076.333</C1>
+                  <C2>247594.041</C2>
+                </COORD>
+                <COORD>
+                  <C1>694076.325</C1>
+                  <C2>247594.187</C2>
+                </COORD>
+                <COORD>
+                  <C1>694076.315</C1>
+                  <C2>247594.332</C2>
+                </COORD>
+                <COORD>
+                  <C1>694076.303</C1>
+                  <C2>247594.478</C2>
+                </COORD>
+                <COORD>
+                  <C1>694076.287</C1>
+                  <C2>247594.623</C2>
+                </COORD>
+                <COORD>
+                  <C1>694076.270</C1>
+                  <C2>247594.768</C2>
+                </COORD>
+                <COORD>
+                  <C1>694076.250</C1>
+                  <C2>247594.913</C2>
+                </COORD>
+                <COORD>
+                  <C1>694076.227</C1>
+                  <C2>247595.057</C2>
+                </COORD>
+                <COORD>
+                  <C1>694076.202</C1>
+                  <C2>247595.201</C2>
+                </COORD>
+                <COORD>
+                  <C1>694076.174</C1>
+                  <C2>247595.344</C2>
+                </COORD>
+                <COORD>
+                  <C1>694076.144</C1>
+                  <C2>247595.487</C2>
+                </COORD>
+                <COORD>
+                  <C1>694076.111</C1>
+                  <C2>247595.629</C2>
+                </COORD>
+                <COORD>
+                  <C1>694076.076</C1>
+                  <C2>247595.771</C2>
+                </COORD>
+                <COORD>
+                  <C1>694076.038</C1>
+                  <C2>247595.912</C2>
+                </COORD>
+                <COORD>
+                  <C1>694075.998</C1>
+                  <C2>247596.053</C2>
+                </COORD>
+                <COORD>
+                  <C1>694075.955</C1>
+                  <C2>247596.192</C2>
+                </COORD>
+                <COORD>
+                  <C1>694075.910</C1>
+                  <C2>247596.331</C2>
+                </COORD>
+                <COORD>
+                  <C1>694075.868</C1>
+                  <C2>247596.455</C2>
+                </COORD>
+                <COORD>
+                  <C1>694075.863</C1>
+                  <C2>247596.469</C2>
+                </COORD>
+                <COORD>
+                  <C1>694075.813</C1>
+                  <C2>247596.607</C2>
+                </COORD>
+                <COORD>
+                  <C1>694075.761</C1>
+                  <C2>247596.743</C2>
+                </COORD>
+                <COORD>
+                  <C1>694075.706</C1>
+                  <C2>247596.878</C2>
+                </COORD>
+                <COORD>
+                  <C1>694075.649</C1>
+                  <C2>247597.013</C2>
+                </COORD>
+                <COORD>
+                  <C1>694075.590</C1>
+                  <C2>247597.146</C2>
+                </COORD>
+                <COORD>
+                  <C1>694075.529</C1>
+                  <C2>247597.279</C2>
+                </COORD>
+                <COORD>
+                  <C1>694075.465</C1>
+                  <C2>247597.410</C2>
+                </COORD>
+                <COORD>
+                  <C1>694075.398</C1>
+                  <C2>247597.540</C2>
+                </COORD>
+                <COORD>
+                  <C1>694075.330</C1>
+                  <C2>247597.669</C2>
+                </COORD>
+                <COORD>
+                  <C1>694075.259</C1>
+                  <C2>247597.797</C2>
+                </COORD>
+                <COORD>
+                  <C1>694075.186</C1>
+                  <C2>247597.924</C2>
+                </COORD>
+                <COORD>
+                  <C1>694075.111</C1>
+                  <C2>247598.049</C2>
+                </COORD>
+                <COORD>
+                  <C1>694075.034</C1>
+                  <C2>247598.173</C2>
+                </COORD>
+                <COORD>
+                  <C1>694074.955</C1>
+                  <C2>247598.295</C2>
+                </COORD>
+                <COORD>
+                  <C1>694074.873</C1>
+                  <C2>247598.416</C2>
+                </COORD>
+                <COORD>
+                  <C1>694074.789</C1>
+                  <C2>247598.536</C2>
+                </COORD>
+                <COORD>
+                  <C1>694074.704</C1>
+                  <C2>247598.654</C2>
+                </COORD>
+                <COORD>
+                  <C1>694074.616</C1>
+                  <C2>247598.771</C2>
+                </COORD>
+                <COORD>
+                  <C1>694074.526</C1>
+                  <C2>247598.886</C2>
+                </COORD>
+                <COORD>
+                  <C1>694074.434</C1>
+                  <C2>247599.000</C2>
+                </COORD>
+                <COORD>
+                  <C1>694074.341</C1>
+                  <C2>247599.112</C2>
+                </COORD>
+                <COORD>
+                  <C1>694074.245</C1>
+                  <C2>247599.222</C2>
+                </COORD>
+                <COORD>
+                  <C1>694074.147</C1>
+                  <C2>247599.330</C2>
+                </COORD>
+                <COORD>
+                  <C1>694074.048</C1>
+                  <C2>247599.437</C2>
+                </COORD>
+                <COORD>
+                  <C1>694073.946</C1>
+                  <C2>247599.543</C2>
+                </COORD>
+                <COORD>
+                  <C1>694073.843</C1>
+                  <C2>247599.646</C2>
+                </COORD>
+                <COORD>
+                  <C1>694073.738</C1>
+                  <C2>247599.747</C2>
+                </COORD>
+                <COORD>
+                  <C1>694073.632</C1>
+                  <C2>247599.847</C2>
+                </COORD>
+                <COORD>
+                  <C1>694073.523</C1>
+                  <C2>247599.945</C2>
+                </COORD>
+                <COORD>
+                  <C1>694073.413</C1>
+                  <C2>247600.041</C2>
+                </COORD>
+                <COORD>
+                  <C1>694073.325</C1>
+                  <C2>247600.115</C2>
+                </COORD>
+                <COORD>
+                  <C1>694072.810</C1>
+                  <C2>247600.503</C2>
+                </COORD>
+                <COORD>
+                  <C1>694087.460</C1>
+                  <C2>247623.784</C2>
+                </COORD>
+                <COORD>
+                  <C1>694092.834</C1>
+                  <C2>247632.324</C2>
+                </COORD>
+                <COORD>
+                  <C1>694144.936</C1>
+                  <C2>247713.309</C2>
+                </COORD>
+                <COORD>
+                  <C1>694139.465</C1>
+                  <C2>247717.676</C2>
+                </COORD>
+                <COORD>
+                  <C1>694129.649</C1>
+                  <C2>247725.511</C2>
+                </COORD>
+                <COORD>
+                  <C1>694105.654</C1>
+                  <C2>247744.664</C2>
+                </COORD>
+                <COORD>
+                  <C1>694103.706</C1>
+                  <C2>247746.219</C2>
+                </COORD>
+                <COORD>
+                  <C1>694098.084</C1>
+                  <C2>247750.706</C2>
+                </COORD>
+                <COORD>
+                  <C1>694094.915</C1>
+                  <C2>247753.236</C2>
+                </COORD>
+                <COORD>
+                  <C1>694076.905</C1>
+                  <C2>247767.612</C2>
+                </COORD>
+                <COORD>
+                  <C1>694072.366</C1>
+                  <C2>247771.235</C2>
+                </COORD>
+                <COORD>
+                  <C1>694059.189</C1>
+                  <C2>247781.753</C2>
+                </COORD>
+                <COORD>
+                  <C1>694039.832</C1>
+                  <C2>247797.204</C2>
+                </COORD>
+                <COORD>
+                  <C1>694019.596</C1>
+                  <C2>247813.356</C2>
+                </COORD>
+                <COORD>
+                  <C1>693990.221</C1>
+                  <C2>247836.803</C2>
+                </COORD>
+                <COORD>
+                  <C1>693981.181</C1>
+                  <C2>247844.019</C2>
+                </COORD>
+                <COORD>
+                  <C1>693960.927</C1>
+                  <C2>247860.186</C2>
+                </COORD>
+                <COORD>
+                  <C1>693951.719</C1>
+                  <C2>247867.536</C2>
+                </COORD>
+                <COORD>
+                  <C1>693949.452</C1>
+                  <C2>247869.345</C2>
+                </COORD>
+                <COORD>
+                  <C1>693940.414</C1>
+                  <C2>247876.559</C2>
+                </COORD>
+                <COORD>
+                  <C1>693919.251</C1>
+                  <C2>247893.452</C2>
+                </COORD>
+                <COORD>
+                  <C1>693901.594</C1>
+                  <C2>247907.546</C2>
+                </COORD>
+                <COORD>
+                  <C1>693900.430</C1>
+                  <C2>247908.193</C2>
+                </COORD>
+                <COORD>
+                  <C1>693896.846</C1>
+                  <C2>247910.184</C2>
+                </COORD>
+                <COORD>
+                  <C1>693906.767</C1>
+                  <C2>247928.410</C2>
+                </COORD>
+                <COORD>
+                  <C1>693926.053</C1>
+                  <C2>247963.986</C2>
+                </COORD>
+                <COORD>
+                  <C1>693949.916</C1>
+                  <C2>248008.479</C2>
+                </COORD>
+                <COORD>
+                  <C1>693954.815</C1>
+                  <C2>248006.107</C2>
+                </COORD>
+                <COORD>
+                  <C1>693965.418</C1>
+                  <C2>248028.916</C2>
+                </COORD>
+                <COORD>
+                  <C1>693968.030</C1>
+                  <C2>248034.536</C2>
+                </COORD>
+                <COORD>
+                  <C1>693968.444</C1>
+                  <C2>248035.427</C2>
+                </COORD>
+                <COORD>
+                  <C1>693974.351</C1>
+                  <C2>248047.703</C2>
+                </COORD>
+                <COORD>
+                  <C1>693976.867</C1>
+                  <C2>248052.933</C2>
+                </COORD>
+                <COORD>
+                  <C1>693981.494</C1>
+                  <C2>248062.550</C2>
+                </COORD>
+                <COORD>
+                  <C1>693982.213</C1>
+                  <C2>248064.045</C2>
+                </COORD>
+                <COORD>
+                  <C1>693984.393</C1>
+                  <C2>248066.966</C2>
+                </COORD>
+                <COORD>
+                  <C1>693987.395</C1>
+                  <C2>248070.989</C2>
+                </COORD>
+                <COORD>
+                  <C1>693992.240</C1>
+                  <C2>248075.149</C2>
+                </COORD>
+                <COORD>
+                  <C1>693999.811</C1>
+                  <C2>248081.651</C2>
+                </COORD>
+                <COORD>
+                  <C1>694005.421</C1>
+                  <C2>248086.516</C2>
+                </COORD>
+                <COORD>
+                  <C1>694010.910</C1>
+                  <C2>248091.246</C2>
+                </COORD>
+                <COORD>
+                  <C1>694019.332</C1>
+                  <C2>248098.507</C2>
+                </COORD>
+                <COORD>
+                  <C1>694021.644</C1>
+                  <C2>248100.500</C2>
+                </COORD>
+                <COORD>
+                  <C1>694025.340</C1>
+                  <C2>248104.701</C2>
+                </COORD>
+                <COORD>
+                  <C1>694029.792</C1>
+                  <C2>248109.761</C2>
+                </COORD>
+                <COORD>
+                  <C1>694038.882</C1>
+                  <C2>248120.880</C2>
+                </COORD>
+                <COORD>
+                  <C1>694055.543</C1>
+                  <C2>248141.257</C2>
+                </COORD>
+                <COORD>
+                  <C1>694063.651</C1>
+                  <C2>248150.073</C2>
+                </COORD>
+                <COORD>
+                  <C1>694064.337</C1>
+                  <C2>248150.819</C2>
+                </COORD>
+                <COORD>
+                  <C1>694071.923</C1>
+                  <C2>248157.193</C2>
+                </COORD>
+                <COORD>
+                  <C1>694101.409</C1>
+                  <C2>248181.383</C2>
+                </COORD>
+                <COORD>
+                  <C1>694137.791</C1>
+                  <C2>248211.172</C2>
+                </COORD>
+                <COORD>
+                  <C1>694142.942</C1>
+                  <C2>248215.432</C2>
+                </COORD>
+                <COORD>
+                  <C1>694177.171</C1>
+                  <C2>248243.437</C2>
+                </COORD>
+                <COORD>
+                  <C1>694209.024</C1>
+                  <C2>248269.497</C2>
+                </COORD>
+                <COORD>
+                  <C1>694211.348</C1>
+                  <C2>248271.398</C2>
+                </COORD>
+                <COORD>
+                  <C1>694230.333</C1>
+                  <C2>248242.609</C2>
+                </COORD>
+                <COORD>
+                  <C1>694237.914</C1>
+                  <C2>248231.122</C2>
+                </COORD>
+                <COORD>
+                  <C1>694257.855</C1>
+                  <C2>248200.906</C2>
+                </COORD>
+                <COORD>
+                  <C1>694258.730</C1>
+                  <C2>248199.578</C2>
+                </COORD>
+                <COORD>
+                  <C1>694271.346</C1>
+                  <C2>248180.432</C2>
+                </COORD>
+                <COORD>
+                  <C1>694285.371</C1>
+                  <C2>248159.149</C2>
+                </COORD>
+                <COORD>
+                  <C1>694287.331</C1>
+                  <C2>248156.178</C2>
+                </COORD>
+                <COORD>
+                  <C1>694296.618</C1>
+                  <C2>248142.095</C2>
+                </COORD>
+                <COORD>
+                  <C1>694305.697</C1>
+                  <C2>248128.329</C2>
+                </COORD>
+                <COORD>
+                  <C1>694307.541</C1>
+                  <C2>248125.533</C2>
+                </COORD>
+                <COORD>
+                  <C1>694312.898</C1>
+                  <C2>248117.411</C2>
+                </COORD>
+                <COORD>
+                  <C1>694329.943</C1>
+                  <C2>248091.554</C2>
+                </COORD>
+                <COORD>
+                  <C1>694340.406</C1>
+                  <C2>248075.683</C2>
+                </COORD>
+                <COORD>
+                  <C1>694342.197</C1>
+                  <C2>248072.969</C2>
+                </COORD>
+                <COORD>
+                  <C1>694354.641</C1>
+                  <C2>248054.109</C2>
+                </COORD>
+                <COORD>
+                  <C1>694367.947</C1>
+                  <C2>248033.943</C2>
+                </COORD>
+                <COORD>
+                  <C1>694374.817</C1>
+                  <C2>248023.531</C2>
+                </COORD>
+                <COORD>
+                  <C1>694381.517</C1>
+                  <C2>248013.377</C2>
+                </COORD>
+                <COORD>
+                  <C1>694393.330</C1>
+                  <C2>247995.475</C2>
+                </COORD>
+                <COORD>
+                  <C1>694395.477</C1>
+                  <C2>247992.221</C2>
+                </COORD>
+                <COORD>
+                  <C1>694423.014</C1>
+                  <C2>247950.470</C2>
+                </COORD>
+                <COORD>
+                  <C1>694438.450</C1>
+                  <C2>247927.043</C2>
+                </COORD>
+                <COORD>
+                  <C1>694439.134</C1>
+                  <C2>247926.005</C2>
+                </COORD>
+                <COORD>
+                  <C1>694450.525</C1>
+                  <C2>247908.716</C2>
+                </COORD>
+                <COORD>
+                  <C1>694476.779</C1>
+                  <C2>247868.997</C2>
+                </COORD>
+                <COORD>
+                  <C1>694483.089</C1>
+                  <C2>247859.413</C2>
+                </COORD>
+                <COORD>
+                  <C1>694489.503</C1>
+                  <C2>247849.672</C2>
+                </COORD>
+                <COORD>
+                  <C1>694387.239</C1>
+                  <C2>247631.817</C2>
+                </COORD>
+                <COORD>
+                  <C1>694511.547</C1>
+                  <C2>247816.271</C2>
+                </COORD>
+              </POLYLINE>
+            </BOUNDARY>
+            <BOUNDARY>
+              <POLYLINE>
+                <COORD>
+                  <C1>694387.453</C1>
+                  <C2>247601.689</C2>
+                </COORD>
+                <COORD>
+                  <C1>694387.239</C1>
+                  <C2>247631.817</C2>
+                </COORD>
+                <COORD>
+                  <C1>694387.225</C1>
+                  <C2>247633.810</C2>
+                </COORD>
+                <COORD>
+                  <C1>694390.427</C1>
+                  <C2>247685.786</C2>
+                </COORD>
+                <COORD>
+                  <C1>694389.216</C1>
+                  <C2>247702.740</C2>
+                </COORD>
+                <COORD>
+                  <C1>694387.606</C1>
+                  <C2>247710.427</C2>
+                </COORD>
+                <COORD>
+                  <C1>694384.572</C1>
+                  <C2>247724.916</C2>
+                </COORD>
+                <COORD>
+                  <C1>694381.276</C1>
+                  <C2>247740.653</C2>
+                </COORD>
+                <COORD>
+                  <C1>694367.973</C1>
+                  <C2>247725.306</C2>
+                </COORD>
+                <COORD>
+                  <C1>694217.670</C1>
+                  <C2>247551.913</C2>
+                </COORD>
+                <COORD>
+                  <C1>694234.287</C1>
+                  <C2>247537.509</C2>
+                </COORD>
+                <COORD>
+                  <C1>694237.109</C1>
+                  <C2>247535.063</C2>
+                </COORD>
+                <COORD>
+                  <C1>694238.019</C1>
+                  <C2>247530.831</C2>
+                </COORD>
+                <COORD>
+                  <C1>694246.173</C1>
+                  <C2>247528.828</C2>
+                </COORD>
+                <COORD>
+                  <C1>694255.956</C1>
+                  <C2>247527.564</C2>
+                </COORD>
+                <COORD>
+                  <C1>694265.926</C1>
+                  <C2>247527.354</C2>
+                </COORD>
+                <COORD>
+                  <C1>694300.282</C1>
+                  <C2>247530.024</C2>
+                </COORD>
+                <COORD>
+                  <C1>694325.016</C1>
+                  <C2>247531.994</C2>
+                </COORD>
+                <COORD>
+                  <C1>694333.856</C1>
+                  <C2>247532.698</C2>
+                </COORD>
+                <COORD>
+                  <C1>694334.950</C1>
+                  <C2>247532.785</C2>
+                </COORD>
+                <COORD>
+                  <C1>694340.357</C1>
+                  <C2>247533.450</C2>
+                </COORD>
+                <COORD>
+                  <C1>694355.632</C1>
+                  <C2>247535.329</C2>
+                </COORD>
+                <COORD>
+                  <C1>694356.333</C1>
+                  <C2>247535.535</C2>
+                </COORD>
+                <COORD>
+                  <C1>694366.256</C1>
+                  <C2>247538.447</C2>
+                </COORD>
+                <COORD>
+                  <C1>694371.585</C1>
+                  <C2>247541.657</C2>
+                </COORD>
+                <COORD>
+                  <C1>694380.151</C1>
+                  <C2>247546.816</C2>
+                </COORD>
+                <COORD>
+                  <C1>694392.849</C1>
+                  <C2>247552.891</C2>
+                </COORD>
+                <COORD>
+                  <C1>694388.702</C1>
+                  <C2>247558.518</C2>
+                </COORD>
+                <COORD>
+                  <C1>694386.524</C1>
+                  <C2>247565.128</C2>
+                </COORD>
+                <COORD>
+                  <C1>694387.142</C1>
+                  <C2>247590.724</C2>
+                </COORD>
+                <COORD>
+                  <C1>694387.453</C1>
+                  <C2>247601.689</C2>
+                </COORD>
+              </POLYLINE>
+            </BOUNDARY>
+          </SURFACE>
+        </Geometrie>
+        <Herkunft>Planabgriff</Herkunft>
+        <Qualitaet>AV93</Qualitaet>
+        <Mutation REF="xz4e43d386e7880000" />
+        <Zonentyp_1 REF="xz4e43cb280000000f" />
+      </Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonenflaeche>
+      <Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonenflaeche TID="xz4e43d61be7880006">
+        <Geometrie>
+          <SURFACE>
+            <BOUNDARY>
+              <POLYLINE>
+                <COORD>
+                  <C1>694725.185</C1>
+                  <C2>247937.338</C2>
+                </COORD>
+                <COORD>
+                  <C1>694686.319</C1>
+                  <C2>247878.838</C2>
+                </COORD>
+                <COORD>
+                  <C1>694659.428</C1>
+                  <C2>247868.847</C2>
+                </COORD>
+                <COORD>
+                  <C1>694638.700</C1>
+                  <C2>247879.154</C2>
+                </COORD>
+                <COORD>
+                  <C1>694602.797</C1>
+                  <C2>247841.053</C2>
+                </COORD>
+                <COORD>
+                  <C1>694600.722</C1>
+                  <C2>247838.851</C2>
+                </COORD>
+                <COORD>
+                  <C1>694598.674</C1>
+                  <C2>247839.352</C2>
+                </COORD>
+                <COORD>
+                  <C1>694586.353</C1>
+                  <C2>247845.299</C2>
+                </COORD>
+                <COORD>
+                  <C1>694566.319</C1>
+                  <C2>247861.007</C2>
+                </COORD>
+                <COORD>
+                  <C1>694546.204</C1>
+                  <C2>247879.672</C2>
+                </COORD>
+                <COORD>
+                  <C1>694524.196</C1>
+                  <C2>247900.155</C2>
+                </COORD>
+                <COORD>
+                  <C1>694521.488</C1>
+                  <C2>247902.675</C2>
+                </COORD>
+                <COORD>
+                  <C1>694569.950</C1>
+                  <C2>247957.273</C2>
+                </COORD>
+                <COORD>
+                  <C1>694604.812</C1>
+                  <C2>247997.946</C2>
+                </COORD>
+                <COORD>
+                  <C1>694637.107</C1>
+                  <C2>248038.229</C2>
+                </COORD>
+                <COORD>
+                  <C1>694644.420</C1>
+                  <C2>248041.267</C2>
+                </COORD>
+                <COORD>
+                  <C1>694644.560</C1>
+                  <C2>248041.324</C2>
+                </COORD>
+                <COORD>
+                  <C1>694644.723</C1>
+                  <C2>248041.387</C2>
+                </COORD>
+                <COORD>
+                  <C1>694644.886</C1>
+                  <C2>248041.447</C2>
+                </COORD>
+                <COORD>
+                  <C1>694645.051</C1>
+                  <C2>248041.505</C2>
+                </COORD>
+                <COORD>
+                  <C1>694645.217</C1>
+                  <C2>248041.559</C2>
+                </COORD>
+                <COORD>
+                  <C1>694645.384</C1>
+                  <C2>248041.611</C2>
+                </COORD>
+                <COORD>
+                  <C1>694645.552</C1>
+                  <C2>248041.660</C2>
+                </COORD>
+                <COORD>
+                  <C1>694645.720</C1>
+                  <C2>248041.705</C2>
+                </COORD>
+                <COORD>
+                  <C1>694645.889</C1>
+                  <C2>248041.748</C2>
+                </COORD>
+                <COORD>
+                  <C1>694646.059</C1>
+                  <C2>248041.788</C2>
+                </COORD>
+                <COORD>
+                  <C1>694646.230</C1>
+                  <C2>248041.825</C2>
+                </COORD>
+                <COORD>
+                  <C1>694646.401</C1>
+                  <C2>248041.859</C2>
+                </COORD>
+                <COORD>
+                  <C1>694646.573</C1>
+                  <C2>248041.890</C2>
+                </COORD>
+                <COORD>
+                  <C1>694646.746</C1>
+                  <C2>248041.918</C2>
+                </COORD>
+                <COORD>
+                  <C1>694646.918</C1>
+                  <C2>248041.942</C2>
+                </COORD>
+                <COORD>
+                  <C1>694647.092</C1>
+                  <C2>248041.964</C2>
+                </COORD>
+                <COORD>
+                  <C1>694647.265</C1>
+                  <C2>248041.983</C2>
+                </COORD>
+                <COORD>
+                  <C1>694647.439</C1>
+                  <C2>248041.999</C2>
+                </COORD>
+                <COORD>
+                  <C1>694647.613</C1>
+                  <C2>248042.012</C2>
+                </COORD>
+                <COORD>
+                  <C1>694647.788</C1>
+                  <C2>248042.021</C2>
+                </COORD>
+                <COORD>
+                  <C1>694647.962</C1>
+                  <C2>248042.028</C2>
+                </COORD>
+                <COORD>
+                  <C1>694648.137</C1>
+                  <C2>248042.032</C2>
+                </COORD>
+                <COORD>
+                  <C1>694648.311</C1>
+                  <C2>248042.032</C2>
+                </COORD>
+                <COORD>
+                  <C1>694648.486</C1>
+                  <C2>248042.030</C2>
+                </COORD>
+                <COORD>
+                  <C1>694648.660</C1>
+                  <C2>248042.024</C2>
+                </COORD>
+                <COORD>
+                  <C1>694648.672</C1>
+                  <C2>248042.024</C2>
+                </COORD>
+                <COORD>
+                  <C1>694648.835</C1>
+                  <C2>248042.016</C2>
+                </COORD>
+                <COORD>
+                  <C1>694649.009</C1>
+                  <C2>248042.004</C2>
+                </COORD>
+                <COORD>
+                  <C1>694649.183</C1>
+                  <C2>248041.990</C2>
+                </COORD>
+                <COORD>
+                  <C1>694649.357</C1>
+                  <C2>248041.972</C2>
+                </COORD>
+                <COORD>
+                  <C1>694649.530</C1>
+                  <C2>248041.951</C2>
+                </COORD>
+                <COORD>
+                  <C1>694649.703</C1>
+                  <C2>248041.928</C2>
+                </COORD>
+                <COORD>
+                  <C1>694649.875</C1>
+                  <C2>248041.901</C2>
+                </COORD>
+                <COORD>
+                  <C1>694650.047</C1>
+                  <C2>248041.871</C2>
+                </COORD>
+                <COORD>
+                  <C1>694650.219</C1>
+                  <C2>248041.839</C2>
+                </COORD>
+                <COORD>
+                  <C1>694650.390</C1>
+                  <C2>248041.803</C2>
+                </COORD>
+                <COORD>
+                  <C1>694650.560</C1>
+                  <C2>248041.764</C2>
+                </COORD>
+                <COORD>
+                  <C1>694650.730</C1>
+                  <C2>248041.722</C2>
+                </COORD>
+                <COORD>
+                  <C1>694650.899</C1>
+                  <C2>248041.678</C2>
+                </COORD>
+                <COORD>
+                  <C1>694651.067</C1>
+                  <C2>248041.630</C2>
+                </COORD>
+                <COORD>
+                  <C1>694651.234</C1>
+                  <C2>248041.580</C2>
+                </COORD>
+                <COORD>
+                  <C1>694651.400</C1>
+                  <C2>248041.526</C2>
+                </COORD>
+                <COORD>
+                  <C1>694651.565</C1>
+                  <C2>248041.470</C2>
+                </COORD>
+                <COORD>
+                  <C1>694651.729</C1>
+                  <C2>248041.411</C2>
+                </COORD>
+                <COORD>
+                  <C1>694651.893</C1>
+                  <C2>248041.349</C2>
+                </COORD>
+                <COORD>
+                  <C1>694652.055</C1>
+                  <C2>248041.284</C2>
+                </COORD>
+                <COORD>
+                  <C1>694652.216</C1>
+                  <C2>248041.216</C2>
+                </COORD>
+                <COORD>
+                  <C1>694652.375</C1>
+                  <C2>248041.146</C2>
+                </COORD>
+                <COORD>
+                  <C1>694652.534</C1>
+                  <C2>248041.073</C2>
+                </COORD>
+                <COORD>
+                  <C1>694652.691</C1>
+                  <C2>248040.997</C2>
+                </COORD>
+                <COORD>
+                  <C1>694652.847</C1>
+                  <C2>248040.918</C2>
+                </COORD>
+                <COORD>
+                  <C1>694675.948</C1>
+                  <C2>248028.984</C2>
+                </COORD>
+                <COORD>
+                  <C1>694676.571</C1>
+                  <C2>248028.666</C2>
+                </COORD>
+                <COORD>
+                  <C1>694677.700</C1>
+                  <C2>248028.076</C2>
+                </COORD>
+                <COORD>
+                  <C1>694678.821</C1>
+                  <C2>248027.472</C2>
+                </COORD>
+                <COORD>
+                  <C1>694679.935</C1>
+                  <C2>248026.854</C2>
+                </COORD>
+                <COORD>
+                  <C1>694681.041</C1>
+                  <C2>248026.222</C2>
+                </COORD>
+                <COORD>
+                  <C1>694682.139</C1>
+                  <C2>248025.576</C2>
+                </COORD>
+                <COORD>
+                  <C1>694682.930</C1>
+                  <C2>248025.099</C2>
+                </COORD>
+                <COORD>
+                  <C1>694683.229</C1>
+                  <C2>248024.916</C2>
+                </COORD>
+                <COORD>
+                  <C1>694684.310</C1>
+                  <C2>248024.243</C2>
+                </COORD>
+                <COORD>
+                  <C1>694685.383</C1>
+                  <C2>248023.556</C2>
+                </COORD>
+                <COORD>
+                  <C1>694686.447</C1>
+                  <C2>248022.856</C2>
+                </COORD>
+                <COORD>
+                  <C1>694687.502</C1>
+                  <C2>248022.143</C2>
+                </COORD>
+                <COORD>
+                  <C1>694688.548</C1>
+                  <C2>248021.416</C2>
+                </COORD>
+                <COORD>
+                  <C1>694689.585</C1>
+                  <C2>248020.676</C2>
+                </COORD>
+                <COORD>
+                  <C1>694706.191</C1>
+                  <C2>248009.045</C2>
+                </COORD>
+                <COORD>
+                  <C1>694705.670</C1>
+                  <C2>248008.367</C2>
+                </COORD>
+                <COORD>
+                  <C1>694672.306</C1>
+                  <C2>247964.984</C2>
+                </COORD>
+                <COORD>
+                  <C1>694669.850</C1>
+                  <C2>247961.789</C2>
+                </COORD>
+                <COORD>
+                  <C1>694686.834</C1>
+                  <C2>247954.762</C2>
+                </COORD>
+                <COORD>
+                  <C1>694704.026</C1>
+                  <C2>247946.952</C2>
+                </COORD>
+                <COORD>
+                  <C1>694725.185</C1>
+                  <C2>247937.338</C2>
+                </COORD>
+              </POLYLINE>
+            </BOUNDARY>
+          </SURFACE>
+        </Geometrie>
+        <Herkunft>Aufnahme</Herkunft>
+        <Qualitaet>AV93</Qualitaet>
+        <Mutation REF="xz4e43d386e7880000" />
+        <Zonentyp_1 REF="xz4e43cb2800000010" />
+      </Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonenflaeche>
+      <Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonenflaeche TID="xz4e43d63ce7880007">
+        <Geometrie>
+          <SURFACE>
+            <BOUNDARY>
+              <POLYLINE>
+                <COORD>
+                  <C1>694501.184</C1>
+                  <C2>247259.717</C2>
+                </COORD>
+                <COORD>
+                  <C1>694473.394</C1>
+                  <C2>247224.882</C2>
+                </COORD>
+                <COORD>
+                  <C1>694473.354</C1>
+                  <C2>247187.742</C2>
+                </COORD>
+                <COORD>
+                  <C1>694464.179</C1>
+                  <C2>247176.980</C2>
+                </COORD>
+                <COORD>
+                  <C1>694459.895</C1>
+                  <C2>247171.954</C2>
+                </COORD>
+                <COORD>
+                  <C1>694456.753</C1>
+                  <C2>247167.184</C2>
+                </COORD>
+                <COORD>
+                  <C1>694455.158</C1>
+                  <C2>247168.330</C2>
+                </COORD>
+                <COORD>
+                  <C1>694452.489</C1>
+                  <C2>247170.262</C2>
+                </COORD>
+                <COORD>
+                  <C1>694449.829</C1>
+                  <C2>247172.208</C2>
+                </COORD>
+                <COORD>
+                  <C1>694447.179</C1>
+                  <C2>247174.167</C2>
+                </COORD>
+                <COORD>
+                  <C1>694444.539</C1>
+                  <C2>247176.138</C2>
+                </COORD>
+                <COORD>
+                  <C1>694441.908</C1>
+                  <C2>247178.122</C2>
+                </COORD>
+                <COORD>
+                  <C1>694439.286</C1>
+                  <C2>247180.120</C2>
+                </COORD>
+                <COORD>
+                  <C1>694437.452</C1>
+                  <C2>247181.529</C2>
+                </COORD>
+                <COORD>
+                  <C1>694436.675</C1>
+                  <C2>247182.129</C2>
+                </COORD>
+                <COORD>
+                  <C1>694434.073</C1>
+                  <C2>247184.152</C2>
+                </COORD>
+                <COORD>
+                  <C1>694431.481</C1>
+                  <C2>247186.187</C2>
+                </COORD>
+                <COORD>
+                  <C1>694428.899</C1>
+                  <C2>247188.234</C2>
+                </COORD>
+                <COORD>
+                  <C1>694426.327</C1>
+                  <C2>247190.294</C2>
+                </COORD>
+                <COORD>
+                  <C1>694423.765</C1>
+                  <C2>247192.367</C2>
+                </COORD>
+                <COORD>
+                  <C1>694421.213</C1>
+                  <C2>247194.452</C2>
+                </COORD>
+                <COORD>
+                  <C1>694418.671</C1>
+                  <C2>247196.549</C2>
+                </COORD>
+                <COORD>
+                  <C1>694403.892</C1>
+                  <C2>247208.882</C2>
+                </COORD>
+                <COORD>
+                  <C1>694392.488</C1>
+                  <C2>247218.746</C2>
+                </COORD>
+                <COORD>
+                  <C1>694380.345</C1>
+                  <C2>247229.790</C2>
+                </COORD>
+                <COORD>
+                  <C1>694358.053</C1>
+                  <C2>247251.511</C2>
+                </COORD>
+                <COORD>
+                  <C1>694355.961</C1>
+                  <C2>247253.648</C2>
+                </COORD>
+                <COORD>
+                  <C1>694355.490</C1>
+                  <C2>247254.133</C2>
+                </COORD>
+                <COORD>
+                  <C1>694353.266</C1>
+                  <C2>247256.432</C2>
+                </COORD>
+                <COORD>
+                  <C1>694351.055</C1>
+                  <C2>247258.742</C2>
+                </COORD>
+                <COORD>
+                  <C1>694348.855</C1>
+                  <C2>247261.063</C2>
+                </COORD>
+                <COORD>
+                  <C1>694347.990</C1>
+                  <C2>247261.982</C2>
+                </COORD>
+                <COORD>
+                  <C1>694346.666</C1>
+                  <C2>247263.396</C2>
+                </COORD>
+                <COORD>
+                  <C1>694344.489</C1>
+                  <C2>247265.739</C2>
+                </COORD>
+                <COORD>
+                  <C1>694342.324</C1>
+                  <C2>247268.093</C2>
+                </COORD>
+                <COORD>
+                  <C1>694340.171</C1>
+                  <C2>247270.458</C2>
+                </COORD>
+                <COORD>
+                  <C1>694330.449</C1>
+                  <C2>247282.212</C2>
+                </COORD>
+                <COORD>
+                  <C1>694340.876</C1>
+                  <C2>247291.698</C2>
+                </COORD>
+                <COORD>
+                  <C1>694347.486</C1>
+                  <C2>247297.599</C2>
+                </COORD>
+                <COORD>
+                  <C1>694351.160</C1>
+                  <C2>247301.028</C2>
+                </COORD>
+                <COORD>
+                  <C1>694364.400</C1>
+                  <C2>247313.057</C2>
+                </COORD>
+                <COORD>
+                  <C1>694382.350</C1>
+                  <C2>247329.877</C2>
+                </COORD>
+                <COORD>
+                  <C1>694387.122</C1>
+                  <C2>247326.747</C2>
+                </COORD>
+                <COORD>
+                  <C1>694421.396</C1>
+                  <C2>247304.265</C2>
+                </COORD>
+                <COORD>
+                  <C1>694424.349</C1>
+                  <C2>247302.328</C2>
+                </COORD>
+                <COORD>
+                  <C1>694429.195</C1>
+                  <C2>247313.122</C2>
+                </COORD>
+                <COORD>
+                  <C1>694494.938</C1>
+                  <C2>247378.352</C2>
+                </COORD>
+                <COORD>
+                  <C1>694497.065</C1>
+                  <C2>247375.542</C2>
+                </COORD>
+                <COORD>
+                  <C1>694514.532</C1>
+                  <C2>247352.464</C2>
+                </COORD>
+                <COORD>
+                  <C1>694515.263</C1>
+                  <C2>247351.512</C2>
+                </COORD>
+                <COORD>
+                  <C1>694516.006</C1>
+                  <C2>247350.570</C2>
+                </COORD>
+                <COORD>
+                  <C1>694516.761</C1>
+                  <C2>247349.638</C2>
+                </COORD>
+                <COORD>
+                  <C1>694517.529</C1>
+                  <C2>247348.716</C2>
+                </COORD>
+                <COORD>
+                  <C1>694518.310</C1>
+                  <C2>247347.805</C2>
+                </COORD>
+                <COORD>
+                  <C1>694519.102</C1>
+                  <C2>247346.904</C2>
+                </COORD>
+                <COORD>
+                  <C1>694519.906</C1>
+                  <C2>247346.013</C2>
+                </COORD>
+                <COORD>
+                  <C1>694520.722</C1>
+                  <C2>247345.134</C2>
+                </COORD>
+                <COORD>
+                  <C1>694521.550</C1>
+                  <C2>247344.265</C2>
+                </COORD>
+                <COORD>
+                  <C1>694522.389</C1>
+                  <C2>247343.408</C2>
+                </COORD>
+                <COORD>
+                  <C1>694523.240</C1>
+                  <C2>247342.561</C2>
+                </COORD>
+                <COORD>
+                  <C1>694524.102</C1>
+                  <C2>247341.727</C2>
+                </COORD>
+                <COORD>
+                  <C1>694524.974</C1>
+                  <C2>247340.903</C2>
+                </COORD>
+                <COORD>
+                  <C1>694525.858</C1>
+                  <C2>247340.092</C2>
+                </COORD>
+                <COORD>
+                  <C1>694526.753</C1>
+                  <C2>247339.292</C2>
+                </COORD>
+                <COORD>
+                  <C1>694526.756</C1>
+                  <C2>247339.289</C2>
+                </COORD>
+                <COORD>
+                  <C1>694527.658</C1>
+                  <C2>247338.504</C2>
+                </COORD>
+                <COORD>
+                  <C1>694528.573</C1>
+                  <C2>247337.729</C2>
+                </COORD>
+                <COORD>
+                  <C1>694529.499</C1>
+                  <C2>247336.965</C2>
+                </COORD>
+                <COORD>
+                  <C1>694530.435</C1>
+                  <C2>247336.215</C2>
+                </COORD>
+                <COORD>
+                  <C1>694531.381</C1>
+                  <C2>247335.476</C2>
+                </COORD>
+                <COORD>
+                  <C1>694532.336</C1>
+                  <C2>247334.751</C2>
+                </COORD>
+                <COORD>
+                  <C1>694533.301</C1>
+                  <C2>247334.038</C2>
+                </COORD>
+                <COORD>
+                  <C1>694534.276</C1>
+                  <C2>247333.338</C2>
+                </COORD>
+                <COORD>
+                  <C1>694535.260</C1>
+                  <C2>247332.651</C2>
+                </COORD>
+                <COORD>
+                  <C1>694536.253</C1>
+                  <C2>247331.977</C2>
+                </COORD>
+                <COORD>
+                  <C1>694537.254</C1>
+                  <C2>247331.317</C2>
+                </COORD>
+                <COORD>
+                  <C1>694538.265</C1>
+                  <C2>247330.670</C2>
+                </COORD>
+                <COORD>
+                  <C1>694539.284</C1>
+                  <C2>247330.037</C2>
+                </COORD>
+                <COORD>
+                  <C1>694540.311</C1>
+                  <C2>247329.417</C2>
+                </COORD>
+                <COORD>
+                  <C1>694541.347</C1>
+                  <C2>247328.811</C2>
+                </COORD>
+                <COORD>
+                  <C1>694541.355</C1>
+                  <C2>247328.806</C2>
+                </COORD>
+                <COORD>
+                  <C1>694551.890</C1>
+                  <C2>247323.277</C2>
+                </COORD>
+                <COORD>
+                  <C1>694556.383</C1>
+                  <C2>247321.428</C2>
+                </COORD>
+                <COORD>
+                  <C1>694550.523</C1>
+                  <C2>247314.877</C2>
+                </COORD>
+                <COORD>
+                  <C1>694501.184</C1>
+                  <C2>247259.717</C2>
+                </COORD>
+              </POLYLINE>
+            </BOUNDARY>
+          </SURFACE>
+        </Geometrie>
+        <Herkunft>Aufnahme</Herkunft>
+        <Qualitaet>AV93</Qualitaet>
+        <Mutation REF="xz4e43d386e7880000" />
+        <Zonentyp_1 REF="xz4e43cb2800000014" />
+      </Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonenflaeche>
+      <Nutzungsplanung.Nutzungsplanung.R1 TID="xz4e43cb2800000017">
+        <Vorschrift REF="xz4e43cb2800000000" />
+        <Grundn_Zone REF="xz4e43cb280000000f" />
+      </Nutzungsplanung.Nutzungsplanung.R1>
+      <Nutzungsplanung.Nutzungsplanung.R1 TID="xz4e43cb2800000018">
+        <Vorschrift REF="xz4e43cb2800000000" />
+        <Grundn_Zone REF="xz4e43cb2800000010" />
+      </Nutzungsplanung.Nutzungsplanung.R1>
+      <Nutzungsplanung.Nutzungsplanung.R1 TID="xz4e43cb2800000019">
+        <Vorschrift REF="xz4e43cb2800000002" />
+        <Grundn_Zone REF="xz4e43cb2800000010" />
+      </Nutzungsplanung.Nutzungsplanung.R1>
+      <Nutzungsplanung.Nutzungsplanung.R1 TID="xz4e43cb280000001a">
+        <Vorschrift REF="xz4e43cb2800000000" />
+        <Grundn_Zone REF="xz4e43cb2800000011" />
+      </Nutzungsplanung.Nutzungsplanung.R1>
+      <Nutzungsplanung.Nutzungsplanung.R1 TID="xz4e43cb280000001b">
+        <Vorschrift REF="xz4e43cb2800000000" />
+        <Grundn_Zone REF="xz4e43cb2800000013" />
+      </Nutzungsplanung.Nutzungsplanung.R1>
+      <Nutzungsplanung.Nutzungsplanung.R1 TID="xz4e43cb280000001c">
+        <Vorschrift REF="xz4e43cb2800000000" />
+        <Grundn_Zone REF="xz4e43cb2800000012" />
+      </Nutzungsplanung.Nutzungsplanung.R1>
+      <Nutzungsplanung.Nutzungsplanung.R1 TID="xz4e43cb280000001d">
+        <Vorschrift REF="xz4e43cb2800000000" />
+        <Grundn_Zone REF="xz4e43cb2800000014" />
+      </Nutzungsplanung.Nutzungsplanung.R1>
+      <Nutzungsplanung.Nutzungsplanung.R1 TID="xz4e43cb280000001e">
+        <Vorschrift REF="xz4e43cb2800000000" />
+        <Grundn_Zone REF="xz4e43cb2800000016" />
+      </Nutzungsplanung.Nutzungsplanung.R1>
+      <Nutzungsplanung.Nutzungsplanung.R1 TID="xz4e43cb280000001f">
+        <Vorschrift REF="xz4e43cb2800000000" />
+        <Grundn_Zone REF="xz4e43cb2800000015" />
+      </Nutzungsplanung.Nutzungsplanung.R1>
+      <Nutzungsplanung.Nutzungsplanung.R1 TID="xz4e43cf0b62f80001">
+        <Vorschrift REF="xz4e43cb2800000000" />
+        <Grundn_Zone REF="xz4e43cefd62f80000" />
+      </Nutzungsplanung.Nutzungsplanung.R1>
+      <Nutzungsplanung.Nutzungsplanung.R1 TID="xz4e43cf1462f80002">
+        <Vorschrift REF="xz4e43cb2800000002" />
+        <Grundn_Zone REF="xz4e43cefd62f80000" />
+      </Nutzungsplanung.Nutzungsplanung.R1>
+      <Nutzungsplanung.Nutzungsplanung.R1 TID="xz4e43cf4a62f80004">
+        <Vorschrift REF="xz4e43cb2800000000" />
+        <Grundn_Zone REF="xz4e43cf4362f80003" />
+      </Nutzungsplanung.Nutzungsplanung.R1>
+    </Nutzungsplanung.Nutzungsplanung>
+    <Nutzungsplanung.Metadaten BID="xxx1" KIND="FULL" />
+  </DATASECTION>
 </TRANSFER>

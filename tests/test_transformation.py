@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import os
 import tempfile
 import re
@@ -88,6 +90,30 @@ def manualtest_ili_with_struct_to_gml():
     trans.transform(dstfile, "GML")
     print dstfile
     assert False
+    os.remove(dstfile)
+
+
+def test_encoding():
+    #ogr genconfig --format GML tests/data/np/NP_Example.xtf,tests/data/np/NP_73_CH_de_ili2.imd --model tests/data/np/NP_73_CH_de_ili2.imd >tests/data/np/NP_73_CH_de_ili2.cfg
+    trans = OgrConfig(config="tests/data/np/NP_73_CH_de_ili2.cfg",
+                      ds="tests/data/np/NP_Example.xtf,tests/data/np/NP_73_CH_de_ili2.imd")
+    __, dstfile = tempfile.mkstemp(suffix='.gml')
+    os.remove(dstfile)
+    trans.transform(dstfile, "GML")
+    print dstfile
+    gml = codecs.open(dstfile, encoding='utf-8').read()
+    assert u"Bundesgesetz über die Raumplanung" in gml
+    os.remove(dstfile)
+
+    trans = OgrConfig(config="tests/data/np/NP_73_CH_de_ili2.cfg",
+                      ds="tests/data/np/NP_Example_latin1.xtf,tests/data/np/NP_73_CH_de_ili2.imd")
+    #NP_Example_latin1.xtf has latin1 header and contains entities like &#xfc; as ü
+    __, dstfile = tempfile.mkstemp(suffix='.gml')
+    os.remove(dstfile)
+    trans.transform(dstfile, "GML")
+    print dstfile
+    gml = codecs.open(dstfile, encoding='utf-8').read()
+    assert u"Bundesgesetz über die Raumplanung" not in gml
     os.remove(dstfile)
 
 
