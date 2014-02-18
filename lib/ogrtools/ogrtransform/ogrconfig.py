@@ -287,7 +287,7 @@ class OgrConfig:
         os.environ["CPL_LOG_ERRORS"] = "OFF"
         return ogroutput
 
-    def transform(self, dest, format=None, layers=[], debug=False):
+    def transform(self, dest, format=None, layers=[], skipfailures=False, debug=False):
         vrt = self.generate_vrt(dst_format=format)
         #if debug:
         #    print prettify(vrt)
@@ -302,7 +302,7 @@ class OgrConfig:
         self._set_ogr_debug_flag(debug)
         ogrlogfn = self._activate_ogr_log()
         ogr2ogr(pszFormat=str(dst_format), pszDataSource=ds, pszDestDataSource=dest,
-                bOverwrite=True, papszDSCO=dsco, papszLCO=lco, papszLayers=layers)  # poOutputSRS=srs, poSourceSRS=srs
+                bOverwrite=True, papszDSCO=dsco, papszLCO=lco, papszLayers=layers, skipfailures=skipfailures)  # poOutputSRS=srs, poSourceSRS=srs
         self._free_tmp_datasource()
         return self._close_ogr_log(ogrlogfn)
 
@@ -319,7 +319,7 @@ class OgrConfig:
         self._free_tmp_datasource()
         return self._close_ogr_log(ogrlogfn)
 
-    def write_enum_tables(self, dest, format=None, debug=False):
+    def write_enum_tables(self, dest, format=None, skipfailures=False, debug=False):
         gml = self.generate_enum_gml()
         #if debug:
         #    print prettify(gml)
@@ -332,7 +332,7 @@ class OgrConfig:
         if dst_format == self.dst_format():
             lco = self.layer_creation_options()
         ogr2ogr(pszFormat=str(dst_format), pszDataSource=ds,
-                pszDestDataSource=dest, bOverwrite=True, papszDSCO=dsco, papszLCO=lco)
+                pszDestDataSource=dest, bOverwrite=True, papszDSCO=dsco, papszLCO=lco, skipfailures=skipfailures)
         self._free_tmp_datasource()
 
     def _tmp_memfile(self, data):

@@ -623,7 +623,17 @@ def ogr2ogr(
     bWrapDateline=False,
     bExplodeCollections=False,
     pszZField=None,
-    nCoordDim=-1):
+    nCoordDim=-1,
+    skipfailures=False,
+    gt=200):
+
+    global bSkipFailures
+    global nGroupTransactions
+
+    nGroupTransactions = gt
+    if skipfailures:
+        bSkipFailures = True
+        nGroupTransactions = 1
 
     pfnProgress = None
     pProgressArg = None
