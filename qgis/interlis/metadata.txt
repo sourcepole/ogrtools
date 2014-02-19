@@ -12,7 +12,7 @@
 name=interlis
 qgisMinimumVersion=2.0
 description=Interlis Import/Export
-version=0.4.0
+version=0.4.1
 author=Pirmin Kalberer / Sourcepole
 email=pka@sourcepole.ch
 

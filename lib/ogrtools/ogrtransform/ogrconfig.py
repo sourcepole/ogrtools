@@ -335,7 +335,7 @@ class OgrConfig:
         self._free_tmp_datasource()
         return self._close_ogr_log(ogrlogfn)
 
-    def transform_reverse(self, dest, format=None, layers=[], debug=False):
+    def transform_reverse(self, dest, format=None, layers=[], skipfailures=False, debug=False):
         vrt = self.generate_reverse_vrt(dst_format=format)
         #if debug:
         #    print prettify(vrt)
@@ -344,7 +344,7 @@ class OgrConfig:
         self._set_ogr_debug_flag(debug)
         ogrlogfn = self._activate_ogr_log()
         ogr2ogr(pszFormat=str(dst_format), pszDataSource=ds,
-                pszDestDataSource=dest, bOverwrite=True, papszLayers=layers)
+                pszDestDataSource=dest, bOverwrite=True, papszLayers=layers, skipfailures=skipfailures)
         self._free_tmp_datasource()
         return self._close_ogr_log(ogrlogfn)
 
