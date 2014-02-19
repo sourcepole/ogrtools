@@ -2028,24 +2028,32 @@ def test_np():
 
 
 def test_layer_info():
-    cfg = OgrConfig(ds="./tests/data/ili/roads23.xtf,./tests/data/ili/RoadsExdm2ien.imd")
+    cfg = OgrConfig(ds="./tests/data/ili/roads23.xtf,./tests/data/ili/RoadsExdm2ien.imd",
+                    model="./tests/data/ili/RoadsExdm2ien.imd")
     assert not cfg.is_loaded()
     assert cfg.layer_names() == []
+    assert cfg.enum_names() == []
     assert cfg.layer_infos() == []
+    assert cfg.enum_infos() == []
 
     cfg.generate_config(dst_format='PostgreSQL')
     assert cfg.is_loaded()
     print cfg.layer_names()
     assert "roadsexdm2ien_roadsextended_roadsign" in cfg.layer_names()
+    print cfg.enum_names()
+    assert "_type" in cfg.enum_names()[0]
 
     print cfg.layer_infos()
     #assert {'name': 'roadsexdm2ien_roadsextended_roadsign', 'geom_field': 'position'} in cfg.layer_infos()
     assert {'name': 'roadsexdm2ien_roadsextended_roadsign', 'geom_field': 'wkb_geometry'} in cfg.layer_infos()
     assert {'name': 'roadsexdm2ben_roads_lattrs'} in cfg.layer_infos()
+    print cfg.enum_infos()
+    assert '_precision' in str(cfg.enum_infos())
 
 
 def test_enums():
-    cfg = OgrConfig(ds="./tests/data/ili/roads23.xtf,./tests/data/ili/RoadsExdm2ien.imd", model="./tests/data/ili/RoadsExdm2ien.imd")
+    cfg = OgrConfig(ds="./tests/data/ili/roads23.xtf,./tests/data/ili/RoadsExdm2ien.imd",
+                    model="./tests/data/ili/RoadsExdm2ien.imd")
     cfgjson = cfg.generate_config(dst_format='PostgreSQL')
     expected = """_lart": {
       "src_name": "RoadsExdm2ben.Roads.LAttrs.LArt", 

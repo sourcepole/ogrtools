@@ -28,9 +28,19 @@ class SortTreeWidgetItem(QTreeWidgetItem):
 
 
 class SublayersDialog(QDialog, Ui_SublayersDialog):
-    def __init__(self, sublayerStringList):
+    def __init__(self):
         QDialog.__init__(self, None)
         self.setupUi(self)
+        self.mSublayersTreeWidget.setSelectionMode(QAbstractItemView.ExtendedSelection)
+
+    def setupLayerList(self, layerList):
+        self.mSublayersTreeWidget.setHeaderLabels(["Layer"])
+        self.mSublayersTreeWidget.setSortingEnabled(False)
+        for layer in layerList:
+            newItem = QTreeWidgetItem(self.mSublayersTreeWidget, [layer])
+            self.mSublayersTreeWidget.addTopLevelItem(newItem)
+
+    def setupSublayerList(self, sublayerStringList):
         #Create header
         headerLabels = []
         headerLabels.append("Layer ID")
@@ -62,10 +72,15 @@ class SublayersDialog(QDialog, Ui_SublayersDialog):
             newItem = SortTreeWidgetItem(self.mSublayersTreeWidget, newEntryStringList)
             newItem.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
             self.mSublayersTreeWidget.addTopLevelItem(newItem)
-        self.mSublayersTreeWidget.setSelectionMode(QAbstractItemView.ExtendedSelection)
 
         #sort layer name per default
         self.mSublayersTreeWidget.sortItems(1, Qt. AscendingOrder)
+
+    def layerNames(self):
+        result = []
+        for item in self.mSublayersTreeWidget.selectedItems():
+            result.append(item.text(0))
+        return result
 
     #go through all the selected entries and return a QStringList with the sublayer names
     def subLayerNames(self):

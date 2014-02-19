@@ -62,6 +62,9 @@ class OgrConfig:
         self._ds = None
         self._config = self._load(config)
         self._model = model
+        #if not self._model:
+        #    if ds:
+        #        self._model = ds.split(',')[-1]
 
     def _load(self, fn):
         config = None
@@ -206,6 +209,12 @@ class OgrConfig:
         else:
             return []
 
+    def enum_names(self):
+        if self._config and 'enums' in self._config:
+            return self._config['enums'].keys()
+        else:
+            return []
+
     def layer_infos(self):
         """Return Dict with layer name and geometry field name for each layer (one per geometry)"""
         layers = []
@@ -220,6 +229,13 @@ class OgrConfig:
                     #FIXME: no layer info for empty cfglayer['geom_fields'] (e.g. Shape file)
                 else:
                     layers.append(layer)
+        return layers
+
+    def enum_infos(self):
+        """Return layer infos for enums"""
+        layers = []
+        for enum in self.enum_names():
+            layers.append({"name": enum})
         return layers
 
     def generate_vrt(self, dst_format=None):

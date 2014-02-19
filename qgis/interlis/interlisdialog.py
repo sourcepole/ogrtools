@@ -162,7 +162,8 @@ class InterlisDialog(QtGui.QDialog):
             return
         #QGIS 1.8:
         #subLayerList = subLayerProvider.subLayers()
-        #subLayerDialog = SublayersDialog(subLayerList)
+        #subLayerDialog = SublayersDialog()
+        #subLayerDialog.setupSublayerList(subLayerList)
         #if subLayerDialog.exec_() == QDialog.Accepted:
         #    for layername in subLayerDialog.subLayerNames():
         #            #add a new ogr layer for each selected sublayer
@@ -193,11 +194,14 @@ class InterlisDialog(QtGui.QDialog):
 
         uri = self.pgUri()
         layer_infos = cfg.layer_infos()
-        #subLayer format is "Layer ID:Layer name:Features:Geometry type"
-        layer_list = map((lambda layer: ":".join([layer['name'], layer['name'], "", ""])), layer_infos)
-        subLayerDialog = SublayersDialog(layer_list)
+        layer_names = cfg.layer_names()
+        if self.ui.cbImportEnums.isChecked():
+            layer_infos += cfg.enum_infos()
+            layer_names += cfg.enum_names()
+        subLayerDialog = SublayersDialog()
+        subLayerDialog.setupLayerList(layer_names)
         if subLayerDialog.exec_() == QDialog.Accepted:
-            for layer_id in subLayerDialog.subLayerNames():
+            for layer_id in subLayerDialog.layerNames():
                 #add a new layer for each selected row
                 for layer in layer_infos:
                     if layer['name'] == layer_id:

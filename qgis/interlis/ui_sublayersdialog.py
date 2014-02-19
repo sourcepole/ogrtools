@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_sublayersdialog.ui'
 #
-# Created: Sun Feb 16 23:08:06 2014
+# Created: Wed Feb 19 15:15:57 2014
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -21,6 +21,8 @@ class Ui_SublayersDialog(object):
         self.gridLayout = QtGui.QGridLayout(SublayersDialog)
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
         self.mSublayersTreeWidget = QtGui.QTreeWidget(SublayersDialog)
+        self.mSublayersTreeWidget.setRootIsDecorated(False)
+        self.mSublayersTreeWidget.setItemsExpandable(False)
         self.mSublayersTreeWidget.setObjectName(_fromUtf8("mSublayersTreeWidget"))
         self.mSublayersTreeWidget.headerItem().setText(0, _fromUtf8("1"))
         self.gridLayout.addWidget(self.mSublayersTreeWidget, 0, 0, 1, 1)
