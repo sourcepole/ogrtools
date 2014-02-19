@@ -39,6 +39,7 @@ def test_ili_to_geojson():
     result = codecs.open(dstfile, encoding='utf-8').read()
     os.remove(dstfile)
     expected = """{ "type": "Feature", "properties": { "tid": "8", "precision": "precise", "street_id": 1 }, "geometry": { "type": "LineString", "coordinates": [ [ 55.6, 37.649 ], [ 15.573, 25.785 ] ] } }"""
+    print result
     assert expected in result
 
 
