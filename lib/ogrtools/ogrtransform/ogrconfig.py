@@ -130,12 +130,11 @@ class OgrConfig:
             layer_name = dst_format_handler.launder_name(name)
             layers[layer_name] = cfglayer
             cfglayer['src_layer'] = name
+
             fields = {}
             cfglayer['fields'] = fields
-
             for fld_index in range(layerdef.GetFieldCount()):
                 src_fd = layerdef.GetFieldDefn(fld_index)
-
                 cfgfield = {}
                 field_name = src_fd.GetName()
                 dst_name = dst_format_handler.launder_name(field_name)
@@ -147,6 +146,20 @@ class OgrConfig:
                     cfgfield['width'] = src_fd.GetWidth()
                 if src_fd.GetPrecision() > 0:
                     cfgfield['precision'] = src_fd.GetPrecision()
+
+            geom_field_count = layerdef.GetGeomFieldCount()
+            if geom_field_count > 0:
+                geom_fields = {}
+                cfglayer['geom_fields'] = geom_fields
+                for fld_index in range(geom_field_count):
+                    src_fd = layerdef.GetGeomFieldDefn(fld_index)
+                    cfgfield = {}
+                    field_name = src_fd.GetName()
+                    if field_name:
+                        dst_name = dst_format_handler.launder_name(field_name)
+                        geom_fields[dst_name] = cfgfield
+                        cfgfield['src'] = field_name
+                        cfgfield['type'] = GEOMETRY_TYPES[src_fd.GetType()]
 
             geom_type = GEOMETRY_TYPES[layerdef.GetGeomType()]
             cfglayer['geometry_type'] = geom_type
@@ -192,6 +205,22 @@ class OgrConfig:
             return self._config['layers'].keys()
         else:
             return []
+
+    def layer_infos(self):
+        """Return Dict with layer name and geometry field name for each layer (one per geometry)"""
+        layers = []
+        if self._config and 'layers' in self._config:
+            for name, cfglayer in self._config['layers'].items():
+                layer = {"name": name}
+                if 'geom_fields' in cfglayer:
+                    for geom_name, cfgfield in cfglayer['geom_fields'].items():
+                        #layer['geom_field'] = geom_name
+                        layer['geom_field'] = "wkb_geometry"  # TODO: OGR Bug
+                        layers.append(layer)
+                    #FIXME: no layer info for empty cfglayer['geom_fields'] (e.g. Shape file)
+                else:
+                    layers.append(layer)
+        return layers
 
     def generate_vrt(self, dst_format=None):
         #if dst_format is None:
