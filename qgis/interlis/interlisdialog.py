@@ -23,7 +23,7 @@
 from PyQt4 import QtGui
 from PyQt4.QtCore import pyqtSignature, QSettings, QFileInfo
 from PyQt4.QtGui import QFileDialog, QMessageBox, QDialog
-from qgis.core import QgsMessageLog, QgsVectorLayer
+from qgis.core import QgsMessageLog, QgsVectorLayer, QgsDataSourceURI
 from qgis.gui import QgsMessageBar
 from ui_interlis import Ui_Interlis
 from sublayersdialog import SublayersDialog
@@ -77,6 +77,22 @@ class InterlisDialog(QtGui.QDialog):
             if v:
                 ds = ds + k + "='" + v + "' "
         return ds
+
+    def pgUri(self):
+        key = u"/PostgreSQL/connections/" + self.ui.cbDbConnections.currentText()
+        settings = QSettings()
+        settings.beginGroup(key)
+        uri = QgsDataSourceURI()
+        uri.setConnection(
+            settings.value("host", type=str),
+            settings.value("port", type=str),
+            settings.value("database", type=str),
+            settings.value("username", type=str),
+            settings.value("password", type=str),
+            QgsDataSourceURI.SSLmode(settings.value("sslmode", type=int))
+        )
+        uri.setUseEstimatedMetadata(settings.value("estimatedMetadata", type=bool))
+        return uri
 
     def iliDs(self):
         return self.ui.mDataLineEdit.text() + ',' + self.ui.mModelLineEdit.text()
@@ -170,9 +186,23 @@ class InterlisDialog(QtGui.QDialog):
         self._log_output(ogroutput)
         QgsMessageLog.logMessage("Import finished", "Interlis", QgsMessageLog.INFO)
         self.ui.mExportButton.setEnabled(True)
-        self.accept()
-        self._plugin.iface.messageBar().pushMessage("Interlis", "Import finished",
-                                                    level=QgsMessageBar.INFO, duration=2)
+
+        uri = self.pgUri()
+        layer_infos = cfg.layer_infos()
+        #subLayer format is "Layer ID:Layer name:Features:Geometry type"
+        layer_list = map((lambda layer: ":".join([layer['name'], layer['name'], "", ""])), layer_infos)
+        subLayerDialog = SublayersDialog(layer_list)
+        if subLayerDialog.exec_() == QDialog.Accepted:
+            for layer_id in subLayerDialog.subLayerNames():
+                #add a new layer for each selected row
+                for layer in layer_infos:
+                    if layer['name'] == layer_id:
+                        geom_column = layer['geom_field'] if ('geom_field' in layer) else None
+                        uri.setDataSource("", layer['name'], geom_column)
+                        self._plugin.iface.addVectorLayer(uri.uri(), layer['name'], 'postgres')
+            self.accept()
+            self._plugin.iface.messageBar().pushMessage("Interlis", "Import finished",
+                                                        level=QgsMessageBar.INFO, duration=2)
 
     def exporttoxtf(self):
         cfg = self._ogr_config(self.ogrDs())
