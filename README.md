@@ -38,55 +38,86 @@ Example:
 
 ```
 {
-  "comment": "// OGR transformation configuration",
+  "//": "OGR transformation configuration", 
+  "dst_dsco": {}, 
+  "dst_lco": {
+    "SCHEMA": "public"
+  }, 
   "layers": {
     "roadsexdm2ben_roads_streetnameposition": {
       "fields": {
+        "tid": {
+          "src": "TID", 
+          "type": "String"
+        }, 
         "street": {
           "src": "Street", 
           "type": "String"
         }, 
         "namori": {
           "src": "NamOri", 
-          "type": "String"
+          "type": "Real"
         }
       }, 
       "geometry_type": "Point", 
-      "src_layer": "RoadsExdm2ben.Roads.StreetNamePosition"
+      "src_layer": "RoadsExdm2ben.Roads.StreetNamePosition", 
+      "geom_fields": {
+        "nampos": {
+          "src": "NamPos", 
+          "type": "Point"
+        }
+      }
     }, 
     "roadsexdm2ben_roads_streetaxis": {
       "fields": {
+        "tid": {
+          "src": "TID", 
+          "type": "String"
+        }, 
         "street": {
           "src": "Street", 
           "type": "String"
         }
       }, 
-      "geometry_type": "Line", 
-      "src_layer": "RoadsExdm2ben.Roads.StreetAxis"
-    }, 
+      "geometry_type": "MultiLineString", 
+      "src_layer": "RoadsExdm2ben.Roads.StreetAxis", 
+      "geom_fields": {
+        "geometry": {
+          "src": "Geometry", 
+          "type": "MultiLineString"
+        }
+      }
+    }
   }, 
+  "src_format": "Interlis 2", 
   "enums": {
-    "enum6_Type": {
-      "src_name": "RoadsExdm2ien.RoadsExtended.RoadSign.Type", 
+    "enum0_type": {
+      "src_name": "RoadsExdm2ben.Roads.RoadSign.Type", 
       "values": [
         {
-          "enumtxt": "prohibition.noentry", 
-          "enum": "prohibition.noentry", 
+          "enumtxt": "prohibition", 
+          "enum": "prohibition", 
           "id": 0
         }, 
         {
-          "enumtxt": "prohibition.noparking", 
-          "enum": "prohibition.noparking", 
+          "enumtxt": "indication", 
+          "enum": "indication", 
           "id": 1
         }, 
         {
-          "enumtxt": "prohibition.other", 
-          "enum": "prohibition.other", 
+          "enumtxt": "danger", 
+          "enum": "danger", 
           "id": 2
+        }, 
+        {
+          "enumtxt": "velocity", 
+          "enum": "velocity", 
+          "id": 3
         }
       ]
     }
-  }
+  }, 
+  "dst_format": "PostgreSQL"
 }
 ```
 

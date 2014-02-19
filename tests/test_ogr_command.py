@@ -3,6 +3,9 @@ import os
 
 #Run with nosetests tests/test_ogr_command.py --nocapture
 def test_generate_usage_markdown():
+    cfg_example = os.popen("PYTHONPATH=lib bin/ogr genconfig ./tests/data/ili/roads23.xtf,./tests/data/ili/RoadsExdm2ben.imd --model=./tests/data/ili/RoadsExdm2ben.imd").read()
+    print cfg_example
+
     ogr_help = os.popen("PYTHONPATH=lib bin/ogr --help").read()
     ogr_write_enums = os.popen("PYTHONPATH=lib bin/ogr write-enums -h").read()
     ogr_transform = os.popen("PYTHONPATH=lib bin/ogr transform -h").read()
