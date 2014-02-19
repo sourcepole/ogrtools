@@ -40,8 +40,7 @@ class InterlisDialog(QtGui.QDialog):
         self.ui = Ui_Interlis()
         self.ui.setupUi(self)
         #Not implemented yet:
-        self.ui.chkModelLookup.setEnabled(False)
-        self.ui.label_2.setEnabled(False)
+        self.ui.mModelLookupButton.setEnabled(False)
         self.ui.mConfigButton.setEnabled(False)
         self.ui.mConfigLineEdit.setEnabled(False)
         self.ui.cbResetData.setEnabled(False)
@@ -53,15 +52,17 @@ class InterlisDialog(QtGui.QDialog):
     def setup(self):
         self.ui.mDataLineEdit.setText("")
 
-    def dataSourceUri(self):
-        if self.ui.mDataLineEdit.text().isEmpty():
+    def iliDs(self):
+        """OGR connection string for selected Interlis transfer file + model"""
+        if not self.ui.mDataLineEdit.text():
             return ""
-        if not self.ui.mModelLineEdit.text().isEmpty():
+        if self.ui.mModelLineEdit.text():
             return self.ui.mDataLineEdit.text() + "," + self.ui.mModelLineEdit.text()
         else:
             return self.ui.mDataLineEdit.text()
 
-    def ogrDs(self):
+    def pgDs(self):
+        """OGR connection string for selected PostGIS DB"""
         key = u"/PostgreSQL/connections/" + self.ui.cbDbConnections.currentText()
         settings = QSettings()
         settings.beginGroup(key)
@@ -79,6 +80,7 @@ class InterlisDialog(QtGui.QDialog):
         return ds
 
     def pgUri(self):
+        """QgsDataSourceURI for selected PostGIS DB"""
         key = u"/PostgreSQL/connections/" + self.ui.cbDbConnections.currentText()
         settings = QSettings()
         settings.beginGroup(key)
@@ -93,9 +95,6 @@ class InterlisDialog(QtGui.QDialog):
         )
         uri.setUseEstimatedMetadata(settings.value("estimatedMetadata", type=bool))
         return uri
-
-    def iliDs(self):
-        return self.ui.mDataLineEdit.text() + ',' + self.ui.mModelLineEdit.text()
 
     def dbConnectionList(self):
         connection_names = []
@@ -116,7 +115,7 @@ class InterlisDialog(QtGui.QDialog):
         if dataFilePath is None:
             return  # dialog canceled
         settings.setValue("/qgis/plugins/interlis/datadir", QFileInfo(dataFilePath).absolutePath())
-        self.ui.mDataLineEdit.insert(dataFilePath)
+        self.ui.mDataLineEdit.setText(dataFilePath)
         self.ui.mImportButton.setEnabled(True)
 
     @pyqtSignature('')  # avoid two connections
@@ -129,7 +128,10 @@ class InterlisDialog(QtGui.QDialog):
         if modelFilePath is None:
             return  # dialog canceled
         settings.setValue("/qgis/plugins/interlis/modeldir", QFileInfo(modelFilePath).absolutePath())
-        self.ui.mModelLineEdit.insert(modelFilePath)
+        self.ui.mModelLineEdit.setText(modelFilePath)
+
+    def on_mModelLineEdit_textChanged(self):
+        self.ui.mConfigLineEdit.clear()
 
     @pyqtSignature('')  # avoid two connections
     def on_mImportButton_clicked(self):
@@ -181,8 +183,9 @@ class InterlisDialog(QtGui.QDialog):
             cfgjson = cfg.generate_config(format, outfile=ogrconfig, layer_list=[])
             QgsMessageLog.logMessage(cfgjson, "Interlis", QgsMessageLog.INFO)
             self.ui.mConfigLineEdit.setText(ogrconfig)
-        cfg.write_enum_tables(dest=self.ogrDs(), skipfailures=True, debug=True)
-        ogroutput = cfg.transform(dest=self.ogrDs(), skipfailures=True, debug=True)
+        if self.ui.cbImportEnums.isChecked():
+            cfg.write_enum_tables(dest=self.pgDs(), skipfailures=self.ui.cbSkipFailures.isChecked(), debug=True)
+        ogroutput = cfg.transform(dest=self.pgDs(), skipfailures=self.ui.cbSkipFailures.isChecked(), debug=True)
         self._plugin.messageLogWidget().show()
         self._log_output(ogroutput)
         QgsMessageLog.logMessage("Import finished", "Interlis", QgsMessageLog.INFO)
@@ -206,8 +209,8 @@ class InterlisDialog(QtGui.QDialog):
                                                         level=QgsMessageBar.INFO, duration=2)
 
     def exporttoxtf(self):
-        cfg = self._ogr_config(self.ogrDs())
-        ogroutput = cfg.transform_reverse(dest=self.iliDs(), skipfailures=True, debug=True)
+        cfg = self._ogr_config(self.pgDs())
+        ogroutput = cfg.transform_reverse(dest=self.iliDs(), skipfailures=self.ui.cbSkipFailures.isChecked(), debug=True)
         self._log_output(ogroutput)
         QgsMessageLog.logMessage("Export to '%s' finished" % self.ui.mDataLineEdit.text(),
                                  "Interlis", QgsMessageLog.INFO)
