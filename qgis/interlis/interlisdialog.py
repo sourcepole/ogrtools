@@ -181,6 +181,7 @@ class InterlisDialog(QtGui.QDialog):
             cfgjson = cfg.generate_config(format, outfile=ogrconfig, layer_list=[])
             QgsMessageLog.logMessage(cfgjson, "Interlis", QgsMessageLog.INFO)
             self.ui.mConfigLineEdit.setText(ogrconfig)
+        cfg.write_enum_tables(dest=self.ogrDs(), skipfailures=True, debug=True)
         ogroutput = cfg.transform(dest=self.ogrDs(), skipfailures=True, debug=True)
         self._plugin.messageLogWidget().show()
         self._log_output(ogroutput)
