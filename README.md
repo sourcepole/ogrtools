@@ -39,6 +39,8 @@ Example:
 ```
 {
   "//": "OGR transformation configuration", 
+  "src_format": "Interlis 2", 
+  "dst_format": "PostgreSQL",
   "dst_dsco": {}, 
   "dst_lco": {
     "SCHEMA": "public"
@@ -89,7 +91,6 @@ Example:
       }
     }
   }, 
-  "src_format": "Interlis 2", 
   "enums": {
     "enum0_type": {
       "src_name": "RoadsExdm2ben.Roads.RoadSign.Type", 
@@ -116,10 +117,12 @@ Example:
         }
       ]
     }
-  }, 
-  "dst_format": "PostgreSQL"
+  }
 }
 ```
+
+See [Wiki](https://github.com/sourcepole/ogrtools/wiki) for more information.
+
 
 ogr command line tool
 ---------------------
