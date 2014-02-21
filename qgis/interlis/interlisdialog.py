@@ -41,8 +41,6 @@ class InterlisDialog(QtGui.QDialog):
         self.ui.setupUi(self)
         #Not implemented yet:
         self.ui.mModelLookupButton.setEnabled(False)
-        self.ui.mConfigButton.setEnabled(False)
-        self.ui.mConfigLineEdit.setEnabled(False)
         self.ui.cbResetData.setEnabled(False)
         #Initialize DB connection drop-down
         self.ui.cbDbConnections.clear()
@@ -129,6 +127,18 @@ class InterlisDialog(QtGui.QDialog):
             return  # dialog canceled
         settings.setValue("/qgis/plugins/interlis/modeldir", QFileInfo(modelFilePath).absolutePath())
         self.ui.mModelLineEdit.setText(modelFilePath)
+
+    @pyqtSignature('')  # avoid two connections
+    def on_mConfigButton_clicked(self):
+        #show file dialog and remember last directory
+        settings = QSettings()
+        lastDirectoryString = None  # settings.value("/qgis/plugins/interlis2/cfgdir", type=str)
+        configPath = QFileDialog.getOpenFileName(None, "Open OGR mapping config file", lastDirectoryString,
+                                                 "*.cfg *.CFG", ".json", ".JSON")
+        if configPath is None:
+            return  # dialog canceled
+        settings.setValue("/qgis/plugins/interlis/cfgdir", QFileInfo(configPath).absolutePath())
+        self.ui.mConfigLineEdit.setText(configPath)
 
     def on_mModelLineEdit_textChanged(self):
         self.ui.mConfigLineEdit.clear()
