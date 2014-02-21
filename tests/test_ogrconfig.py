@@ -820,26 +820,6 @@ def test_np():
   }, 
   "src_format": "Interlis 2", 
   "enums": {
-    "enum9_halignment": {
-      "src_name": "INTERLIS.HALIGNMENT", 
-      "values": [
-        {
-          "enumtxt": "Left", 
-          "enum": "Left", 
-          "id": 0
-        }, 
-        {
-          "enumtxt": "Center", 
-          "enum": "Center", 
-          "id": 1
-        }, 
-        {
-          "enumtxt": "Right", 
-          "enum": "Right", 
-          "id": 2
-        }
-      ]
-    }, 
     "enum21_ueberl_hauptn_ch": {
       "src_name": "Nutzungsplanung.Nutzungsplanung.Ueberlagernder_Zonentyp_Kt.Ueberl_Hauptn_CH", 
       "values": [
@@ -862,6 +842,56 @@ def test_np():
           "enumtxt": "ueberlagernde_Flaechenfestlegungen_64", 
           "enum": "ueberlagernde_Flaechenfestlegungen_64", 
           "id": 3
+        }, 
+        {
+          "enumtxt": "ueberlagernde_Schutzzonen_61", 
+          "enum": "ueberlagernde_Schutzzonen_61", 
+          "id": 4
+        }, 
+        {
+          "enumtxt": "ueberlagernde_Nutzungszonen_62", 
+          "enum": "ueberlagernde_Nutzungszonen_62", 
+          "id": 5
+        }, 
+        {
+          "enumtxt": "ueberlagernde_Gefahrenzonen_63", 
+          "enum": "ueberlagernde_Gefahrenzonen_63", 
+          "id": 6
+        }, 
+        {
+          "enumtxt": "ueberlagernde_Flaechenfestlegungen_64", 
+          "enum": "ueberlagernde_Flaechenfestlegungen_64", 
+          "id": 7
+        }
+      ]
+    }, 
+    "enum9_geometrie_herkunft": {
+      "src_name": "Nutzungsplanung.Geometrie_Herkunft", 
+      "values": [
+        {
+          "enumtxt": "Aufnahme", 
+          "enum": "Aufnahme", 
+          "id": 0
+        }, 
+        {
+          "enumtxt": "Uebernahme_Koordinaten", 
+          "enum": "Uebernahme_Koordinaten", 
+          "id": 1
+        }, 
+        {
+          "enumtxt": "Planabgriff", 
+          "enum": "Planabgriff", 
+          "id": 2
+        }, 
+        {
+          "enumtxt": "konstruktiv", 
+          "enum": "konstruktiv", 
+          "id": 3
+        }, 
+        {
+          "enumtxt": "andere", 
+          "enum": "andere", 
+          "id": 4
         }
       ]
     }, 
@@ -877,26 +907,71 @@ def test_np():
           "enumtxt": "laufendeAenderungen", 
           "enum": "laufendeAenderungen", 
           "id": 1
+        }, 
+        {
+          "enumtxt": "inKraft", 
+          "enum": "inKraft", 
+          "id": 2
+        }, 
+        {
+          "enumtxt": "laufendeAenderungen", 
+          "enum": "laufendeAenderungen", 
+          "id": 3
         }
       ]
     }, 
-    "enum24_verbindlichkeit": {
-      "src_name": "Nutzungsplanung.Nutzungsplanung.Linienbezogener_Festlegungstyp.Verbindlichkeit", 
+    "enum29_herkunft": {
+      "src_name": "Nutzungsplanung.Nutzungsplanung.Objektbezogene_Festlegung.Herkunft", 
       "values": [
         {
-          "enumtxt": "eigentuemerverbindlich", 
-          "enum": "eigentuemerverbindlich", 
+          "enumtxt": "Aufnahme", 
+          "enum": "Aufnahme", 
           "id": 0
         }, 
         {
-          "enumtxt": "orientierend", 
-          "enum": "orientierend", 
+          "enumtxt": "Uebernahme_Koordinaten", 
+          "enum": "Uebernahme_Koordinaten", 
           "id": 1
         }, 
         {
-          "enumtxt": "hinweisend", 
-          "enum": "hinweisend", 
+          "enumtxt": "Planabgriff", 
+          "enum": "Planabgriff", 
           "id": 2
+        }, 
+        {
+          "enumtxt": "konstruktiv", 
+          "enum": "konstruktiv", 
+          "id": 3
+        }, 
+        {
+          "enumtxt": "andere", 
+          "enum": "andere", 
+          "id": 4
+        }, 
+        {
+          "enumtxt": "Aufnahme", 
+          "enum": "Aufnahme", 
+          "id": 5
+        }, 
+        {
+          "enumtxt": "Uebernahme_Koordinaten", 
+          "enum": "Uebernahme_Koordinaten", 
+          "id": 6
+        }, 
+        {
+          "enumtxt": "Planabgriff", 
+          "enum": "Planabgriff", 
+          "id": 7
+        }, 
+        {
+          "enumtxt": "konstruktiv", 
+          "enum": "konstruktiv", 
+          "id": 8
+        }, 
+        {
+          "enumtxt": "andere", 
+          "enum": "andere", 
+          "id": 9
         }
       ]
     }, 
@@ -1067,36 +1142,66 @@ def test_np():
           "enumtxt": "andere", 
           "enum": "andere", 
           "id": 4
-        }
-      ]
-    }, 
-    "enum29_herkunft": {
-      "src_name": "Nutzungsplanung.Nutzungsplanung.Objektbezogene_Festlegung.Herkunft", 
-      "values": [
+        }, 
         {
           "enumtxt": "Aufnahme", 
           "enum": "Aufnahme", 
-          "id": 0
+          "id": 5
         }, 
         {
           "enumtxt": "Uebernahme_Koordinaten", 
           "enum": "Uebernahme_Koordinaten", 
-          "id": 1
+          "id": 6
         }, 
         {
           "enumtxt": "Planabgriff", 
           "enum": "Planabgriff", 
-          "id": 2
+          "id": 7
         }, 
         {
           "enumtxt": "konstruktiv", 
           "enum": "konstruktiv", 
-          "id": 3
+          "id": 8
         }, 
         {
           "enumtxt": "andere", 
           "enum": "andere", 
+          "id": 9
+        }
+      ]
+    }, 
+    "enum24_verbindlichkeit": {
+      "src_name": "Nutzungsplanung.Nutzungsplanung.Linienbezogener_Festlegungstyp.Verbindlichkeit", 
+      "values": [
+        {
+          "enumtxt": "eigentuemerverbindlich", 
+          "enum": "eigentuemerverbindlich", 
+          "id": 0
+        }, 
+        {
+          "enumtxt": "orientierend", 
+          "enum": "orientierend", 
+          "id": 1
+        }, 
+        {
+          "enumtxt": "hinweisend", 
+          "enum": "hinweisend", 
+          "id": 2
+        }, 
+        {
+          "enumtxt": "eigentuemerverbindlich", 
+          "enum": "eigentuemerverbindlich", 
+          "id": 3
+        }, 
+        {
+          "enumtxt": "orientierend", 
+          "enum": "orientierend", 
           "id": 4
+        }, 
+        {
+          "enumtxt": "hinweisend", 
+          "enum": "hinweisend", 
+          "id": 5
         }
       ]
     }, 
@@ -1117,6 +1222,21 @@ def test_np():
           "enumtxt": "hinweisend", 
           "enum": "hinweisend", 
           "id": 2
+        }, 
+        {
+          "enumtxt": "eigentuemerverbindlich", 
+          "enum": "eigentuemerverbindlich", 
+          "id": 3
+        }, 
+        {
+          "enumtxt": "orientierend", 
+          "enum": "orientierend", 
+          "id": 4
+        }, 
+        {
+          "enumtxt": "hinweisend", 
+          "enum": "hinweisend", 
+          "id": 5
         }
       ]
     }, 
@@ -1137,26 +1257,21 @@ def test_np():
           "enumtxt": "hinweisend", 
           "enum": "hinweisend", 
           "id": 2
-        }
-      ]
-    }, 
-    "enum33_verbindlichkeit": {
-      "src_name": "Nutzungsplanung.Nutzungsplanung.Ueberlagernder_Zonentyp.Verbindlichkeit", 
-      "values": [
+        }, 
         {
           "enumtxt": "eigentuemerverbindlich", 
           "enum": "eigentuemerverbindlich", 
-          "id": 0
+          "id": 3
         }, 
         {
           "enumtxt": "orientierend", 
           "enum": "orientierend", 
-          "id": 1
+          "id": 4
         }, 
         {
           "enumtxt": "hinweisend", 
           "enum": "hinweisend", 
-          "id": 2
+          "id": 5
         }
       ]
     }, 
@@ -1217,6 +1332,26 @@ def test_np():
           "enumtxt": "weitere", 
           "enum": "weitere", 
           "id": 3
+        }, 
+        {
+          "enumtxt": "AV93", 
+          "enum": "AV93", 
+          "id": 4
+        }, 
+        {
+          "enumtxt": "PV74", 
+          "enum": "PV74", 
+          "id": 5
+        }, 
+        {
+          "enumtxt": "PN", 
+          "enum": "PN", 
+          "id": 6
+        }, 
+        {
+          "enumtxt": "weitere", 
+          "enum": "weitere", 
+          "id": 7
         }
       ]
     }, 
@@ -1242,6 +1377,26 @@ def test_np():
           "enumtxt": "weitere", 
           "enum": "weitere", 
           "id": 3
+        }, 
+        {
+          "enumtxt": "AV93", 
+          "enum": "AV93", 
+          "id": 4
+        }, 
+        {
+          "enumtxt": "PV74", 
+          "enum": "PV74", 
+          "id": 5
+        }, 
+        {
+          "enumtxt": "PN", 
+          "enum": "PN", 
+          "id": 6
+        }, 
+        {
+          "enumtxt": "weitere", 
+          "enum": "weitere", 
+          "id": 7
         }
       ]
     }, 
@@ -1302,6 +1457,31 @@ def test_np():
           "enumtxt": "andere", 
           "enum": "andere", 
           "id": 4
+        }, 
+        {
+          "enumtxt": "Aufnahme", 
+          "enum": "Aufnahme", 
+          "id": 5
+        }, 
+        {
+          "enumtxt": "Uebernahme_Koordinaten", 
+          "enum": "Uebernahme_Koordinaten", 
+          "id": 6
+        }, 
+        {
+          "enumtxt": "Planabgriff", 
+          "enum": "Planabgriff", 
+          "id": 7
+        }, 
+        {
+          "enumtxt": "konstruktiv", 
+          "enum": "konstruktiv", 
+          "id": 8
+        }, 
+        {
+          "enumtxt": "andere", 
+          "enum": "andere", 
+          "id": 9
         }
       ]
     }, 
@@ -1327,6 +1507,26 @@ def test_np():
           "enumtxt": "weitere", 
           "enum": "weitere", 
           "id": 3
+        }, 
+        {
+          "enumtxt": "AV93", 
+          "enum": "AV93", 
+          "id": 4
+        }, 
+        {
+          "enumtxt": "PV74", 
+          "enum": "PV74", 
+          "id": 5
+        }, 
+        {
+          "enumtxt": "PN", 
+          "enum": "PN", 
+          "id": 6
+        }, 
+        {
+          "enumtxt": "weitere", 
+          "enum": "weitere", 
+          "id": 7
         }
       ]
     }, 
@@ -1382,36 +1582,66 @@ def test_np():
           "enumtxt": "andere", 
           "enum": "andere", 
           "id": 4
-        }
-      ]
-    }, 
-    "enum12_geometrie_herkunft": {
-      "src_name": "Nutzungsplanung.Geometrie_Herkunft", 
-      "values": [
+        }, 
         {
           "enumtxt": "Aufnahme", 
           "enum": "Aufnahme", 
-          "id": 0
+          "id": 5
         }, 
         {
           "enumtxt": "Uebernahme_Koordinaten", 
           "enum": "Uebernahme_Koordinaten", 
-          "id": 1
+          "id": 6
         }, 
         {
           "enumtxt": "Planabgriff", 
           "enum": "Planabgriff", 
-          "id": 2
+          "id": 7
         }, 
         {
           "enumtxt": "konstruktiv", 
           "enum": "konstruktiv", 
-          "id": 3
+          "id": 8
         }, 
         {
           "enumtxt": "andere", 
           "enum": "andere", 
+          "id": 9
+        }
+      ]
+    }, 
+    "enum33_verbindlichkeit": {
+      "src_name": "Nutzungsplanung.Nutzungsplanung.Ueberlagernder_Zonentyp.Verbindlichkeit", 
+      "values": [
+        {
+          "enumtxt": "eigentuemerverbindlich", 
+          "enum": "eigentuemerverbindlich", 
+          "id": 0
+        }, 
+        {
+          "enumtxt": "orientierend", 
+          "enum": "orientierend", 
+          "id": 1
+        }, 
+        {
+          "enumtxt": "hinweisend", 
+          "enum": "hinweisend", 
+          "id": 2
+        }, 
+        {
+          "enumtxt": "eigentuemerverbindlich", 
+          "enum": "eigentuemerverbindlich", 
+          "id": 3
+        }, 
+        {
+          "enumtxt": "orientierend", 
+          "enum": "orientierend", 
           "id": 4
+        }, 
+        {
+          "enumtxt": "hinweisend", 
+          "enum": "hinweisend", 
+          "id": 5
         }
       ]
     }, 
@@ -1780,6 +2010,26 @@ def test_np():
         }
       ]
     }, 
+    "enum12_halignment": {
+      "src_name": "INTERLIS.HALIGNMENT", 
+      "values": [
+        {
+          "enumtxt": "Left", 
+          "enum": "Left", 
+          "id": 0
+        }, 
+        {
+          "enumtxt": "Center", 
+          "enum": "Center", 
+          "id": 1
+        }, 
+        {
+          "enumtxt": "Right", 
+          "enum": "Right", 
+          "id": 2
+        }
+      ]
+    }, 
     "enum16_hauptnutzung_ch": {
       "src_name": "Nutzungsplanung.Nutzungsplanung.Grundnutzung_Zonentyp_Kt.Hauptnutzung_CH", 
       "values": [
@@ -1872,6 +2122,96 @@ def test_np():
           "enumtxt": "weitere_Zonen_4.Zonen_fuer_Kleinsiedlung_44", 
           "enum": "weitere_Zonen_4.Zonen_fuer_Kleinsiedlung_44", 
           "id": 17
+        }, 
+        {
+          "enumtxt": "Bauzonen_1.Wohnzonen_11", 
+          "enum": "Bauzonen_1.Wohnzonen_11", 
+          "id": 18
+        }, 
+        {
+          "enumtxt": "Bauzonen_1.Arbeitszonen_12", 
+          "enum": "Bauzonen_1.Arbeitszonen_12", 
+          "id": 19
+        }, 
+        {
+          "enumtxt": "Bauzonen_1.Mischzonen_13", 
+          "enum": "Bauzonen_1.Mischzonen_13", 
+          "id": 20
+        }, 
+        {
+          "enumtxt": "Bauzonen_1.Zentrumszonen_14", 
+          "enum": "Bauzonen_1.Zentrumszonen_14", 
+          "id": 21
+        }, 
+        {
+          "enumtxt": "Bauzonen_1.Zonen_fuer_oeffentliche_Nutzungen_15", 
+          "enum": "Bauzonen_1.Zonen_fuer_oeffentliche_Nutzungen_15", 
+          "id": 22
+        }, 
+        {
+          "enumtxt": "Bauzonen_1.eingeschraenkte_Bauzonen_16", 
+          "enum": "Bauzonen_1.eingeschraenkte_Bauzonen_16", 
+          "id": 23
+        }, 
+        {
+          "enumtxt": "Bauzonen_1.Tourismus_und_Freizeitzonen_17", 
+          "enum": "Bauzonen_1.Tourismus_und_Freizeitzonen_17", 
+          "id": 24
+        }, 
+        {
+          "enumtxt": "Bauzonen_1.Verkehrszonen_innerhalbBauzonen_18", 
+          "enum": "Bauzonen_1.Verkehrszonen_innerhalbBauzonen_18", 
+          "id": 25
+        }, 
+        {
+          "enumtxt": "Bauzonen_1.weitere_Zonen_19", 
+          "enum": "Bauzonen_1.weitere_Zonen_19", 
+          "id": 26
+        }, 
+        {
+          "enumtxt": "Landwirtschaftszonen_2.allgemeine_Landwirtschaftszonen_21", 
+          "enum": "Landwirtschaftszonen_2.allgemeine_Landwirtschaftszonen_21", 
+          "id": 27
+        }, 
+        {
+          "enumtxt": "Landwirtschaftszonen_2.Speziallandwirtschaftszonen_22", 
+          "enum": "Landwirtschaftszonen_2.Speziallandwirtschaftszonen_22", 
+          "id": 28
+        }, 
+        {
+          "enumtxt": "Landwirtschaftszonen_2.Rebbauzonen_23", 
+          "enum": "Landwirtschaftszonen_2.Rebbauzonen_23", 
+          "id": 29
+        }, 
+        {
+          "enumtxt": "Schutzzonen_3.Schutzzonen_fuer_Lebensraeume_und_Landschaften_31", 
+          "enum": "Schutzzonen_3.Schutzzonen_fuer_Lebensraeume_und_Landschaften_31", 
+          "id": 30
+        }, 
+        {
+          "enumtxt": "Schutzzonen_3.Zonen_fuer_Baeche_Fluesse_Seen_und_ihre_Ufer_32", 
+          "enum": "Schutzzonen_3.Zonen_fuer_Baeche_Fluesse_Seen_und_ihre_Ufer_32", 
+          "id": 31
+        }, 
+        {
+          "enumtxt": "weitere_Zonen_4.weitere_Zonen_ausserhalbBauzonen_41", 
+          "enum": "weitere_Zonen_4.weitere_Zonen_ausserhalbBauzonen_41", 
+          "id": 32
+        }, 
+        {
+          "enumtxt": "weitere_Zonen_4.weitere_Zonen_Reservezonen_42", 
+          "enum": "weitere_Zonen_4.weitere_Zonen_Reservezonen_42", 
+          "id": 33
+        }, 
+        {
+          "enumtxt": "weitere_Zonen_4.Waldzonen_43", 
+          "enum": "weitere_Zonen_4.Waldzonen_43", 
+          "id": 34
+        }, 
+        {
+          "enumtxt": "weitere_Zonen_4.Zonen_fuer_Kleinsiedlung_44", 
+          "enum": "weitere_Zonen_4.Zonen_fuer_Kleinsiedlung_44", 
+          "id": 35
         }
       ]
     }, 
@@ -1897,6 +2237,26 @@ def test_np():
           "enumtxt": "weitere", 
           "enum": "weitere", 
           "id": 3
+        }, 
+        {
+          "enumtxt": "AV93", 
+          "enum": "AV93", 
+          "id": 4
+        }, 
+        {
+          "enumtxt": "PV74", 
+          "enum": "PV74", 
+          "id": 5
+        }, 
+        {
+          "enumtxt": "PN", 
+          "enum": "PN", 
+          "id": 6
+        }, 
+        {
+          "enumtxt": "weitere", 
+          "enum": "weitere", 
+          "id": 7
         }
       ]
     }, 

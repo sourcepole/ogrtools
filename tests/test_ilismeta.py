@@ -30,10 +30,10 @@ def test_extract_extended_enums():
         {'enumtxt': 'danger', 'enum': 'danger', 'id': 2},
         {'enumtxt': 'velocity', 'enum': 'velocity', 'id': 3}]
     assert enum_tables['RoadsExdm2ien.RoadsExtended.RoadSign.Type'] == [
-        {'enumtxt': 'prohibition.noentry', 'enum': 'prohibition.noentry', 'id': 0},
-        {'enumtxt': 'prohibition.noparking', 'enum': 'prohibition.noparking', 'id': 1},
-        {'enumtxt': 'prohibition.other', 'enum': 'prohibition.other', 'id': 2}]
-        #FIXME: inherted enums missing:
-        #{'enumtxt': 'indication', 'enum': 'indication', 'id': 1},
-        #{'enumtxt': 'danger', 'enum': 'danger', 'id': 2},
-        #{'enumtxt': 'velocity', 'enum': 'velocity', 'id': 3}]
+        {'enumtxt': 'prohibition', 'enum': 'prohibition', 'id': 0},  # FIXME: omit non-leaf enum!
+        {'enumtxt': 'indication', 'enum': 'indication', 'id': 1},
+        {'enumtxt': 'danger', 'enum': 'danger', 'id': 2},
+        {'enumtxt': 'velocity', 'enum': 'velocity', 'id': 3},
+        {'enumtxt': 'prohibition.noentry', 'enum': 'prohibition.noentry', 'id': 4},
+        {'enumtxt': 'prohibition.noparking', 'enum': 'prohibition.noparking', 'id': 5},
+        {'enumtxt': 'prohibition.other', 'enum': 'prohibition.other', 'id': 6}]

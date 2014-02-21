@@ -21,43 +21,85 @@ def extract_enums(fn):
     #Extract default namespace from root e.g. {http://www.interlis.ch/INTERLIS2.3}TRANSFER
     ns = {'xmlns': re.match(r'^{(.+)}', tree.getroot().tag).group(1)}
 
-    models = tree.findall("xmlns:DATASECTION/xmlns:IlisMeta07.ModelData", ns)
-    if models is not None:
+    enumTypes = tree.findall("xmlns:DATASECTION/xmlns:IlisMeta07.ModelData/xmlns:IlisMeta07.ModelData.EnumType", ns)
+    enumNodes = tree.findall("xmlns:DATASECTION/xmlns:IlisMeta07.ModelData/xmlns:IlisMeta07.ModelData.EnumNode", ns)
+    if enumNodes is not None:
+        #Collect parent enums (only leaf nodes have to be added as enums)
+        parent_nodes = set()
+        for enumNode in enumNodes:
+            parent = enumNode.find("xmlns:ParentNode", ns)
+            if parent is not None:
+                parent_nodes.add(parent.get("REF"))
 
-        for model in models:
-            enumNodes = model.findall("xmlns:IlisMeta07.ModelData.EnumNode", ns)
+        #Collect top enumNodes
+        top_nodes = {}  # top node => [leaf nodes]
+        for enumNode in enumNodes:
+            parent = enumNode.find("xmlns:ParentNode", ns)
+            if parent is None:
+                top_nodes[enumNode] = []
 
-            if enumNodes is not None:
-                #Collect parent enums
-                parent_nodes = set()  # = {} { enum-node-id: super-enum-node-id, ... }
-                for enumNode in enumNodes:
-                    parent = enumNode.find("xmlns:ParentNode", ns)
-                    if parent is not None:
-                        #parent_node = parent.get("REF")
-                        #superclass_enum = parent.
-                        parent_nodes.add(parent.get("REF"))
+        #Collect leafs
+        for enumNode in enumNodes:
+            top_node = find_top_node(enumNode, enumNodes, top_nodes, ns)
+            if enumNode.get("TID") not in parent_nodes:
+                leafs = top_nodes[top_node]
+                leafs.append(enumNode)
 
-                curEnum = None
-                idx = None
-                for enumNode in enumNodes:
-                    parent = enumNode.find("xmlns:ParentNode", ns)
-                    if parent is None:
-                        curEnum = enumNode
-                        enumTypeName = enumNode.find("xmlns:EnumType", ns).get('REF')
-                        enumTypeName = string.replace(enumTypeName, '.TYPE', '')
-                        enum_table = []
-                        enum_tables[enumTypeName] = enum_table
-                        idx = 0
-                    else:
-                        if enumNode.get("TID") not in parent_nodes:
-                            enum_record = {}
-                            enum_record["id"] = idx  # str(idx)
-                            idx = idx + 1
-                            enum = string.replace(enumNode.get("TID"), curEnum.get("TID") + '.', '')
-                            enum_record["enum"] = enum
-                            enum_record["enumtxt"] = enum
-                            enum_table.append(enum_record)
+        for top_node in top_nodes.keys():
+            enum_table = []
+            collect_enums(top_node, enum_table, 0, top_nodes, enumTypes, ns)
+            enumTypeName = top_node.find("xmlns:EnumType", ns).get('REF')
+            enumTypeName = string.replace(enumTypeName, '.TYPE', '')
+            enum_tables[enumTypeName] = enum_table
+
     return enum_tables
+
+
+def find_top_node(enumNode, enumNodes, top_nodes, ns):
+    # <IlisMeta07.ModelData.EnumNode TID="RoadsExdm2ien.RoadsExtended.RoadSign.Type.TYPE.TOP.prohibition.noparking">
+    #   <Name>noparking</Name>
+    #   <Abstract>false</Abstract>
+    #   <Final>false</Final>
+    #   <ParentNode REF="RoadsExdm2ien.RoadsExtended.RoadSign.Type.TYPE.TOP.prohibition" ORDER_POS="2" />
+    # </IlisMeta07.ModelData.EnumNode>
+    if enumNode in top_nodes:
+        return enumNode
+    else:
+        parent_tid = enumNode.find("xmlns:ParentNode", ns).get('REF')
+        for node in enumNodes:
+            if parent_tid == node.get('TID'):
+                return find_top_node(node, enumNodes, top_nodes, ns)
+
+
+def collect_enums(top_node, enum_table, idx, top_nodes, enumTypes, ns):
+    """Add leafes of top_node to enum_table"""
+    #Find enum type
+    enumTypeName = top_node.find("xmlns:EnumType", ns).get('REF')
+    for node in enumTypes:
+        if enumTypeName == node.get('TID'):
+            enumType = node
+            break
+
+    #Handle type inheritance
+    superRef = enumType.find("xmlns:Super", ns)
+    if superRef is not None:
+        superTypeName = superRef.get('REF')
+        for node in top_nodes.keys():
+            if superTypeName == node.find("xmlns:EnumType", ns).get('REF'):
+                idx = collect_enums(node, enum_table, idx, top_nodes, enumTypes, ns)
+                break
+
+    #Add leafes
+    for enumNode in top_nodes[top_node]:
+        enum_record = {}
+        enum_record["id"] = idx  # str(idx)
+        idx = idx + 1
+        enum = string.replace(enumNode.get("TID"), top_node.get("TID") + '.', '')
+        enum_record["enum"] = enum
+        enum_record["enumtxt"] = enum
+        enum_table.append(enum_record)
+
+    return idx
 
 
 def extract_enums_asgml(fn):
