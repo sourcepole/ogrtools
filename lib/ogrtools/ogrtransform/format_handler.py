@@ -1,7 +1,7 @@
 import string
 import re
 
-from ..interlis.ilismeta import extract_enums_json
+from ..interlis.ilismeta import extract_enums
 
 
 #Base class for format specific methods
@@ -79,7 +79,7 @@ class IliFormatHandler(FormatHandler):
         return None
 
     def extract_enums(self, model):
-        return extract_enums_json(model)
+        return extract_enums(model)
 
 
 class GeoJSONFormatHandler(FormatHandler):
