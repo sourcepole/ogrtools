@@ -18,3 +18,11 @@ def test_ogrvrt():
 """
     vrt = ogr2vrt(infile="tests/data/osm/railway.shp")
     assert vrt == expected
+
+#Layer join test:
+# <OGRVRTDataSource>
+#   <OGRVRTLayer name="BoFlaechenJoined">
+#     <SrcDataSource>data/ili/Beispiel.itf,data/ili/Beispiel.imd</SrcDataSource>
+#     <SrcSQL>SELECT Bodenbedeckung__BoFlaechen.*, enumXX_Art.value FROM Bodenbedeckung__BoFlaechen LEFT JOIN enumXX_Art ON Bodenbedeckung__BoFlaechen.Art = enumXX_Art.id </SrcSQL>
+#   </OGRVRTLayer>
+# </OGRVRTDataSource>
