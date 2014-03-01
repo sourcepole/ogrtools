@@ -223,10 +223,11 @@ class OgrConfig:
                 layer = {"name": name}
                 if 'geom_fields' in cfglayer:
                     for geom_name, cfgfield in cfglayer['geom_fields'].items():
-                        #layer['geom_field'] = geom_name
-                        layer['geom_field'] = "wkb_geometry"  # TODO: OGR Bug
+                        layer['geom_field'] = geom_name
                         layers.append(layer)
-                    #FIXME: no layer info for empty cfglayer['geom_fields'] (e.g. Shape file)
+                    #handle empty cfglayer['geom_fields'] (e.g. Shape file)
+                    if 'geom_field' not in layer:
+                        layers.append(layer)
                 else:
                     layers.append(layer)
         return layers
@@ -249,11 +250,11 @@ class OgrConfig:
             node = ElementTree.SubElement(layer_node, "SrcDataSource")
             node.set('relativeToVRT', '0')
             node.set('shared', '1')
+            if self._ds_fn is None:
+                raise ValueError("Cannot create intermediate VRT - Input DS not defined")
             node.text = self._ds_fn
             node = ElementTree.SubElement(layer_node, "SrcLayer")
             node.text = cfglayer['src_layer']
-            node = ElementTree.SubElement(layer_node, "GeometryType")
-            node.text = 'wkb' + cfglayer['geometry_type']
             for dst_name, cfgfield in cfglayer['fields'].items():
                 node = ElementTree.SubElement(layer_node, "Field")
                 node.set('name', dst_name)
@@ -263,6 +264,16 @@ class OgrConfig:
                     node.set('width', str(cfgfield['width']))
                 if 'precision' in cfgfield:
                     node.set('precision', str(cfgfield['precision']))
+            if 'geom_fields' in cfglayer:
+                for geom_name, cfgfield in cfglayer['geom_fields'].items():
+                    node = ElementTree.SubElement(layer_node, "GeometryField")
+                    node.set('name', geom_name)
+                    node.set('field', cfgfield['src'])
+                    node = ElementTree.SubElement(node, "GeometryType")
+                    node.text = 'wkb' + cfgfield['type']
+            else:
+                node = ElementTree.SubElement(layer_node, "GeometryType")
+                node.text = 'wkb' + cfglayer['geometry_type']
         return ElementTree.tostring(xml, 'utf-8')
 
     def generate_reverse_vrt(self, dst_format=None):
@@ -275,16 +286,26 @@ class OgrConfig:
             node = ElementTree.SubElement(layer_node, "SrcDataSource")
             node.set('relativeToVRT', '0')
             node.set('shared', '1')
+            if self._ds_fn is None:
+                raise ValueError("Cannot create intermediate VRT - Input DS not defined")
             node.text = self._ds_fn
             node = ElementTree.SubElement(layer_node, "SrcLayer")
             node.text = src_format_handler.layer_name(layer_name)
-            node = ElementTree.SubElement(layer_node, "GeometryType")
-            node.text = 'wkb' + cfglayer['geometry_type']
             for dst_name, cfgfield in cfglayer['fields'].items():
                 node = ElementTree.SubElement(layer_node, "Field")
                 node.set('name', cfgfield['src'])
                 #FIXME: original type, not node.set('type', cfgfield['type'])
                 node.set('src', dst_name)
+            if 'geom_fields' in cfglayer and src_format != "GeoJSON":  # Workaround for bug in VRT driver?
+                for geom_name, cfgfield in cfglayer['geom_fields'].items():
+                    node = ElementTree.SubElement(layer_node, "GeometryField")
+                    node.set('name', cfgfield['src'])
+                    node.set('field', geom_name)
+                    node = ElementTree.SubElement(node, "GeometryType")
+                    node.text = 'wkb' + cfgfield['type']
+            else:
+                node = ElementTree.SubElement(layer_node, "GeometryType")
+                node.text = 'wkb' + cfglayer['geometry_type']
         return ElementTree.tostring(xml, 'utf-8')
 
     def generate_enum_gml(self):
@@ -336,6 +357,9 @@ class OgrConfig:
         vrt = self.generate_vrt(dst_format=format)
         #if debug:
         #    print prettify(vrt)
+        f = open("/tmp/transform.vrt", "w")
+        f.write(prettify(vrt))
+        f.close()
         ds = self._tmp_datasource(vrt)
         dst_format = format or self.dst_format()
         dsco = []

@@ -65,6 +65,7 @@ def test_geojson_reverse_to_ili():
 <Street>1</Street>
 <Precision>precise</Precision>
 </RoadsExdm2ien.RoadsExtended.StreetAxis>"""
+    print result
     assert expected in result
 
 
