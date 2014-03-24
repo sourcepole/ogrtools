@@ -21,7 +21,7 @@
 """
 
 from PyQt4 import QtGui
-from PyQt4.QtCore import pyqtSignature, QSettings, QFileInfo
+from PyQt4.QtCore import pyqtSignature, QSettings, QFileInfo, qDebug
 from PyQt4.QtGui import QFileDialog, QMessageBox, QDialog
 from qgis.core import QgsMessageLog, QgsVectorLayer, QgsDataSourceURI
 from qgis.gui import QgsMessageBar
@@ -29,7 +29,10 @@ from ui_interlis import Ui_Interlis
 from sublayersdialog import SublayersDialog
 import os.path
 import tempfile
+import urllib2
+from xml.etree import ElementTree
 from ogrtools.ogrtransform.ogrconfig import OgrConfig
+from ogrtools.interlis.model_loader import ModelLoader
 
 
 class InterlisDialog(QtGui.QDialog):
@@ -39,8 +42,8 @@ class InterlisDialog(QtGui.QDialog):
         # Set up the user interface from Designer.
         self.ui = Ui_Interlis()
         self.ui.setupUi(self)
-        #Not implemented yet:
         self.ui.mModelLookupButton.setEnabled(False)
+        #Not implemented yet:
         self.ui.cbResetData.setEnabled(False)
         #Initialize DB connection drop-down
         self.ui.cbDbConnections.clear()
@@ -103,6 +106,31 @@ class InterlisDialog(QtGui.QDialog):
         settings.endGroup()
         return connection_names
 
+    def _create_wps_request(self, ili):
+        return """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<wps:Execute service="WPS" version="1.0.0" xmlns:wps="http://www.opengis.net/wps/1.0.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsExecute_request.xsd">
+<ows:Identifier>ilismetalookup</ows:Identifier>
+<wps:DataInputs>
+<wps:Input>
+<ows:Identifier>ilimodel</ows:Identifier>
+<ows:Title>ilimodel</ows:Title>
+<wps:Data>
+<wps:LiteralData>%s</wps:LiteralData>
+</wps:Data>
+</wps:Input>
+</wps:DataInputs>
+</wps:Execute>
+        """ % ili
+
+    def _parse_wps_response(self, xml):
+        tree = ElementTree.ElementTree(ElementTree.fromstring(xml))
+        ns = {"wps": "http://www.opengis.net/wps/1.0.0"}
+        imd = tree.find("wps:ProcessOutputs/wps:Output/wps:Data/wps:LiteralData", ns)
+        if imd is None:
+            return None
+        else:
+            return imd.text
+
     @pyqtSignature('')  # avoid two connections
     def on_mDataFileButton_clicked(self):
         #show file dialog and remember last directory
@@ -114,7 +142,36 @@ class InterlisDialog(QtGui.QDialog):
             return  # dialog canceled
         settings.setValue("/qgis/plugins/interlis/datadir", QFileInfo(dataFilePath).absolutePath())
         self.ui.mDataLineEdit.setText(dataFilePath)
+        self.ui.mModelLookupButton.setEnabled(True)
         self.ui.mImportButton.setEnabled(True)
+
+    @pyqtSignature('')  # avoid two connections
+    def on_mModelLookupButton_clicked(self):
+        imd = None
+        try:
+            loader = ModelLoader(self.ui.mDataLineEdit.text())
+            ili = loader.gen_lookup_ili()
+            qDebug(ili)
+            wpsreq = self._create_wps_request(ili)
+            req = urllib2.Request(url="http://wps.sourcepole.ch/wps?",
+                                  data=wpsreq,
+                                  headers={'Content-Type': 'application/xml'})
+            #TODO: proxy support
+            response = urllib2.urlopen(req)  # timeout=int(TIMEOUT)
+            result = response.read()
+            imd = self._parse_wps_response(result)
+        except urllib2.HTTPError, err:
+            qDebug("HTTPError %d" % err.code)
+        except:
+            qDebug("Exception during IlisModel download")
+        if imd is None:
+            QgsMessageLog.logMessage("Couldn't download Ilismeta model", "Interlis", QgsMessageLog.WARNING)
+            self.ui.mModelLineEdit.setText("")
+        else:
+            fh, imdfn = tempfile.mkstemp(suffix='.imd')
+            os.write(fh, imd)
+            os.close(fh)
+            self.ui.mModelLineEdit.setText(imdfn)
 
     @pyqtSignature('')  # avoid two connections
     def on_mModelFileButton_clicked(self):
