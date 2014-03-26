@@ -1,4 +1,24 @@
 import os
+import tempfile
+import codecs
+
+
+def test_ogr_transform():
+    __, dstfile = tempfile.mkstemp(suffix='.gml')
+    out = os.popen("PYTHONPATH=lib bin/ogr transform --format GML --config tests/data/ili/RoadsExdm2ien.cfg %s tests/data/ili/roads23.xtf,tests/data/ili/RoadsExdm2ien.imd" % dstfile).read()
+    print out
+    assert out == ""
+    gml = codecs.open(dstfile, encoding='utf-8').read()
+    print dstfile
+    expected = """<gml:featureMember>
+    <ogr:landcover fid="landcover.11">
+      <ogr:geometryProperty><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>105.64,48.068 113.811,51.168 113.559,62.88 96.779,57.177 87.839,54.138 57.06,44.638 50.669,42.579 31.14,36.458 30.9,24.478 96.779,45.088 105.64,48.068</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
+      <ogr:tid>41</ogr:tid>
+      <ogr:type>street</ogr:type>
+    </ogr:landcover>
+  </gml:featureMember>"""
+    assert expected in gml
+    os.remove(dstfile)
 
 
 #Run with nosetests tests/test_ogr_command.py --nocapture

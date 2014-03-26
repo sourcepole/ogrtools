@@ -6,7 +6,6 @@ import sys
 from ogrtools.pyogr.ogrinfo import ogrinfo, ogr_formats, ogr_version_info
 from ogrtools.pyogr.ogrvrt import ogr2vrt
 from ogrtools.ogrtransform.ogrconfig import OgrConfig
-from ogrtools.ogrtransform.transformation import Transformation
 
 
 def info(args):
@@ -48,7 +47,7 @@ def genconfig(args):
 def write_enums(args):
     if args.debug:
         os.environ["CPL_DEBUG"] = "on"
-    trans = Transformation(args.config)
+    trans = OgrConfig(config=args.config)
     print trans.write_enum_tables(args.dest, args.format, args.debug)
     return 0
 
@@ -56,7 +55,7 @@ def write_enums(args):
 def transform(args):
     if args.debug:
         os.environ["CPL_DEBUG"] = "on"
-    trans = Transformation(args.config, args.source)
+    trans = OgrConfig(config=args.config, ds=args.source)
     if args.reverse:
         trans.transform_reverse(args.dest, args.format, layers=args.layers, debug=args.debug)
     else:
