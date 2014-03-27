@@ -3,7 +3,6 @@ from xml.etree import ElementTree
 import tempfile
 import os
 from format_handler import FormatHandlerRegistry
-from ..pyogr.ogr2ogr import ogr2ogr
 from ..interlis.ilismeta import prettify
 try:
     from osgeo import ogr
@@ -50,6 +49,78 @@ FIELD_TYPES = [
     'Time',         # OFTTime, Time
     'DateTime'      # OFTDateTime, Date and Time
 ]
+
+
+def ogr2ogr(dst_format, ds, dest, bOverwrite, dsco=[], lco=[], layers=[], skipfailures=False):    # poOutputSRS=srs, poSourceSRS=srs
+    # Get the input Layers
+    inDataSource = ds
+    layerList = []
+    if layers:
+        layerList = layers
+    else:
+        for lyr in inDataSource:
+            daLayer = lyr.GetName()
+            if not daLayer in layerList:
+                layerList.append(daLayer)
+
+    # Create the output Layers
+    outDriver = ogr.GetDriverByName(dst_format)
+
+    # Remove output shapefile if it already exists
+    # if os.path.exists(dest):
+    #     outDriver.DeleteDataSource(dest)
+
+    # Create the output shapefile
+    outDataSource = outDriver.CreateDataSource(dest)
+    for layer in layerList:
+        inLayer = inDataSource.GetLayer(layer)
+        inLayerDefn = inLayer.GetLayerDefn()
+        nGeomFieldCount = inLayerDefn.GetGeomFieldCount()
+
+        multiGeomSupported = outDataSource.TestCapability(ogr.ODsCCreateGeomFieldAfterCreateLayer)
+        if multiGeomSupported:
+            outLayer = outDataSource.CreateLayer(layer, geom_type=ogr.wkbNone)
+        else:
+            outLayer = outDataSource.CreateLayer(layer, geom_type=inLayerDefn.GetGeomType())
+
+        # Add input Layer Fields to the output Layer
+        if "Interlis" not in dst_format:  # Interlis fields are created from model
+            for i in range(0, inLayerDefn.GetFieldCount()):
+                fieldDefn = inLayerDefn.GetFieldDefn(i)
+                outLayer.CreateField(fieldDefn)
+
+            if multiGeomSupported:
+                for iGeom in range(nGeomFieldCount):
+                    poGFldDefn = inLayerDefn.GetGeomFieldDefn(iGeom)
+                    outLayer.CreateGeomField(poGFldDefn)
+
+        # Get the output Layer's Feature Definition
+        outLayerDefn = outLayer.GetLayerDefn()
+
+        # Add features to the ouput Layer
+        for inFeature in inLayer:
+            # Create output Feature
+            outFeature = ogr.Feature(outLayerDefn)
+
+            # Add field values from input Layer
+            for i in range(0, outLayerDefn.GetFieldCount()):
+                fieldName = outLayerDefn.GetFieldDefn(i).GetNameRef()
+                src_idx = inLayerDefn.GetFieldIndex(fieldName)
+                if inFeature.IsFieldSet(src_idx):
+                    outFeature.SetField(i, inFeature.GetField(src_idx))
+
+            # Add geometry values
+            for iGeom in range(nGeomFieldCount):
+                geom = inFeature.GetGeomFieldRef(iGeom)
+                if geom is not None:
+                    outFeature.SetGeomField(iGeom, geom.Clone())
+
+            # Add new feature to output Layer
+            outLayer.CreateFeature(outFeature)
+
+    # Close DataSources
+    inDataSource.Destroy()
+    outDataSource.Destroy()
 
 
 class OgrConfig:
@@ -370,8 +441,8 @@ class OgrConfig:
             lco = self.layer_creation_options()
         self._set_ogr_debug_flag(debug)
         ogrlogfn = self._activate_ogr_log()
-        ogr2ogr(pszFormat=str(dst_format), pszDataSource=ds, pszDestDataSource=dest,
-                bOverwrite=True, papszDSCO=dsco, papszLCO=lco, papszLayers=layers, skipfailures=skipfailures)  # poOutputSRS=srs, poSourceSRS=srs
+        ogr2ogr(dst_format=str(dst_format), ds=ds, dest=dest,
+                bOverwrite=True, dsco=dsco, lco=lco, layers=layers, skipfailures=skipfailures)
         self._free_tmp_datasource()
         return self._close_ogr_log(ogrlogfn)
 
@@ -383,8 +454,8 @@ class OgrConfig:
         dst_format = format or self.src_format()
         self._set_ogr_debug_flag(debug)
         ogrlogfn = self._activate_ogr_log()
-        ogr2ogr(pszFormat=str(dst_format), pszDataSource=ds,
-                pszDestDataSource=dest, bOverwrite=True, papszLayers=layers, skipfailures=skipfailures)
+        ogr2ogr(dst_format=str(dst_format), ds=ds, dest=dest,
+                bOverwrite=True, layers=layers, skipfailures=skipfailures)
         self._free_tmp_datasource()
         return self._close_ogr_log(ogrlogfn)
 

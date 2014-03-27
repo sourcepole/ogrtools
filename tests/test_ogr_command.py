@@ -11,11 +11,11 @@ def test_ogr_transform():
     gml = codecs.open(dstfile, encoding='utf-8').read()
     print dstfile
     expected = """<gml:featureMember>
-    <ogr:landcover fid="landcover.11">
-      <ogr:geometryProperty><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>105.64,48.068 113.811,51.168 113.559,62.88 96.779,57.177 87.839,54.138 57.06,44.638 50.669,42.579 31.14,36.458 30.9,24.478 96.779,45.088 105.64,48.068</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
-      <ogr:tid>41</ogr:tid>
-      <ogr:type>street</ogr:type>
-    </ogr:landcover>
+    <ogr:roadsign fid="roadsign.0">
+      <ogr:position><gml:Point><gml:coordinates>69.389,92.056</gml:coordinates></gml:Point></ogr:position>
+      <ogr:tid>501</ogr:tid>
+      <ogr:type>prohibition.noparking</ogr:type>
+    </ogr:roadsign>
   </gml:featureMember>"""
     assert expected in gml
     os.remove(dstfile)

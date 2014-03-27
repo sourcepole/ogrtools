@@ -13,8 +13,8 @@ def test_shape_to_geojson():
     __, dstfile = tempfile.mkstemp(suffix='.json')
     os.remove(dstfile)
     trans.transform(dstfile, "GeoJSON")
+    print dstfile
     result = codecs.open(dstfile, encoding='utf-8').read()
-    os.remove(dstfile)
     #Default import
     assert '{ "type": "rail"' not in result
     #Mapping from config
@@ -27,6 +27,7 @@ def test_shape_to_geojson():
     assert geojsonstart in result
     expected = """osm_id": 35324774.000000 }, "geometry": { "type": "LineString", "coordinates": [ [ 9.542907, 47.20156 ], [ 9.542616, 47.201195 ]"""
     assert expected in result
+    os.remove(dstfile)
 
 
 def test_ili_to_geojson():
@@ -36,11 +37,11 @@ def test_ili_to_geojson():
     __, dstfile = tempfile.mkstemp(suffix='.json')
     os.remove(dstfile)
     trans.transform(dstfile, "GeoJSON", layers=["streetaxis"])
+    print dstfile
     result = codecs.open(dstfile, encoding='utf-8').read()
-    os.remove(dstfile)
     expected = """{ "type": "Feature", "properties": { "tid": "8", "precision": "precise", "street_id": 1 }, "geometry": { "type": "LineString", "coordinates": [ [ 55.6, 37.649 ], [ 15.573, 25.785 ] ] } }"""
-    print result
     assert expected in result
+    os.remove(dstfile)
 
 
 def test_geojson_reverse_to_ili():
@@ -51,8 +52,8 @@ def test_geojson_reverse_to_ili():
     #os.remove(dstfile)
     trans.transform_reverse(dstfile + ",tests/data/ili/RoadsExdm2ien.imd",
                             layers=["RoadsExdm2ien.RoadsExtended.StreetAxis"])
+    print dstfile
     result = codecs.open(dstfile, encoding='utf-8').read()
-    os.remove(dstfile)
     expected = """<DATASECTION>
 <RoadsExdm2ien.RoadsExtended BID="RoadsExdm2ien.RoadsExtended">
 <RoadsExdm2ien.RoadsExtended.StreetAxis TID="8">
@@ -65,8 +66,8 @@ def test_geojson_reverse_to_ili():
 <Street>1</Street>
 <Precision>precise</Precision>
 </RoadsExdm2ien.RoadsExtended.StreetAxis>"""
-    print result
     assert expected in result
+    os.remove(dstfile)
 
 
 def manualtest_ili_to_spatialite():
@@ -78,7 +79,6 @@ def manualtest_ili_to_spatialite():
     trans.transform(dstfile, "SQLite")
     print dstfile
     result = os.popen("echo .dump | sqlite3 %s" % dstfile).read()
-    #print result
     assert False
     os.remove(dstfile)
 
