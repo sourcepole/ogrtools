@@ -30,6 +30,7 @@ from sublayersdialog import SublayersDialog
 import os.path
 import tempfile
 import urllib2
+import codecs
 from xml.etree import ElementTree
 from ogrtools.ogrtransform.ogrconfig import OgrConfig
 from ogrtools.interlis.model_loader import ModelLoader
@@ -169,8 +170,9 @@ class InterlisDialog(QtGui.QDialog):
             self.ui.mModelLineEdit.setText("")
         else:
             fh, imdfn = tempfile.mkstemp(suffix='.imd')
-            os.write(fh, imd)
             os.close(fh)
+            with codecs.open(imdfn, "w", encoding='utf-8') as file:
+                file.write(imd)
             self.ui.mModelLineEdit.setText(imdfn)
 
     @pyqtSignature('')  # avoid two connections
