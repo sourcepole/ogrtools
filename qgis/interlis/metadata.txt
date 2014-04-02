@@ -2,13 +2,13 @@
 name=interlis
 qgisMinimumVersion=2.0
 description=Interlis Import/Export
-version=0.6.0
+version=0.6.1
 author=Pirmin Kalberer / Sourcepole
 email=pka@sourcepole.ch
 
-# Optional items:
-
-changelog=0.6.0
+changelog=0.6.1
+    - OGR config file dialog fixed
+  0.6.0
     - Multi-Geometry support in ogrtools transform
     - Support for Ilismeta model lookup with UTF-8 characters
   0.5.0

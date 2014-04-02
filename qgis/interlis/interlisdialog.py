@@ -138,8 +138,8 @@ class InterlisDialog(QtGui.QDialog):
         settings = QSettings()
         lastDirectoryString = None  # settings.value("/qgis/plugins/interlis/datadir", type=str)
         dataFilePath = QFileDialog.getOpenFileName(None, "Open Interlis data file", lastDirectoryString,
-                                                   "*.itf *.ITF *.xtf *.XTF *.xml")
-        if dataFilePath is None:
+                                                   "Interlis transfer file (*.itf *.ITF *.xtf *.XTF *.xml)")
+        if not dataFilePath:
             return  # dialog canceled
         settings.setValue("/qgis/plugins/interlis/datadir", QFileInfo(dataFilePath).absolutePath())
         self.ui.mDataLineEdit.setText(dataFilePath)
@@ -180,9 +180,9 @@ class InterlisDialog(QtGui.QDialog):
         #show file dialog and remember last directory
         settings = QSettings()
         lastDirectoryString = None  # settings.value("/qgis/plugins/interlis2/modeldir", type=str)
-        modelFilePath = QFileDialog.getOpenFileName(None, "Open Interlis data file", lastDirectoryString,
-                                                    "*.imd *.IMD")
-        if modelFilePath is None:
+        modelFilePath = QFileDialog.getOpenFileName(None, "Open Interlis model file", lastDirectoryString,
+                                                    "IlisMeta model (*.imd *.IMD)")
+        if not modelFilePath:
             return  # dialog canceled
         settings.setValue("/qgis/plugins/interlis/modeldir", QFileInfo(modelFilePath).absolutePath())
         self.ui.mModelLineEdit.setText(modelFilePath)
@@ -193,8 +193,8 @@ class InterlisDialog(QtGui.QDialog):
         settings = QSettings()
         lastDirectoryString = None  # settings.value("/qgis/plugins/interlis2/cfgdir", type=str)
         configPath = QFileDialog.getOpenFileName(None, "Open OGR mapping config file", lastDirectoryString,
-                                                 "*.cfg *.CFG", ".json", ".JSON")
-        if configPath is None:
+                                                 "OGR config (*.cfg *.CFG *.json *.JSON)")
+        if not configPath:
             return  # dialog canceled
         settings.setValue("/qgis/plugins/interlis/cfgdir", QFileInfo(configPath).absolutePath())
         self.ui.mConfigLineEdit.setText(configPath)
