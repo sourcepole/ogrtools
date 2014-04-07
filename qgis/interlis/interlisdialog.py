@@ -250,7 +250,7 @@ class InterlisDialog(QtGui.QDialog):
         if not cfg.is_loaded():
             ogrconfig = os.path.join(tempfile.gettempdir(), "ogrconfig.json")
             format = 'PostgreSQL'
-            cfgjson = cfg.generate_config(format, outfile=ogrconfig, layer_list=[])
+            cfgjson = cfg.generate_config(format, outfile=ogrconfig, layer_list=[], srs="EPSG:21781")
             QgsMessageLog.logMessage(cfgjson, "Interlis", QgsMessageLog.INFO)
             self.ui.mConfigLineEdit.setText(ogrconfig)
         if self.ui.cbImportEnums.isChecked():

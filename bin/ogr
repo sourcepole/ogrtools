@@ -40,7 +40,7 @@ def vrt(args):
 
 def genconfig(args):
     trans = OgrConfig(ds=args.source, model=args.model)
-    print trans.generate_config(args.format, layer_list=args.layers)
+    print trans.generate_config(args.format, layer_list=args.layers, srs=args.srs)
     return 0
 
 
@@ -108,6 +108,7 @@ def main():
     subparser.add_argument('layers', nargs='*', help='layer names')
     subparser.add_argument('--format', default='PostgreSQL', help='Destination format')
     subparser.add_argument('--model', default=None, help='Data model specification')
+    subparser.add_argument('--srs', default=None, help='Assign SRS to layers')
     subparser.set_defaults(func=genconfig)
 
     subparser = subparsers.add_parser('write-enums', help='Write tables with enumeration values')

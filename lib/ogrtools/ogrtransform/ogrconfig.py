@@ -51,7 +51,7 @@ FIELD_TYPES = [
 ]
 
 
-def ogr2ogr(dst_format, ds, dest, bOverwrite, dsco=[], lco=[], layers=[], skipfailures=False):  # poOutputSRS=srs, poSourceSRS=srs
+def ogr2ogr(dst_format, ds, dest, bOverwrite, dsco=[], lco=[], layers=[], skipfailures=False):
     # Get the input Layers
     inDataSource = ds
     layerList = []
@@ -65,6 +65,8 @@ def ogr2ogr(dst_format, ds, dest, bOverwrite, dsco=[], lco=[], layers=[], skipfa
 
     # Create the output Layers
     outDriver = ogr.GetDriverByName(dst_format)
+    if outDriver is None:
+        raise ValueError("Couldn't find driver '%s'" % dst_format)
 
     # Remove output shapefile if it already exists
     # if os.path.exists(dest):
@@ -72,16 +74,27 @@ def ogr2ogr(dst_format, ds, dest, bOverwrite, dsco=[], lco=[], layers=[], skipfa
 
     # Create the output shapefile
     outDataSource = outDriver.CreateDataSource(dest, options=dsco)
+    if outDataSource is None:
+        raise ValueError("Couldn't create output DataSource")
     for layer in layerList:
         inLayer = inDataSource.GetLayer(layer)
         inLayerDefn = inLayer.GetLayerDefn()
+        srs = inLayer.GetSpatialRef()  # TODO: support reprojection
         nGeomFieldCount = inLayerDefn.GetGeomFieldCount()
+
+        if bOverwrite:
+            lyridx = find_ogr_layer(outDataSource, layer)
+            if lyridx:
+                if outDataSource.DeleteLayer(lyridx) != 0:
+                    raise ValueError("DeleteLayer() failed when overwrite requested.")
 
         multiGeomSupported = outDataSource.TestCapability(ogr.ODsCCreateGeomFieldAfterCreateLayer)
         if multiGeomSupported:
-            outLayer = outDataSource.CreateLayer(layer, geom_type=ogr.wkbNone, options=lco)
+            outLayer = outDataSource.CreateLayer(layer, srs=srs, geom_type=ogr.wkbNone, options=lco)
         else:
-            outLayer = outDataSource.CreateLayer(layer, geom_type=inLayerDefn.GetGeomType(), options=lco)
+            outLayer = outDataSource.CreateLayer(layer, srs=srs, geom_type=inLayerDefn.GetGeomType(), options=lco)
+        if outLayer is None:
+            raise ValueError("Couldn't create output layer")
 
         # Add input Layer Fields to the output Layer
         if "Interlis" not in dst_format:  # Interlis fields are created from model
@@ -121,6 +134,33 @@ def ogr2ogr(dst_format, ds, dest, bOverwrite, dsco=[], lco=[], layers=[], skipfa
     # Close DataSources
     inDataSource.Destroy()
     outDataSource.Destroy()
+
+
+def find_ogr_layer(ds, layerName):
+    #From ogr2ogr.py:
+    #/* GetLayerByName() can instanciate layers that would have been */
+    #*/ 'hidden' otherwise, for example, non-spatial tables in a */
+    #*/ Postgis-enabled database, so this apparently useless command is */
+    #/* not useless... (#4012) */
+    gdal.PushErrorHandler('CPLQuietErrorHandler')
+    poDstLayer = ds.GetLayerByName(layerName)
+    gdal.PopErrorHandler()
+    gdal.ErrorReset()
+
+    iLayer = None
+    if poDstLayer is not None:
+        nLayerCount = ds.GetLayerCount()
+        for iLayer in range(nLayerCount):
+            poLayer = ds.GetLayer(iLayer)
+            # The .cpp version compares on pointers directly, but we cannot
+            # do this with swig object, so just compare the names.
+            if poLayer is not None and poLayer.GetName() == poDstLayer.GetName():
+                break
+
+        if (iLayer == nLayerCount):
+            # /* shouldn't happen with an ideal driver */
+            iLayer = None
+    return iLayer
 
 
 class OgrConfig:
@@ -170,7 +210,7 @@ class OgrConfig:
                 }
         return enum_tables
 
-    def generate_config(self, dst_format, outfile=None, layer_list=[]):
+    def generate_config(self, dst_format, outfile=None, layer_list=[], srs=None):
         if self._ds is None:
             self.open()
 
@@ -234,6 +274,8 @@ class OgrConfig:
                         geom_fields[dst_name] = cfgfield
                         cfgfield['src'] = field_name
                         cfgfield['type'] = GEOMETRY_TYPES[src_fd.GetType()]
+                        if srs:
+                            cfgfield['srs'] = srs
 
             geom_type = GEOMETRY_TYPES[layerdef.GetGeomType()]
             cfglayer['geometry_type'] = geom_type
@@ -340,8 +382,11 @@ class OgrConfig:
                     node = ElementTree.SubElement(layer_node, "GeometryField")
                     node.set('name', geom_name)
                     node.set('field', cfgfield['src'])
-                    node = ElementTree.SubElement(node, "GeometryType")
-                    node.text = 'wkb' + cfgfield['type']
+                    subnode = ElementTree.SubElement(node, "GeometryType")
+                    subnode.text = 'wkb' + cfgfield['type']
+                    if 'srs' in cfgfield:
+                        subnode = ElementTree.SubElement(node, "SRS")
+                        subnode.text = cfgfield['srs']
             else:
                 node = ElementTree.SubElement(layer_node, "GeometryType")
                 node.text = 'wkb' + cfglayer['geometry_type']

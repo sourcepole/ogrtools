@@ -12,7 +12,7 @@ def test_ogr_transform():
     print dstfile
     expected = """<gml:featureMember>
     <ogr:roadsign fid="roadsign.0">
-      <ogr:position><gml:Point><gml:coordinates>69.389,92.056</gml:coordinates></gml:Point></ogr:position>
+      <ogr:position><gml:Point srsName="EPSG:21781"><gml:coordinates>69.389,92.056</gml:coordinates></gml:Point></ogr:position>
       <ogr:tid>501</ogr:tid>
       <ogr:type>prohibition.noparking</ogr:type>
     </ogr:roadsign>

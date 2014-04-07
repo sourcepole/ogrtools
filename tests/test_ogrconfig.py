@@ -54,7 +54,7 @@ def test_shape_config():
 
 def test_ili_config():
     cfg = OgrConfig(ds="./tests/data/ili/roads23.xtf,./tests/data/ili/RoadsExdm2ien.imd")
-    cfgjson = cfg.generate_config(dst_format='PostgreSQL')
+    cfgjson = cfg.generate_config(dst_format='PostgreSQL', srs=21781)
     expected = """"roadsexdm2ien_roadsextended_streetaxis": {
       "fields": {
         "tid": {
@@ -75,7 +75,8 @@ def test_ili_config():
       "geom_fields": {
         "geometry": {
           "src": "Geometry", 
-          "type": "MultiLineString"
+          "type": "MultiLineString", 
+          "srs": 21781
         }
       }
     }"""
@@ -183,6 +184,7 @@ def test_vrt():
     <Field name="type" src="Type" type="String"/>
     <GeometryField field="Position" name="position">
       <GeometryType>wkbPoint</GeometryType>
+      <SRS>EPSG:21781</SRS>
     </GeometryField>
   </OGRVRTLayer>"""
     print vrt

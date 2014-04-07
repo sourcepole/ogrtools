@@ -31,7 +31,7 @@ def test_shape_to_geojson():
 
 
 def test_ili_to_geojson():
-    #ogr genconfig --format PostgreSQL tests/data/ili/roads23.xtf,tests/data/ili/RoadsExdm2ien.imd --model tests/data/ili/RoadsExdm2ien.imd >tests/data/ili/RoadsExdm2ien.cfg
+    #ogr genconfig --format PostgreSQL tests/data/ili/roads23.xtf,tests/data/ili/RoadsExdm2ien.imd --model tests/data/ili/RoadsExdm2ien.imd --srs=EPSG:21781 >tests/data/ili/RoadsExdm2ien.cfg
     trans = OgrConfig(config="tests/data/ili/RoadsExdm2ien.cfg",
                       ds="tests/data/ili/roads23.xtf,tests/data/ili/RoadsExdm2ien.imd")
     __, dstfile = tempfile.mkstemp(suffix='.json')
