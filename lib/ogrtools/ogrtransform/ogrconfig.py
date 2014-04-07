@@ -336,7 +336,7 @@ class OgrConfig:
                 layer = {"name": name}
                 if 'geom_fields' in cfglayer:
                     for geom_name, cfgfield in cfglayer['geom_fields'].items():
-                        layer['geom_field'] = geom_name
+                        layer = {"name": name, "geom_field": geom_name}
                         layers.append(layer)
                     #handle empty cfglayer['geom_fields'] (e.g. Shape file)
                     if 'geom_field' not in layer:
