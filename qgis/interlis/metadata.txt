@@ -6,7 +6,10 @@ version=0.7.0
 author=Pirmin Kalberer / Sourcepole
 email=pka@sourcepole.ch
 
-changelog=0.7.0
+changelog=0.7.1
+    - OGR and QGIS version checks
+    - Wait cursor during import
+  0.7.0
     - Set CRS
     - Fix adding layers with multiple geometry columns
     - Fix enum import

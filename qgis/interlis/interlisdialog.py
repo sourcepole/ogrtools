@@ -21,7 +21,7 @@
 """
 
 from PyQt4 import QtGui
-from PyQt4.QtCore import pyqtSignature, QSettings, QFileInfo, qDebug
+from PyQt4.QtCore import pyqtSignature, Qt, QSettings, QFileInfo, qDebug
 from PyQt4.QtGui import QFileDialog, QMessageBox, QDialog
 from qgis.core import QGis, QgsMessageLog, QgsVectorLayer, QgsDataSourceURI
 from qgis.gui import QgsMessageBar
@@ -205,10 +205,14 @@ class InterlisDialog(QtGui.QDialog):
 
     @pyqtSignature('')  # avoid two connections
     def on_mImportButton_clicked(self):
-        if self.ui.cbDbConnections.currentText() == "QGIS Layer":
-            self.importtoqgis()
-        else:
-            self.importtodb()
+        self.setCursor(Qt.WaitCursor)
+        try:
+            if self.ui.cbDbConnections.currentText() == "QGIS Layer":
+                self.importtoqgis()
+            else:
+                self.importtodb()
+        finally:
+            self.unsetCursor()
 
     @pyqtSignature('')  # avoid two connections
     def on_mExportButton_clicked(self):
