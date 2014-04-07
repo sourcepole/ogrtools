@@ -223,12 +223,15 @@ def test_multigeom_vrt():
     <Field name="eigentumsbeschraenkung" src="Eigentumsbeschraenkung" type="String"/>
     <GeometryField field="Punkt" name="punkt">
       <GeometryType>wkbPoint</GeometryType>
+      <SRS>EPSG:21781</SRS>
     </GeometryField>
     <GeometryField field="Flaeche" name="flaeche">
       <GeometryType>wkbPolygon</GeometryType>
+      <SRS>EPSG:21781</SRS>
     </GeometryField>
     <GeometryField field="Linie" name="linie">
       <GeometryType>wkbMultiLineString</GeometryType>
+      <SRS>EPSG:21781</SRS>
     </GeometryField>
   </OGRVRTLayer>"""
     print vrt

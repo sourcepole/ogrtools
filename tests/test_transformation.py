@@ -71,7 +71,7 @@ def test_geojson_reverse_to_ili():
 
 
 def manualtest_ili_to_spatialite():
-    #ogr genconfig --format SQLite tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.xtf,tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.imd --model tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.imd >tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.cfg
+    #ogr genconfig --format SQLite tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.xtf,tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.imd --model tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.imd --srs=EPSG:21781 >tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.cfg
     trans = OgrConfig(config="tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.cfg",
       ds="tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.xtf,tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.imd")
     __, dstfile = tempfile.mkstemp(suffix='.sqlite')
@@ -84,7 +84,7 @@ def manualtest_ili_to_spatialite():
 
 
 def manualtest_ili_with_struct_to_gml():
-    #ogr genconfig --format GML tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.xtf,tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.imd --model tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.imd >tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118-gml.cfg
+    #ogr genconfig --format GML tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.xtf,tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.imd --model tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.imd --srs=EPSG:21781 >tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118-gml.cfg
     trans = OgrConfig(config="tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.cfg",
                       ds="tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.xtf,tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.imd")
     __, dstfile = tempfile.mkstemp(suffix='.gml')
@@ -96,7 +96,7 @@ def manualtest_ili_with_struct_to_gml():
 
 
 def test_encoding():
-    #ogr genconfig --format GML tests/data/np/NP_Example.xtf,tests/data/np/NP_73_CH_de_ili2.imd --model tests/data/np/NP_73_CH_de_ili2.imd >tests/data/np/NP_73_CH_de_ili2.cfg
+    #ogr genconfig --format GML tests/data/np/NP_Example.xtf,tests/data/np/NP_73_CH_de_ili2.imd --model tests/data/np/NP_73_CH_de_ili2.imd --srs=EPSG:21781 >tests/data/np/NP_73_CH_de_ili2.cfg
     trans = OgrConfig(config="tests/data/np/NP_73_CH_de_ili2.cfg",
                       ds="tests/data/np/NP_Example.xtf,tests/data/np/NP_73_CH_de_ili2.imd")
     __, dstfile = tempfile.mkstemp(suffix='.gml')
@@ -120,7 +120,6 @@ def test_encoding():
 
 
 def test_ili_to_gml():
-    #ogr genconfig --format GML tests/data/np/NP_Example.xtf,tests/data/np/NP_73_CH_de_ili2.imd --model tests/data/np/NP_73_CH_de_ili2.imd >tests/data/np/NP_73_CH_de_ili2.cfg
     trans = OgrConfig(config="tests/data/np/NP_73_CH_de_ili2.cfg",
                       ds="tests/data/np/NP_Example.xtf,tests/data/np/NP_73_CH_de_ili2.imd")
     __, dstfile = tempfile.mkstemp(suffix='.gml')
