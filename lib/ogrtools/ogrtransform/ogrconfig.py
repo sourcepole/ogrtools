@@ -51,7 +51,7 @@ FIELD_TYPES = [
 ]
 
 
-def ogr2ogr(dst_format, ds, dest, bOverwrite, dsco=[], lco=[], layers=[], skipfailures=False):    # poOutputSRS=srs, poSourceSRS=srs
+def ogr2ogr(dst_format, ds, dest, bOverwrite, dsco=[], lco=[], layers=[], skipfailures=False):  # poOutputSRS=srs, poSourceSRS=srs
     # Get the input Layers
     inDataSource = ds
     layerList = []
@@ -71,7 +71,7 @@ def ogr2ogr(dst_format, ds, dest, bOverwrite, dsco=[], lco=[], layers=[], skipfa
     #     outDriver.DeleteDataSource(dest)
 
     # Create the output shapefile
-    outDataSource = outDriver.CreateDataSource(dest)
+    outDataSource = outDriver.CreateDataSource(dest, options=dsco)
     for layer in layerList:
         inLayer = inDataSource.GetLayer(layer)
         inLayerDefn = inLayer.GetLayerDefn()
@@ -79,9 +79,9 @@ def ogr2ogr(dst_format, ds, dest, bOverwrite, dsco=[], lco=[], layers=[], skipfa
 
         multiGeomSupported = outDataSource.TestCapability(ogr.ODsCCreateGeomFieldAfterCreateLayer)
         if multiGeomSupported:
-            outLayer = outDataSource.CreateLayer(layer, geom_type=ogr.wkbNone)
+            outLayer = outDataSource.CreateLayer(layer, geom_type=ogr.wkbNone, options=lco)
         else:
-            outLayer = outDataSource.CreateLayer(layer, geom_type=inLayerDefn.GetGeomType())
+            outLayer = outDataSource.CreateLayer(layer, geom_type=inLayerDefn.GetGeomType(), options=lco)
 
         # Add input Layer Fields to the output Layer
         if "Interlis" not in dst_format:  # Interlis fields are created from model
@@ -471,8 +471,8 @@ class OgrConfig:
         lco = []
         if dst_format == self.dst_format():
             lco = self.layer_creation_options()
-        ogr2ogr(pszFormat=str(dst_format), pszDataSource=ds,
-                pszDestDataSource=dest, bOverwrite=True, papszDSCO=dsco, papszLCO=lco, skipfailures=skipfailures)
+        ogr2ogr(dst_format=str(dst_format), ds=ds, dest=dest,
+                bOverwrite=True, dsco=dsco, lco=lco, skipfailures=skipfailures)
         self._free_tmp_datasource()
 
     def _tmp_memfile(self, data):
