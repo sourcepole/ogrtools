@@ -23,7 +23,7 @@
 from PyQt4 import QtGui
 from PyQt4.QtCore import pyqtSignature, QSettings, QFileInfo, qDebug
 from PyQt4.QtGui import QFileDialog, QMessageBox, QDialog
-from qgis.core import QgsMessageLog, QgsVectorLayer, QgsDataSourceURI
+from qgis.core import QGis, QgsMessageLog, QgsVectorLayer, QgsDataSourceURI
 from qgis.gui import QgsMessageBar
 from ui_interlis import Ui_Interlis
 from sublayersdialog import SublayersDialog
@@ -48,7 +48,8 @@ class InterlisDialog(QtGui.QDialog):
         self.ui.cbResetData.setEnabled(False)
         #Initialize DB connection drop-down
         self.ui.cbDbConnections.clear()
-        self.ui.cbDbConnections.addItem("QGIS Layer")
+        if QGis.QGIS_VERSION_INT >= 20200:  # Bug in 2.0 causes crash when adding sublayers
+            self.ui.cbDbConnections.addItem("QGIS Layer")
         self.ui.cbDbConnections.addItems(self.dbConnectionList())
 
     def setup(self):
@@ -204,7 +205,7 @@ class InterlisDialog(QtGui.QDialog):
 
     @pyqtSignature('')  # avoid two connections
     def on_mImportButton_clicked(self):
-        if self.ui.cbDbConnections.currentIndex() == 0:
+        if self.ui.cbDbConnections.currentText() == "QGIS Layer":
             self.importtoqgis()
         else:
             self.importtodb()
@@ -238,7 +239,6 @@ class InterlisDialog(QtGui.QDialog):
         #            #add a new ogr layer for each selected sublayer
         #        self._plugin.iface.addVectorLayer(dataSourceUri + "|layername=" + layername, layername, "ogr")
         #QGIS 2: Sublayer dialog opens automatically
-        #Bug in 2.0 causes crash when adding sublayers
         self._plugin.iface.addVectorLayer(dataSourceUri, "Interlis layer", "ogr")
         self.accept()
         self._plugin.iface.messageBar().pushMessage("Interlis", "Import finished",

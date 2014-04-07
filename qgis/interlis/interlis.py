@@ -25,7 +25,7 @@ from PyQt4.QtGui import QAction, QIcon, QDockWidget
 #from qgis.core import *
 # Initialize Qt resources from file resources.py
 import resources_rc
-# Import the code for the dialog
+from ogrtools.pyogr.ogrinfo import ogr_version_num
 from interlisdialog import InterlisDialog
 import os.path
 
@@ -47,6 +47,9 @@ class Interlis:
 
             if qVersion() > '4.3.3':
                 QCoreApplication.installTranslator(self.translator)
+
+        if ogr_version_num() < 1110000:
+            raise ImportError("OGR library 1.11 or newer needed")
 
         # Create the dialog (after translation) and keep reference
         self.dlg = InterlisDialog(self)
