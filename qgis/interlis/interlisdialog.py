@@ -138,7 +138,7 @@ class InterlisDialog(QtGui.QDialog):
         settings = QSettings()
         lastDirectoryString = None  # settings.value("/qgis/plugins/interlis/datadir", type=str)
         dataFilePath = QFileDialog.getOpenFileName(None, "Open Interlis data file", lastDirectoryString,
-                                                   "Interlis transfer file (*.itf *.ITF *.xtf *.XTF *.xml)")
+                                                   "Interlis transfer file (*.itf *.ITF *.xtf *.XTF *.xml);;All files (*.*)")
         if not dataFilePath:
             return  # dialog canceled
         settings.setValue("/qgis/plugins/interlis/datadir", QFileInfo(dataFilePath).absolutePath())
@@ -181,7 +181,7 @@ class InterlisDialog(QtGui.QDialog):
         settings = QSettings()
         lastDirectoryString = None  # settings.value("/qgis/plugins/interlis2/modeldir", type=str)
         modelFilePath = QFileDialog.getOpenFileName(None, "Open Interlis model file", lastDirectoryString,
-                                                    "IlisMeta model (*.imd *.IMD)")
+                                                    "IlisMeta model (*.imd *.IMD);;All files (*.*)")
         if not modelFilePath:
             return  # dialog canceled
         settings.setValue("/qgis/plugins/interlis/modeldir", QFileInfo(modelFilePath).absolutePath())
@@ -193,7 +193,7 @@ class InterlisDialog(QtGui.QDialog):
         settings = QSettings()
         lastDirectoryString = None  # settings.value("/qgis/plugins/interlis2/cfgdir", type=str)
         configPath = QFileDialog.getOpenFileName(None, "Open OGR mapping config file", lastDirectoryString,
-                                                 "OGR config (*.cfg *.CFG *.json *.JSON)")
+                                                 "OGR config (*.cfg *.CFG *.json *.JSON);;All files (*.*)")
         if not configPath:
             return  # dialog canceled
         settings.setValue("/qgis/plugins/interlis/cfgdir", QFileInfo(configPath).absolutePath())
@@ -248,7 +248,7 @@ class InterlisDialog(QtGui.QDialog):
         QgsMessageLog.logMessage(self.iliDs(), "Interlis", QgsMessageLog.INFO)
         cfg = self._ogr_config(self.iliDs())
         if not cfg.is_loaded():
-            ogrconfig = os.path.join(tempfile.gettempdir(), "ogrconfig.json")
+            __, ogrconfig = tempfile.mkstemp('.cfg', 'ogr_')
             format = 'PostgreSQL'
             cfgjson = cfg.generate_config(format, outfile=ogrconfig, layer_list=[], srs="EPSG:21781")
             QgsMessageLog.logMessage(cfgjson, "Interlis", QgsMessageLog.INFO)
