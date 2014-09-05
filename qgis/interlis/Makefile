@@ -102,7 +102,7 @@ package: compile
 		rm -rf $(PLUGINNAME)
 		echo "Created package: $(PLUGINNAME).zip"
 
-upload: zip
+upload: #zip
 	$(PLUGIN_UPLOAD) $(PLUGINNAME).zip
 
 # transup
@@ -127,6 +127,5 @@ doc:
 	cd help; make html
 
 # Publish new version:
-# VERSION=master make package
-# scp interlis.zip builder@builder:www/qgis/beta/
-# ssh builder@builder qgis-plugin-repo-scan http://build.sourcepole.ch/qgis /home/builder/www/qgis
+# make package VERSION=master
+# make upload
