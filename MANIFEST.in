@@ -1,0 +1,4 @@
+exclude *.txt
+recursive-exclude qgis *
+include CHANGES.txt LICENSE.txt README.rst
+recursive-include tests *.py
