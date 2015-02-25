@@ -228,7 +228,7 @@ def main(argv):
         enum_tables = parser.extract_enums()
         print json.dumps(enum_tables, indent=2)
     elif output == 'dot':
-        #./lib/ogrtools/interlis/ilismeta.py dot tests/data/ili/RoadsExdm2ien.imd | dot -Tsvg >tests/data/ili/RoadsExdm2ien.imd.svg
+        #./ogrtools/interlis/ilismeta.py dot tests/data/ili/RoadsExdm2ien.imd | dot -Tsvg >tests/data/ili/RoadsExdm2ien.imd.svg
         parser.imd_to_dot()
     return 0
 

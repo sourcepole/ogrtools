@@ -5,7 +5,7 @@ import codecs
 
 def test_ogr_transform():
     __, dstfile = tempfile.mkstemp(suffix='.gml')
-    out = os.popen("PYTHONPATH=lib bin/ogr transform --format GML --config tests/data/ili/RoadsExdm2ien.cfg %s tests/data/ili/roads23.xtf,tests/data/ili/RoadsExdm2ien.imd" % dstfile).read()
+    out = os.popen("PYTHONPATH=. bin/ogr transform --format GML --config tests/data/ili/RoadsExdm2ien.cfg %s tests/data/ili/roads23.xtf,tests/data/ili/RoadsExdm2ien.imd" % dstfile).read()
     print out
     assert out == ""
     gml = codecs.open(dstfile, encoding='utf-8').read()
@@ -23,13 +23,13 @@ def test_ogr_transform():
 
 #Run with nosetests tests/test_ogr_command.py --nocapture
 def test_generate_usage_markdown():
-    cfg_example = os.popen("PYTHONPATH=lib bin/ogr genconfig ./tests/data/ili/roads23.xtf,./tests/data/ili/RoadsExdm2ben.imd --model=./tests/data/ili/RoadsExdm2ben.imd").read()
+    cfg_example = os.popen("PYTHONPATH=. bin/ogr genconfig ./tests/data/ili/roads23.xtf,./tests/data/ili/RoadsExdm2ben.imd --model=./tests/data/ili/RoadsExdm2ben.imd").read()
     print cfg_example
 
-    ogr_help = os.popen("PYTHONPATH=lib bin/ogr --help").read()
-    ogr_write_enums = os.popen("PYTHONPATH=lib bin/ogr write-enums -h").read()
-    ogr_transform = os.popen("PYTHONPATH=lib bin/ogr transform -h").read()
-    vrt = os.popen("PYTHONPATH=lib bin/ogr vrt tests/data/osm/railway.shp").read()
+    ogr_help = os.popen("PYTHONPATH=. bin/ogr --help").read()
+    ogr_write_enums = os.popen("PYTHONPATH=. bin/ogr write-enums -h").read()
+    ogr_transform = os.popen("PYTHONPATH=. bin/ogr transform -h").read()
+    vrt = os.popen("PYTHONPATH=. bin/ogr vrt tests/data/osm/railway.shp").read()
     config_example = """{
   "comment": "// OGR transformation specification",
   "layers": {

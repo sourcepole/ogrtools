@@ -33,7 +33,7 @@ driver <http://www.gdal.org/ogr/drv_ili.html>`__.
 ogrtransform library
 --------------------
 
-OGR has many options to transform data when convertion from one format
+OGR has many options to transform data when converting from one format
 into an other. The ogrtransform library uses a configuration in JSON
 format to transform data.
 
