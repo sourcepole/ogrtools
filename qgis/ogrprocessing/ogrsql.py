@@ -14,11 +14,12 @@ import string
 import re
 import ogr
 
+
 class OgrSql(OgrAlgorithm):
 
-    #constants used to refer to parameters and outputs.
-    #They will be used when calling the algorithm from another algorithm,
-    #or when calling SEXTANTE from the QGIS console.
+    # constants used to refer to parameters and outputs.
+    # They will be used when calling the algorithm from another algorithm,
+    # or when calling SEXTANTE from the QGIS console.
     OUTPUT = "OUTPUT"
     INPUT_LAYER = "INPUT_LAYER"
     SQL = "SQL"
@@ -27,13 +28,13 @@ class OgrSql(OgrAlgorithm):
         self.name = "Execute SQL"
         self.group = "Miscellaneous"
 
-        #we add the input vector layer. It can have any kind of geometry
-        #It is a mandatory (not optional) one, hence the False argument
-        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
+        # we add the input vector layer. It can have any kind of geometry
+        # It is a mandatory (not optional) one, hence the False argument
+        self.addParameter(ParameterVector(
+            self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
         self.addParameter(ParameterString(self.SQL, "SQL", ""))
 
         self.addOutput(OutputHTML(self.OUTPUT, "SQL result"))
-
 
     def processAlgorithm(self, progress):
         '''Here is where the processing itself takes place'''
@@ -45,7 +46,7 @@ class OgrSql(OgrAlgorithm):
         output = self.getOutputValue(self.OUTPUT)
 
         qDebug("Opening data source '%s'" % ogrLayer)
-        poDS = ogr.Open( ogrLayer, False )
+        poDS = ogr.Open(ogrLayer, False)
         if poDS is None:
             SextanteLog.addToLog(SextanteLog.LOG_ERROR, self.failure(ogrLayer))
             return
@@ -57,22 +58,22 @@ class OgrSql(OgrAlgorithm):
         for row in result:
             f.write("<tr>")
             for col in row:
-                f.write("<td>"+col+"</td>")
+                f.write("<td>" + col + "</td>")
             f.write("</tr>")
         f.write("</table>")
         f.close()
 
     def execute_sql(self, ds, sql_statement):
-        poResultSet = ds.ExecuteSQL( sql_statement, None, None )
+        poResultSet = ds.ExecuteSQL(sql_statement, None, None)
         if poResultSet is not None:
-          ds.ReleaseResultSet( poResultSet )
+            ds.ReleaseResultSet(poResultSet)
 
     def select_values(self, ds, sql_statement):
         """Returns an array of the columns and values of select statement:
             select_values(ds, "SELECT id FROM companies") => [['id'],[1],[2],[3]]
         """
-        poResultSet = ds.ExecuteSQL( sql_statement, None, None )
-        #TODO: redirect error messages
+        poResultSet = ds.ExecuteSQL(sql_statement, None, None)
+        # TODO: redirect error messages
         fields = []
         rows = []
         if poResultSet is not None:
@@ -81,18 +82,18 @@ class OgrSql(OgrAlgorithm):
                 poFDefn = poDefn.GetFieldDefn(iField)
                 fields.append(poFDefn.GetNameRef())
             #poGeometry = poFeature.GetGeometryRef()
-            #if poGeometry is not None:
+            # if poGeometry is not None:
             #    line = ("  %s = [GEOMETRY]" % poGeometry.GetGeometryName() )
 
             poFeature = poResultSet.GetNextFeature()
             while poFeature is not None:
                 values = []
                 for iField in range(poDefn.GetFieldCount()):
-                    if poFeature.IsFieldSet( iField ):
-                        values.append(poFeature.GetFieldAsString( iField ))
+                    if poFeature.IsFieldSet(iField):
+                        values.append(poFeature.GetFieldAsString(iField))
                     else:
                         values.append("(null)")
                 rows.append(values)
                 poFeature = poResultSet.GetNextFeature()
-            ds.ReleaseResultSet( poResultSet )
+            ds.ReleaseResultSet(poResultSet)
         return [fields] + rows

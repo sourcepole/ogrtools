@@ -23,7 +23,10 @@
 from PyQt4 import QtCore, QtGui
 from ui_ogrprocessingplugin import Ui_OgrProcessingPlugin
 # create the dialog for zoom to point
+
+
 class OgrProcessingPluginDialog(QtGui.QDialog):
+
     def __init__(self):
         QtGui.QDialog.__init__(self)
         # Set up the user interface from Designer.

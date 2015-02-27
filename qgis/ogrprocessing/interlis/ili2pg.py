@@ -14,6 +14,7 @@ from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
+
 def connectionOptions(db):
     connoptions = {
         "-dbhost": db.getHost(),
@@ -21,19 +22,19 @@ def connectionOptions(db):
         "-dbdatabase": db.getDatabase(),
         "-dbusr": db.getUsername(),
         "-dbpwd": db.getPassword()
-        }
+    }
     ili2pgargs = []
-    for k,v in connoptions.items():
-        if len(v)>0:
+    for k, v in connoptions.items():
+        if len(v) > 0:
             ili2pgargs.extend([k, v])
     return ili2pgargs
 
 
 class Ili2Pg(OgrAlgorithm):
 
-    #constants used to refer to parameters and outputs.
-    #They will be used when calling the algorithm from another algorithm,
-    #or when calling SEXTANTE from the QGIS console.
+    # constants used to refer to parameters and outputs.
+    # They will be used when calling the algorithm from another algorithm,
+    # or when calling SEXTANTE from the QGIS console.
     OUTPUT = "OUTPUT"
     ILI = "ILI"
 
@@ -46,7 +47,6 @@ class Ili2Pg(OgrAlgorithm):
 
         #self.addOutput(OutputHTML(self.OUTPUT, "Ili2Pg result"))
 
-
     def processAlgorithm(self, progress):
         '''Here is where the processing itself takes place'''
 
@@ -56,13 +56,15 @@ class Ili2Pg(OgrAlgorithm):
         ili2pgargs.extend(connectionOptions(db))
         ili2pgargs.extend(["-models", ili])
 
-        IliUtils.runJava( SextanteConfig.getSetting(IliUtils.ILI2PG_JAR), ili2pgargs, progress )
+        IliUtils.runJava(
+            SextanteConfig.getSetting(IliUtils.ILI2PG_JAR), ili2pgargs, progress)
+
 
 class Pg2Ili(OgrAlgorithm):
 
-    #constants used to refer to parameters and outputs.
-    #They will be used when calling the algorithm from another algorithm,
-    #or when calling SEXTANTE from the QGIS console.
+    # constants used to refer to parameters and outputs.
+    # They will be used when calling the algorithm from another algorithm,
+    # or when calling SEXTANTE from the QGIS console.
     OUTPUT = "OUTPUT"
     ILI = "ILI"
     XTF = "XTF"
@@ -73,10 +75,10 @@ class Pg2Ili(OgrAlgorithm):
 
         self.addParameter(ParameterDbConnection(self.DB, "Database"))
         self.addParameter(ParameterFile(self.ILI, "Interlis model (.ili)"))
-        self.addParameter(ParameterFile(self.XTF, "Interlis 2 tansfer file (.xtf)"))
+        self.addParameter(
+            ParameterFile(self.XTF, "Interlis 2 tansfer file (.xtf)"))
 
         #self.addOutput(OutputHTML(self.OUTPUT, "Ili2Pg result"))
-
 
     def processAlgorithm(self, progress):
         '''Here is where the processing itself takes place'''
@@ -89,4 +91,5 @@ class Pg2Ili(OgrAlgorithm):
         ili2pgargs.extend(connectionOptions(db))
         ili2pgargs.extend(["-models", ili, xtf])
 
-        IliUtils.runJava( SextanteConfig.getSetting(IliUtils.ILI2PG_JAR), ili2pgargs, progress )
+        IliUtils.runJava(
+            SextanteConfig.getSetting(IliUtils.ILI2PG_JAR), ili2pgargs, progress)

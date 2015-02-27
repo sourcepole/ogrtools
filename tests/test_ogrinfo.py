@@ -23,4 +23,5 @@ keyvalue: String (80.0)
 """
     info = ogrinfo(readonly=True, summaryonly=True, all_layers=True,
                    datasource_name="tests/data/osm/railway.shp")
-    assert info == 0  # should eventually be info == expected (ogrinfo prints on stdout)
+    # should eventually be info == expected (ogrinfo prints on stdout)
+    assert info == 0

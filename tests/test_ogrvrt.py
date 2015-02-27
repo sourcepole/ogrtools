@@ -19,7 +19,7 @@ def test_ogrvrt():
     vrt = ogr2vrt(infile="tests/data/osm/railway.shp")
     assert vrt == expected
 
-#Layer join test:
+# Layer join test:
 # <OGRVRTDataSource>
 #   <OGRVRTLayer name="BoFlaechenJoined">
 #     <SrcDataSource>data/ili/Beispiel.itf,data/ili/Beispiel.imd</SrcDataSource>

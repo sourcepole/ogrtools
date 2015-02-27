@@ -21,6 +21,7 @@
  This script initializes the plugin, making it known to QGIS.
 """
 
+
 def classFactory(iface):
     # load Interlis class from file Interlis
     from interlis import Interlis

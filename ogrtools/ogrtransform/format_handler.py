@@ -4,21 +4,22 @@ import re
 from ..interlis.ilismeta import ImdParser
 
 
-#Base class for format specific methods
+# Base class for format specific methods
 class FormatHandler:
+
     def __init__(self):
         self._name_seq = 0
 
     def launder_name(self, src_name):
-        #Do nothing in default implementation
+        # Do nothing in default implementation
         return src_name
 
     def default_ds_creation_options(self):
-        #No options in default implementation
+        # No options in default implementation
         return {}
 
     def default_layer_creation_options(self):
-        #No options in default implementation
+        # No options in default implementation
         return {}
 
     def detect_model(self, src_file):
@@ -40,14 +41,15 @@ class FormatHandler:
 
 
 class PgFormatHandler(FormatHandler):
-    #PG default name limit is 63 chars
+    # PG default name limit is 63 chars
+
     def __init__(self):
         FormatHandler.__init__(self)
         self.max_len = 63
 
     def launder_name(self, src_name):
-        #OGRPGDataSource::LaunderName
-        #return re.sub(r"[#'-]", '_', src_name.lower())
+        # OGRPGDataSource::LaunderName
+        # return re.sub(r"[#'-]", '_', src_name.lower())
         name = unicode(src_name).lower().encode('ascii', 'replace')
         if len(name) > self.max_len - 7:
             return self.shorten_name(name, 'n')
@@ -60,6 +62,7 @@ class PgFormatHandler(FormatHandler):
 
 
 class SpatiaLiteFormatHandler(FormatHandler):
+
     def __init__(self):
         FormatHandler.__init__(self)
 
@@ -72,6 +75,7 @@ class SpatiaLiteFormatHandler(FormatHandler):
 
 
 class IliFormatHandler(FormatHandler):
+
     def __init__(self):
         FormatHandler.__init__(self)
 
@@ -84,6 +88,7 @@ class IliFormatHandler(FormatHandler):
 
 
 class GeoJSONFormatHandler(FormatHandler):
+
     def __init__(self):
         FormatHandler.__init__(self)
 
@@ -92,6 +97,7 @@ class GeoJSONFormatHandler(FormatHandler):
 
 
 class FormatHandlerRegistry:
+
     def __init__(self):
         self._handlers = {}
         self.register('', FormatHandler())  # default

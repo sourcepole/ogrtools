@@ -37,6 +37,7 @@ from ogrtools.interlis.model_loader import ModelLoader
 
 
 class InterlisDialog(QtGui.QDialog):
+
     def __init__(self, plugin):
         QtGui.QDialog.__init__(self)
         self._plugin = plugin
@@ -44,11 +45,12 @@ class InterlisDialog(QtGui.QDialog):
         self.ui = Ui_Interlis()
         self.ui.setupUi(self)
         self.ui.mModelLookupButton.setEnabled(False)
-        #Not implemented yet:
+        # Not implemented yet:
         self.ui.cbResetData.setEnabled(False)
-        #Initialize DB connection drop-down
+        # Initialize DB connection drop-down
         self.ui.cbDbConnections.clear()
-        if QGis.QGIS_VERSION_INT >= 20200:  # Bug in 2.0 causes crash when adding sublayers
+        # Bug in 2.0 causes crash when adding sublayers
+        if QGis.QGIS_VERSION_INT >= 20200:
             self.ui.cbDbConnections.addItem("QGIS Layer")
         self.ui.cbDbConnections.addItems(self.dbConnectionList())
 
@@ -66,7 +68,8 @@ class InterlisDialog(QtGui.QDialog):
 
     def pgDs(self):
         """OGR connection string for selected PostGIS DB"""
-        key = u"/PostgreSQL/connections/" + self.ui.cbDbConnections.currentText()
+        key = u"/PostgreSQL/connections/" + \
+            self.ui.cbDbConnections.currentText()
         settings = QSettings()
         settings.beginGroup(key)
         params = {
@@ -84,7 +87,8 @@ class InterlisDialog(QtGui.QDialog):
 
     def pgUri(self):
         """QgsDataSourceURI for selected PostGIS DB"""
-        key = u"/PostgreSQL/connections/" + self.ui.cbDbConnections.currentText()
+        key = u"/PostgreSQL/connections/" + \
+            self.ui.cbDbConnections.currentText()
         settings = QSettings()
         settings.beginGroup(key)
         uri = QgsDataSourceURI()
@@ -96,7 +100,8 @@ class InterlisDialog(QtGui.QDialog):
             settings.value("password", type=str),
             QgsDataSourceURI.SSLmode(settings.value("sslmode", type=int))
         )
-        uri.setUseEstimatedMetadata(settings.value("estimatedMetadata", type=bool))
+        uri.setUseEstimatedMetadata(
+            settings.value("estimatedMetadata", type=bool))
         return uri
 
     def dbConnectionList(self):
@@ -127,7 +132,8 @@ class InterlisDialog(QtGui.QDialog):
     def _parse_wps_response(self, xml):
         tree = ElementTree.ElementTree(ElementTree.fromstring(xml))
         ns = {"wps": "http://www.opengis.net/wps/1.0.0"}
-        imd = tree.find("wps:ProcessOutputs/wps:Output/wps:Data/wps:LiteralData", ns)
+        imd = tree.find(
+            "wps:ProcessOutputs/wps:Output/wps:Data/wps:LiteralData", ns)
         if imd is None:
             return None
         else:
@@ -135,14 +141,16 @@ class InterlisDialog(QtGui.QDialog):
 
     @pyqtSignature('')  # avoid two connections
     def on_mDataFileButton_clicked(self):
-        #show file dialog and remember last directory
+        # show file dialog and remember last directory
         settings = QSettings()
-        lastDirectoryString = None  # settings.value("/qgis/plugins/interlis/datadir", type=str)
+        # settings.value("/qgis/plugins/interlis/datadir", type=str)
+        lastDirectoryString = None
         dataFilePath = QFileDialog.getOpenFileName(None, "Open Interlis data file", lastDirectoryString,
                                                    "Interlis transfer file (*.itf *.ITF *.xtf *.XTF *.xml);;All files (*.*)")
         if not dataFilePath:
             return  # dialog canceled
-        settings.setValue("/qgis/plugins/interlis/datadir", QFileInfo(dataFilePath).absolutePath())
+        settings.setValue(
+            "/qgis/plugins/interlis/datadir", QFileInfo(dataFilePath).absolutePath())
         self.ui.mDataLineEdit.setText(dataFilePath)
         self.ui.mModelLookupButton.setEnabled(True)
         self.ui.mImportButton.setEnabled(True)
@@ -158,7 +166,7 @@ class InterlisDialog(QtGui.QDialog):
             req = urllib2.Request(url="http://wps.sourcepole.ch/wps?",
                                   data=wpsreq,
                                   headers={'Content-Type': 'application/xml'})
-            #TODO: proxy support
+            # TODO: proxy support
             response = urllib2.urlopen(req)  # timeout=int(TIMEOUT)
             result = response.read()
             imd = self._parse_wps_response(result)
@@ -167,7 +175,8 @@ class InterlisDialog(QtGui.QDialog):
         except:
             qDebug("Exception during IlisModel download")
         if imd is None:
-            QgsMessageLog.logMessage("Couldn't download Ilismeta model", "Interlis", QgsMessageLog.WARNING)
+            QgsMessageLog.logMessage(
+                "Couldn't download Ilismeta model", "Interlis", QgsMessageLog.WARNING)
             self.ui.mModelLineEdit.setText("")
         else:
             fh, imdfn = tempfile.mkstemp(suffix='.imd')
@@ -178,26 +187,30 @@ class InterlisDialog(QtGui.QDialog):
 
     @pyqtSignature('')  # avoid two connections
     def on_mModelFileButton_clicked(self):
-        #show file dialog and remember last directory
+        # show file dialog and remember last directory
         settings = QSettings()
-        lastDirectoryString = None  # settings.value("/qgis/plugins/interlis2/modeldir", type=str)
+        # settings.value("/qgis/plugins/interlis2/modeldir", type=str)
+        lastDirectoryString = None
         modelFilePath = QFileDialog.getOpenFileName(None, "Open Interlis model file", lastDirectoryString,
                                                     "IlisMeta model (*.imd *.IMD);;All files (*.*)")
         if not modelFilePath:
             return  # dialog canceled
-        settings.setValue("/qgis/plugins/interlis/modeldir", QFileInfo(modelFilePath).absolutePath())
+        settings.setValue(
+            "/qgis/plugins/interlis/modeldir", QFileInfo(modelFilePath).absolutePath())
         self.ui.mModelLineEdit.setText(modelFilePath)
 
     @pyqtSignature('')  # avoid two connections
     def on_mConfigButton_clicked(self):
-        #show file dialog and remember last directory
+        # show file dialog and remember last directory
         settings = QSettings()
-        lastDirectoryString = None  # settings.value("/qgis/plugins/interlis2/cfgdir", type=str)
+        # settings.value("/qgis/plugins/interlis2/cfgdir", type=str)
+        lastDirectoryString = None
         configPath = QFileDialog.getOpenFileName(None, "Open OGR mapping config file", lastDirectoryString,
                                                  "OGR config (*.cfg *.CFG *.json *.JSON);;All files (*.*)")
         if not configPath:
             return  # dialog canceled
-        settings.setValue("/qgis/plugins/interlis/cfgdir", QFileInfo(configPath).absolutePath())
+        settings.setValue(
+            "/qgis/plugins/interlis/cfgdir", QFileInfo(configPath).absolutePath())
         self.ui.mConfigLineEdit.setText(configPath)
 
     def on_mModelLineEdit_textChanged(self):
@@ -228,22 +241,24 @@ class InterlisDialog(QtGui.QDialog):
 
     def importtoqgis(self):
         dataSourceUri = self.iliDs()
-        subLayerVectorLayer = QgsVectorLayer(dataSourceUri, "interlis_sublayers", "ogr")
+        subLayerVectorLayer = QgsVectorLayer(
+            dataSourceUri, "interlis_sublayers", "ogr")
         subLayerProvider = subLayerVectorLayer.dataProvider()
         if not subLayerProvider:
             QMessageBox.critical(None, "Error accessing interlis sublayers",
                                  "A problem occured during access of the sublayers")
             return
-        #QGIS 1.8:
+        # QGIS 1.8:
         #subLayerList = subLayerProvider.subLayers()
         #subLayerDialog = SublayersDialog()
-        #subLayerDialog.setupSublayerList(subLayerList)
-        #if subLayerDialog.exec_() == QDialog.Accepted:
+        # subLayerDialog.setupSublayerList(subLayerList)
+        # if subLayerDialog.exec_() == QDialog.Accepted:
         #    for layername in subLayerDialog.subLayerNames():
-        #            #add a new ogr layer for each selected sublayer
+        # add a new ogr layer for each selected sublayer
         #        self._plugin.iface.addVectorLayer(dataSourceUri + "|layername=" + layername, layername, "ogr")
-        #QGIS 2: Sublayer dialog opens automatically
-        self._plugin.iface.addVectorLayer(dataSourceUri, "Interlis layer", "ogr")
+        # QGIS 2: Sublayer dialog opens automatically
+        self._plugin.iface.addVectorLayer(
+            dataSourceUri, "Interlis layer", "ogr")
         self.accept()
         self._plugin.iface.messageBar().pushMessage("Interlis", "Import finished",
                                                     level=QgsMessageBar.INFO, duration=2)
@@ -254,15 +269,19 @@ class InterlisDialog(QtGui.QDialog):
         if not cfg.is_loaded():
             __, ogrconfig = tempfile.mkstemp('.cfg', 'ogr_')
             format = 'PostgreSQL'
-            cfgjson = cfg.generate_config(format, outfile=ogrconfig, layer_list=[], srs="EPSG:21781")
+            cfgjson = cfg.generate_config(
+                format, outfile=ogrconfig, layer_list=[], srs="EPSG:21781")
             QgsMessageLog.logMessage(cfgjson, "Interlis", QgsMessageLog.INFO)
             self.ui.mConfigLineEdit.setText(ogrconfig)
         if self.ui.cbImportEnums.isChecked():
-            cfg.write_enum_tables(dest=self.pgDs(), skipfailures=self.ui.cbSkipFailures.isChecked(), debug=True)
-        ogroutput = cfg.transform(dest=self.pgDs(), skipfailures=self.ui.cbSkipFailures.isChecked(), debug=True)
+            cfg.write_enum_tables(
+                dest=self.pgDs(), skipfailures=self.ui.cbSkipFailures.isChecked(), debug=True)
+        ogroutput = cfg.transform(
+            dest=self.pgDs(), skipfailures=self.ui.cbSkipFailures.isChecked(), debug=True)
         self._plugin.messageLogWidget().show()
         self._log_output(ogroutput)
-        QgsMessageLog.logMessage("Import finished", "Interlis", QgsMessageLog.INFO)
+        QgsMessageLog.logMessage(
+            "Import finished", "Interlis", QgsMessageLog.INFO)
         self.ui.mExportButton.setEnabled(True)
 
         uri = self.pgUri()
@@ -275,19 +294,22 @@ class InterlisDialog(QtGui.QDialog):
         subLayerDialog.setupLayerList(layer_names)
         if subLayerDialog.exec_() == QDialog.Accepted:
             for layer_id in subLayerDialog.layerNames():
-                #add a new layer for each selected row
+                # add a new layer for each selected row
                 for layer in layer_infos:
                     if layer['name'] == layer_id:
-                        geom_column = layer['geom_field'] if ('geom_field' in layer) else None
+                        geom_column = layer['geom_field'] if (
+                            'geom_field' in layer) else None
                         uri.setDataSource("", layer['name'], geom_column)
-                        self._plugin.iface.addVectorLayer(uri.uri(), layer['name'], 'postgres')
+                        self._plugin.iface.addVectorLayer(
+                            uri.uri(), layer['name'], 'postgres')
             self.accept()
             self._plugin.iface.messageBar().pushMessage("Interlis", "Import finished",
                                                         level=QgsMessageBar.INFO, duration=2)
 
     def exporttoxtf(self):
         cfg = self._ogr_config(self.pgDs())
-        ogroutput = cfg.transform_reverse(dest=self.iliDs(), skipfailures=self.ui.cbSkipFailures.isChecked(), debug=True)
+        ogroutput = cfg.transform_reverse(
+            dest=self.iliDs(), skipfailures=self.ui.cbSkipFailures.isChecked(), debug=True)
         self._log_output(ogroutput)
         QgsMessageLog.logMessage("Export to '%s' finished" % self.ui.mDataLineEdit.text(),
                                  "Interlis", QgsMessageLog.INFO)

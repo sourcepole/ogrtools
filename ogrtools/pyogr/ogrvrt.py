@@ -1,7 +1,7 @@
 # Based on ogr2vrt.py implementation by Frank Warmerdam included in GDAL/OGR
 ###############################################################################
 # Copyright (c) 2009, Frank Warmerdam <warmerdam@pobox.com>
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
 # to deal in the Software without restriction, including without limitation
@@ -25,7 +25,8 @@ from osgeo import ogr, gdal
 from string import Template
 import tempfile
 
-def GeomType2Name( type ):
+
+def GeomType2Name(type):
     if type == ogr.wkbUnknown:
         return 'wkbUnknown'
     elif type == ogr.wkbPoint:
@@ -50,40 +51,47 @@ def GeomType2Name( type ):
         return 'wkbUnknown'
 
 #############################################################################
+
+
 def Esc(x):
-    return gdal.EscapeString( x, gdal.CPLES_XML )
+    return gdal.EscapeString(x, gdal.CPLES_XML)
+
 
 def transformed_template(template, substitutions):
     vrt_templ = Template(open(template).read())
     vrt_xml = vrt_templ.substitute(substitutions)
-    vrt = tempfile.mktemp( '.vrt',  'ogr_',  '/vsimem')
+    vrt = tempfile.mktemp('.vrt',  'ogr_',  '/vsimem')
     # Create in-memory file
     gdal.FileFromMemBuffer(vrt, vrt_xml)
     return vrt
 
+
 def free_template(vrt):
     # Free memory associated with the in-memory file
     gdal.Unlink(vrt)
+
 
 def transformed_datasource(template, substitutions):
     vrt = transformed_template(template, substitutions)
     ds = ogr.Open(vrt)
     return ds
 
+
 def close_datasource(ds):
-   if ds is not None:
-       ds.Destroy()
+    if ds is not None:
+        ds.Destroy()
+
 
 def ogr2vrt(infile,
-            outfile = None,
-            layer_list = [],
-            relative = "0",
+            outfile=None,
+            layer_list=[],
+            relative="0",
             schema=0):
 
-    #############################################################################
+    ##########################################################################
     # Open the datasource to read.
 
-    src_ds = ogr.Open( infile, update = 0 )
+    src_ds = ogr.Open(infile, update=0)
 
     if src_ds is None:
         return None
@@ -93,14 +101,14 @@ def ogr2vrt(infile,
 
     if len(layer_list) == 0:
         for layer in src_ds:
-            layer_list.append( layer.GetLayerDefn().GetName() )
+            layer_list.append(layer.GetLayerDefn().GetName())
 
-    #############################################################################
+    ##########################################################################
     # Start the VRT file.
 
     vrt = '<OGRVRTDataSource>\n'
 
-    #############################################################################
+    ##########################################################################
     #	Process each source layer.
 
     for name in layer_list:
@@ -109,7 +117,7 @@ def ogr2vrt(infile,
 
         vrt += '  <OGRVRTLayer name="%s">\n' % Esc(name)
         vrt += '    <SrcDataSource relativeToVRT="%s" shared="%d">%s</SrcDataSource>\n' \
-               % (relative,not schema,Esc(infile))
+               % (relative, not schema, Esc(infile))
         if schema:
             vrt += '    <SrcLayer>@dummy@</SrcLayer>\n'
         else:
@@ -123,7 +131,7 @@ def ogr2vrt(infile,
 
         # Process all the fields.
         for fld_index in range(layerdef.GetFieldCount()):
-            src_fd = layerdef.GetFieldDefn( fld_index )
+            src_fd = layerdef.GetFieldDefn(fld_index)
             if src_fd.GetType() == ogr.OFTInteger:
                 type = 'Integer'
             elif src_fd.GetType() == ogr.OFTString:

@@ -1,6 +1,7 @@
 from PyQt4.QtCore import *
 from qgis.core import *
 
+
 class DbConnection:
 
     @staticmethod
@@ -31,7 +32,8 @@ class DbConnection:
             settings.value("password").toString(),
             QgsDataSourceURI.SSLmode(settings.value("sslmode").toInt()[0])
         )
-        uri.setUseEstimatedMetadata(settings.value("estimatedMetadata").toBool())
+        uri.setUseEstimatedMetadata(
+            settings.value("estimatedMetadata").toBool())
         #uri.setDataSource("", table_name, geom_column)
 
         settings.endGroup()

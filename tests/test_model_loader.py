@@ -12,7 +12,8 @@ def test_detect_ili1():
 
 
 def test_detect_ili2():
-    loader = ModelLoader("./tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.xtf")
+    loader = ModelLoader(
+        "./tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.xtf")
     assert loader.detect_format() == 'Interlis 2'
 
 
@@ -27,7 +28,8 @@ def test_detect_models_ili1():
 
 
 def test_detect_models_ili2():
-    loader = ModelLoader("./tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.xtf")
+    loader = ModelLoader(
+        "./tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.xtf")
     models = loader.detect_models()
     names = map(lambda model: model.name, models)
     assert names == [
@@ -53,7 +55,7 @@ def manualtest_model_conversion():
     with open(outfile) as file:
         imd = file.read()
         assert 'IlisMeta07.ModelData.Class TID="Test23_erweitert.FixpunkteKategorie1.LFP1"' in imd
-        #Does include Test23.ili as well:
+        # Does include Test23.ili as well:
         assert 'IlisMeta07.ModelData.NumType TID="Test23.Genauigkeit"' in imd
 
 
@@ -63,7 +65,8 @@ def test_lookup_ili():
 
 
 def manualtest_ilismeta_from_xtf():
-    loader = ModelLoader("./tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.xtf")
+    loader = ModelLoader(
+        "./tests/data/ch.bazl/ch.bazl.sicherheitszonenplan.oereb_20131118.xtf")
     outfile = loader.create_ilismeta_model()
     with open(outfile) as file:
         imd = file.read()

@@ -20,18 +20,32 @@
  ***************************************************************************/
  This script initializes the plugin, making it known to QGIS.
 """
+
+
 def name():
     return "OGR Processing"
+
+
 def description():
     return "Vector transformation based on OGR library"
+
+
 def version():
     return "0.4.1"
+
+
 def experimental():
     return True
+
+
 def icon():
     return "icon.png"
+
+
 def qgisMinimumVersion():
     return "1.0"
+
+
 def classFactory(iface):
     # load OgrProcessingPlugin class from file OgrProcessingPlugin
     from ogrprocessingplugin import OgrProcessingPlugin

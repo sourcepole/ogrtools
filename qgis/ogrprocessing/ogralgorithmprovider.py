@@ -9,11 +9,13 @@ from ogrprocessing.interlis.ili2pg import Ili2Pg, Pg2Ili
 from ogrprocessing.interlis.ilismeta import Ili2Imd, EnumsAsGML, ImportGML, IliEnumsToPg, CreatePGDb
 from ogrprocessing.interlis.iliogr2ogr import IliOgr2Ogr
 
+
 class OgrAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        self.alglist = [OgrInfo(), Ogr2Vrt(), Ogr2Ogr(), Ogr2OgrVrt(), OgrSql(), Ili2Pg(), Pg2Ili(), Ili2Imd(), EnumsAsGML(), ImportGML(), IliEnumsToPg(), CreatePGDb(), IliOgr2Ogr()]
+        self.alglist = [OgrInfo(), Ogr2Vrt(), Ogr2Ogr(), Ogr2OgrVrt(), OgrSql(), Ili2Pg(), Pg2Ili(
+        ), Ili2Imd(), EnumsAsGML(), ImportGML(), IliEnumsToPg(), CreatePGDb(), IliOgr2Ogr()]
         for alg in self.alglist:
             alg.provider = self
 
@@ -26,10 +28,14 @@ class OgrAlgorithmProvider(AlgorithmProvider):
         automatically adding a setting for activating or deactivating the
         algorithms in the provider'''
         AlgorithmProvider.initializeSettings(self)
-        SextanteConfig.addSetting(Setting(self.getDescription(), IliUtils.JAVA_EXEC, "Java executable", IliUtils.java_exec_default()))
-        SextanteConfig.addSetting(Setting(self.getDescription(), IliUtils.ILI2C_JAR, "ili2c.jar path", "ili2c.jar"))
-        SextanteConfig.addSetting(Setting(self.getDescription(), IliUtils.ILI2PG_JAR, "ili2pg.jar path", "ili2pg.jar"))
-        SextanteConfig.addSetting(Setting(self.getDescription(), IliUtils.CREATEDB_EXEC, "createdb path", "createdb"))
+        SextanteConfig.addSetting(Setting(self.getDescription(
+        ), IliUtils.JAVA_EXEC, "Java executable", IliUtils.java_exec_default()))
+        SextanteConfig.addSetting(
+            Setting(self.getDescription(), IliUtils.ILI2C_JAR, "ili2c.jar path", "ili2c.jar"))
+        SextanteConfig.addSetting(Setting(
+            self.getDescription(), IliUtils.ILI2PG_JAR, "ili2pg.jar path", "ili2pg.jar"))
+        SextanteConfig.addSetting(Setting(
+            self.getDescription(), IliUtils.CREATEDB_EXEC, "createdb path", "createdb"))
 
     def unload(self):
         '''Setting should be removed here, so they do not appear anymore

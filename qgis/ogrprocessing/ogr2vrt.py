@@ -17,11 +17,12 @@ import sys
 import ogr
 import gdal
 
+
 class Ogr2Vrt(OgrAlgorithm):
 
-    #constants used to refer to parameters and outputs.
-    #They will be used when calling the algorithm from another algorithm,
-    #or when calling SEXTANTE from the QGIS console.
+    # constants used to refer to parameters and outputs.
+    # They will be used when calling the algorithm from another algorithm,
+    # or when calling SEXTANTE from the QGIS console.
     OUTPUT = "OUTPUT"
     INPUT_LAYER = "INPUT_LAYER"
 
@@ -29,12 +30,12 @@ class Ogr2Vrt(OgrAlgorithm):
         self.name = "Generate VRT"
         self.group = "Miscellaneous"
 
-        #we add the input vector layer. It can have any kind of geometry
-        #It is a mandatory (not optional) one, hence the False argument
-        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
+        # we add the input vector layer. It can have any kind of geometry
+        # It is a mandatory (not optional) one, hence the False argument
+        self.addParameter(ParameterVector(
+            self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
 
         self.addOutput(OutputHTML(self.OUTPUT, "VRT"))
-
 
     def processAlgorithm(self, progress):
         '''Here is where the processing itself takes place'''
@@ -44,7 +45,7 @@ class Ogr2Vrt(OgrAlgorithm):
 
         output = self.getOutputValue(self.OUTPUT)
 
-        vrt = ogr2vrt( ogrLayer )
+        vrt = ogr2vrt(ogrLayer)
         if vrt == None:
             vrt = self.failure(ogrLayer)
         qDebug(vrt)

@@ -10,6 +10,7 @@ NS = {'xmlns': "http://www.interlis.ch/INTERLIS2.3"}
 
 
 class IliModel:
+
     """Metadata and link to model"""
 
     def __init__(self, name, version="", uri="http://interlis.sourcepole.ch/"):
@@ -19,6 +20,7 @@ class IliModel:
 
 
 class ModelLoader:
+
     """Load models of Interlis transfer files"""
 
     def __init__(self, fn):
@@ -28,7 +30,7 @@ class ModelLoader:
 
     def detect_format(self):
         """Detect Interlis transfer file type"""
-        #Detection as in OGR lib
+        # Detection as in OGR lib
         f = open(self._fn, "rb")
         header = f.read(1000)
         f.close()
@@ -46,7 +48,7 @@ class ModelLoader:
         self._fmt = self.detect_format()
         f = open(self._fn, "r")
         if self._fmt == 'Interlis 1':
-            #Search for MODL xxx
+            # Search for MODL xxx
             regex = re.compile(r'^MODL\s+(\w+)')
             for line in f:
                 m = regex.search(line)
@@ -54,7 +56,7 @@ class ModelLoader:
                     self.models = [IliModel(m.group(1))]
                     break
         elif self._fmt == 'Interlis 2':
-            #Search for <MODEL NAME="xxx"
+            # Search for <MODEL NAME="xxx"
             size = os.stat(self._fn).st_size
             data = mmap.mmap(f.fileno(), size, access=mmap.ACCESS_READ)
             self.models = []
@@ -62,7 +64,8 @@ class ModelLoader:
             if m:
                 tree = ElementTree.fromstring(m.group())
                 for elem in tree.iterfind('MODEL'):
-                    model = IliModel(elem.get("NAME"), elem.get("VERSION"), elem.get("URI"))
+                    model = IliModel(
+                        elem.get("NAME"), elem.get("VERSION"), elem.get("URI"))
                     self.models.append(model)
         f.close()
         return self.models
@@ -75,7 +78,7 @@ class ModelLoader:
 
     def gen_lookup_ili(self):
         self.detect_models()
-        #if self._fmt == "Interlis 2":
+        # if self._fmt == "Interlis 2":
         ili = 'INTERLIS 2.3;\nMODEL Lookup AT "http://interlis.sourcepole.ch/" VERSION "" =\n'
         for model in self.models:
             ili += "  IMPORTS %s;\n" % model.name
@@ -95,10 +98,10 @@ class ModelLoader:
     def convert_model(self, ilifiles, outfile):
         """Convert ili model to ilismeta model."""
 
-        #ili2c USAGE
+        # ili2c USAGE
         #  ili2c [Options] file1.ili file2.ili ...
         #
-        #OPTIONS
+        # OPTIONS
         #
         #--no-auto             don't look automatically after required models.
         #-o0                   Generate no output (default).
@@ -121,4 +124,7 @@ class ModelLoader:
         #-h|--help             Display this help text.
         #-u|--usage            Display short information about usage.
         #-v|--version          Display the version of ili2c.
-        return run_java(self.ili2c(), ["-oIMD", "--ilidirs", "'" + self.ilidirs() + "'", "--out", outfile] + ilifiles)
+        return run_java(self.ili2c(),
+                        ["-oIMD", "--ilidirs", "'" +
+                            self.ilidirs() + "'", "--out", outfile]
+                        + ilifiles)

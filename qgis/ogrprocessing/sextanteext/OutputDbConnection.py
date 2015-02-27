@@ -1,5 +1,6 @@
 from sextante.outputs.Output import Output
 
+
 class OutputDbConnection(Output):
 
     def __init__(self, name="", description=""):

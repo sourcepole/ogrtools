@@ -1,11 +1,13 @@
 from sextante.parameters.ParameterSelection import ParameterSelection
 from ogrprocessing.dbconnection import DbConnection
 
+
 class ParameterDbConnection(ParameterSelection):
 
     def __init__(self, name="", description=""):
         self.options = DbConnection.qgis_connections()
-        ParameterSelection.__init__(self, name, description, self.options, default=0)
+        ParameterSelection.__init__(
+            self, name, description, self.options, default=0)
 
     def getConnectionName(self):
         return self.options[self.value]
@@ -60,4 +62,4 @@ class ParameterDbConnection(ParameterSelection):
 
     def serialize(self):
         return self.__module__.split(".")[-1] + "|" + self.name + "|" + self.description + \
-                        "|" + ";".join(self.options)
+            "|" + ";".join(self.options)

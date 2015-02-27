@@ -53,7 +53,8 @@ def test_shape_config():
 
 
 def test_ili_config():
-    cfg = OgrConfig(ds="./tests/data/ili/roads23.xtf,./tests/data/ili/RoadsExdm2ien.imd")
+    cfg = OgrConfig(
+        ds="./tests/data/ili/roads23.xtf,./tests/data/ili/RoadsExdm2ien.imd")
     cfgjson = cfg.generate_config(dst_format='PostgreSQL', srs=21781)
     expected = """"roadsexdm2ien_roadsextended_streetaxis": {
       "fields": {
@@ -85,7 +86,8 @@ def test_ili_config():
 
 
 def test_np():
-    cfg = OgrConfig(ds="tests/data/np/NP_Example.xtf,tests/data/np/NP_73_CH_de_ili2.imd", model="tests/data/np/NP_73_CH_de_ili2.imd")
+    cfg = OgrConfig(ds="tests/data/np/NP_Example.xtf,tests/data/np/NP_73_CH_de_ili2.imd",
+                    model="tests/data/np/NP_73_CH_de_ili2.imd")
     cfgjson = cfg.generate_config(dst_format='PostgreSQL')
     expected = """"n0_grundnutzung_zonenflaeche": {
       "fields": {
@@ -145,7 +147,8 @@ def test_layer_info():
 
     print cfg.layer_infos()
     print cfg.enum_infos()
-    assert {'name': 'roadsexdm2ien_roadsextended_roadsign', 'geom_field': 'position'} in cfg.layer_infos()
+    assert {'name': 'roadsexdm2ien_roadsextended_roadsign',
+            'geom_field': 'position'} in cfg.layer_infos()
     assert {'name': 'roadsexdm2ben_roads_lattrs'} in cfg.layer_infos()
     assert '_precision' in str(cfg.enum_infos())
 

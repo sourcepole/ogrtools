@@ -51,7 +51,8 @@ FIELD_TYPES = [
 ]
 
 
-def ogr2ogr(dst_format, ds, dest, bOverwrite, dsco=[], lco=[], layers=[], skipfailures=False):
+def ogr2ogr(dst_format, ds, dest, bOverwrite, dsco=[], lco=[], layers=[],
+            skipfailures=False):
     # Get the input Layers
     inDataSource = ds
     layerList = []
@@ -86,18 +87,24 @@ def ogr2ogr(dst_format, ds, dest, bOverwrite, dsco=[], lco=[], layers=[], skipfa
             lyridx = find_ogr_layer(outDataSource, layer)
             if lyridx:
                 if outDataSource.DeleteLayer(lyridx) != 0:
-                    raise ValueError("DeleteLayer() failed when overwrite requested.")
+                    raise ValueError(
+                        "DeleteLayer() failed when overwrite requested.")
 
-        multiGeomSupported = outDataSource.TestCapability(ogr.ODsCCreateGeomFieldAfterCreateLayer)
+        multiGeomSupported = outDataSource.TestCapability(
+            ogr.ODsCCreateGeomFieldAfterCreateLayer)
         if multiGeomSupported:
-            outLayer = outDataSource.CreateLayer(layer, srs=srs, geom_type=ogr.wkbNone, options=lco)
+            outLayer = outDataSource.CreateLayer(
+                layer, srs=srs, geom_type=ogr.wkbNone, options=lco)
         else:
-            outLayer = outDataSource.CreateLayer(layer, srs=srs, geom_type=inLayerDefn.GetGeomType(), options=lco)
+            outLayer = outDataSource.CreateLayer(
+                layer, srs=srs, geom_type=inLayerDefn.GetGeomType(),
+                options=lco)
         if outLayer is None:
             raise ValueError("Couldn't create output layer")
 
         # Add input Layer Fields to the output Layer
-        if "Interlis" not in dst_format:  # Interlis fields are created from model
+        # Interlis fields are created from model
+        if "Interlis" not in dst_format:
             for i in range(0, inLayerDefn.GetFieldCount()):
                 fieldDefn = inLayerDefn.GetFieldDefn(i)
                 outLayer.CreateField(fieldDefn)
@@ -137,11 +144,11 @@ def ogr2ogr(dst_format, ds, dest, bOverwrite, dsco=[], lco=[], layers=[], skipfa
 
 
 def find_ogr_layer(ds, layerName):
-    #From ogr2ogr.py:
+    # From ogr2ogr.py:
     #/* GetLayerByName() can instanciate layers that would have been */
     #*/ 'hidden' otherwise, for example, non-spatial tables in a */
     #*/ Postgis-enabled database, so this apparently useless command is */
-    #/* not useless... (#4012) */
+    # /* not useless... (#4012) */
     gdal.PushErrorHandler('CPLQuietErrorHandler')
     poDstLayer = ds.GetLayerByName(layerName)
     gdal.PopErrorHandler()
@@ -155,7 +162,7 @@ def find_ogr_layer(ds, layerName):
             # The .cpp version compares on pointers directly, but we cannot
             # do this with swig object, so just compare the names.
             if poLayer is not None and poLayer.GetName() == poDstLayer.GetName():
-                break
+                    break
 
         if (iLayer == nLayerCount):
             # /* shouldn't happen with an ideal driver */
@@ -164,6 +171,7 @@ def find_ogr_layer(ds, layerName):
 
 
 class OgrConfig:
+
     """OGR transformation configuration"""
 
     format_handlers = FormatHandlerRegistry()
@@ -173,7 +181,7 @@ class OgrConfig:
         self._ds = None
         self._config = self._load(config)
         self._model = model
-        #if not self._model:
+        # if not self._model:
         #    if ds:
         #        self._model = ds.split(',')[-1]
 
@@ -210,7 +218,8 @@ class OgrConfig:
                 }
         return enum_tables
 
-    def generate_config(self, dst_format, outfile=None, layer_list=[], srs=None):
+    def generate_config(self, dst_format, outfile=None,
+                        layer_list=[], srs=None):
         if self._ds is None:
             self.open()
 
@@ -225,12 +234,14 @@ class OgrConfig:
 
         self._config = {}
 
-        #Javscript comments are not allowed JSON
+        # Javscript comments are not allowed JSON
         self._config['//'] = 'OGR transformation configuration'
         self._config['src_format'] = src_format
         self._config['dst_format'] = dst_format
-        self._config['dst_dsco'] = dst_format_handler.default_ds_creation_options()
-        self._config['dst_lco'] = dst_format_handler.default_layer_creation_options()
+        self._config[
+            'dst_dsco'] = dst_format_handler.default_ds_creation_options()
+        self._config[
+            'dst_lco'] = dst_format_handler.default_layer_creation_options()
         layers = {}
         self._config['layers'] = layers
 
@@ -329,7 +340,8 @@ class OgrConfig:
             return []
 
     def layer_infos(self):
-        """Return Dict with layer name and geometry field name for each layer (one per geometry)"""
+        """Return Dict with layer name and geometry field name for each layer
+         (one per geometry)"""
         layers = []
         if self._config and 'layers' in self._config:
             for name, cfglayer in self._config['layers'].items():
@@ -338,7 +350,7 @@ class OgrConfig:
                     for geom_name, cfgfield in cfglayer['geom_fields'].items():
                         layer = {"name": name, "geom_field": geom_name}
                         layers.append(layer)
-                    #handle empty cfglayer['geom_fields'] (e.g. Shape file)
+                    # handle empty cfglayer['geom_fields'] (e.g. Shape file)
                     if 'geom_field' not in layer:
                         layers.append(layer)
                 else:
@@ -353,7 +365,7 @@ class OgrConfig:
         return layers
 
     def generate_vrt(self, dst_format=None):
-        #if dst_format is None:
+        # if dst_format is None:
         #    dst_format = self.dst_format()
         #dst_format_handler = OgrConfig.format_handlers.handler(dst_format)
         xml = ElementTree.Element('OGRVRTDataSource')
@@ -364,7 +376,8 @@ class OgrConfig:
             node.set('relativeToVRT', '0')
             node.set('shared', '1')
             if self._ds_fn is None:
-                raise ValueError("Cannot create intermediate VRT - Input DS not defined")
+                raise ValueError(
+                    "Cannot create intermediate VRT - Input DS not defined")
             node.text = self._ds_fn
             node = ElementTree.SubElement(layer_node, "SrcLayer")
             node.text = cfglayer['src_layer']
@@ -403,16 +416,18 @@ class OgrConfig:
             node.set('relativeToVRT', '0')
             node.set('shared', '1')
             if self._ds_fn is None:
-                raise ValueError("Cannot create intermediate VRT - Input DS not defined")
+                raise ValueError(
+                    "Cannot create intermediate VRT - Input DS not defined")
             node.text = self._ds_fn
             node = ElementTree.SubElement(layer_node, "SrcLayer")
             node.text = src_format_handler.layer_name(layer_name)
             for dst_name, cfgfield in cfglayer['fields'].items():
                 node = ElementTree.SubElement(layer_node, "Field")
                 node.set('name', cfgfield['src'])
-                #FIXME: original type, not node.set('type', cfgfield['type'])
+                # FIXME: original type, not node.set('type', cfgfield['type'])
                 node.set('src', dst_name)
-            if 'geom_fields' in cfglayer and src_format != "GeoJSON":  # Workaround for bug in VRT driver?
+            # Workaround for bug in VRT driver?
+            if 'geom_fields' in cfglayer and src_format != "GeoJSON":
                 for geom_name, cfgfield in cfglayer['geom_fields'].items():
                     node = ElementTree.SubElement(layer_node, "GeometryField")
                     node.set('name', cfgfield['src'])
@@ -427,7 +442,8 @@ class OgrConfig:
     def generate_enum_gml(self):
         xml = ElementTree.Element('ogr:FeatureCollection')
         xml.set('xmlns:xsi', 'http://ogr.maptools.org/ ogrtools-enums.xsd')
-        xml.set('xmlns:schemaLocation', 'http://www.w3.org/2001/XMLSchema-instance')
+        xml.set('xmlns:schemaLocation',
+                'http://www.w3.org/2001/XMLSchema-instance')
         xml.set('xmlns:ogr', 'http://ogr.maptools.org/')
         xml.set('xmlns:gml', 'http://www.opengis.net/gml')
         node = ElementTree.SubElement(xml, 'gml:boundedBy')
@@ -443,10 +459,13 @@ class OgrConfig:
                     #   </ogr:landcover_type>
                     # </gml:featureMember>
                     node = ElementTree.SubElement(xml, 'gml:featureMember')
-                    feature_node = ElementTree.SubElement(node, 'ogr:{0}'.format(name))
-                    feature_node.set('fid', 'ogr:{0}.{1}'.format(name, enum['id']))
+                    feature_node = ElementTree.SubElement(
+                        node, 'ogr:{0}'.format(name))
+                    feature_node.set(
+                        'fid', 'ogr:{0}.{1}'.format(name, enum['id']))
                     for colname, value in enum.items():
-                        node = ElementTree.SubElement(feature_node, 'ogr:{0}'.format(colname))
+                        node = ElementTree.SubElement(
+                            feature_node, 'ogr:{0}'.format(colname))
                         node.text = str(value)
         return ElementTree.tostring(xml, 'utf-8')
 
@@ -469,9 +488,10 @@ class OgrConfig:
         os.environ["CPL_LOG_ERRORS"] = "OFF"
         return ogroutput
 
-    def transform(self, dest, format=None, layers=[], skipfailures=False, debug=False):
+    def transform(self, dest, format=None, layers=[],
+                  skipfailures=False, debug=False):
         vrt = self.generate_vrt(dst_format=format)
-        #if debug:
+        # if debug:
         #    print prettify(vrt)
         f = open("/tmp/transform.vrt", "w")
         f.write(prettify(vrt))
@@ -487,13 +507,15 @@ class OgrConfig:
         self._set_ogr_debug_flag(debug)
         ogrlogfn = self._activate_ogr_log()
         ogr2ogr(dst_format=str(dst_format), ds=ds, dest=dest,
-                bOverwrite=True, dsco=dsco, lco=lco, layers=layers, skipfailures=skipfailures)
+                bOverwrite=True, dsco=dsco, lco=lco, layers=layers,
+                skipfailures=skipfailures)
         self._free_tmp_datasource()
         return self._close_ogr_log(ogrlogfn)
 
-    def transform_reverse(self, dest, format=None, layers=[], skipfailures=False, debug=False):
+    def transform_reverse(self, dest, format=None, layers=[],
+                          skipfailures=False, debug=False):
         vrt = self.generate_reverse_vrt(dst_format=format)
-        #if debug:
+        # if debug:
         #    print prettify(vrt)
         ds = self._tmp_datasource(vrt)
         dst_format = format or self.src_format()
@@ -504,9 +526,10 @@ class OgrConfig:
         self._free_tmp_datasource()
         return self._close_ogr_log(ogrlogfn)
 
-    def write_enum_tables(self, dest, format=None, skipfailures=False, debug=False):
+    def write_enum_tables(self, dest, format=None,
+                          skipfailures=False, debug=False):
         gml = self.generate_enum_gml()
-        #if debug:
+        # if debug:
         #    print prettify(gml)
         ds = self._tmp_datasource(gml)
         dst_format = format or self.dst_format()
@@ -531,7 +554,7 @@ class OgrConfig:
         gdal.Unlink(self._vsimem_tmp)
 
     def _tmp_datasource(self, data):
-        #Call _free_tmp_datasource after closing datasource to free memeroy
+        # Call _free_tmp_datasource after closing datasource to free memeroy
         vrt = self._tmp_memfile(data)
         ds = ogr.Open(vrt)
         return ds

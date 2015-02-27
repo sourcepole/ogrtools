@@ -9,15 +9,17 @@ import string
 import re
 import ogr
 
+
 class OgrAlgorithm(GeoAlgorithm):
 
     DB = "DB"
 
     def checkBeforeOpeningParametersDialog(self):
-        #Update DB dropdown
+        # Update DB dropdown
         for idx, param in enumerate(self.parameters):
             if param.name == self.DB:
-                self.parameters[idx] = ParameterDbConnection(self.DB, "Database")
+                self.parameters[idx] = ParameterDbConnection(
+                    self.DB, "Database")
         return None
 
     def ogrConnectionString(self, uri):
@@ -25,18 +27,21 @@ class OgrAlgorithm(GeoAlgorithm):
 
         layer = QGisLayers.getObjectFromUri(uri, False)
         if layer == None:
-            return uri;
+            return uri
         provider = layer.dataProvider().name()
         qDebug("inputLayer provider '%s'" % provider)
         #qDebug("inputLayer layer '%s'" % layer.providerKey())
         qDebug("inputLayer.source '%s'" % layer.source())
         if provider == 'spatialite':
-            #dbname='/geodata/osm_ch.sqlite' table="places" (Geometry) sql=
+            # dbname='/geodata/osm_ch.sqlite' table="places" (Geometry) sql=
             regex = re.compile("dbname='(.+)'")
             r = regex.search(str(layer.source()))
             ogrstr = r.groups()[0]
         elif provider == 'postgres':
-            #dbname='ktryjh_iuuqef' host=spacialdb.com port=9999 user='ktryjh_iuuqef' password='xyqwer' sslmode=disable key='gid' estimatedmetadata=true srid=4326 type=MULTIPOLYGON table="t4" (geom) sql=
+            # dbname='ktryjh_iuuqef' host=spacialdb.com port=9999
+            # user='ktryjh_iuuqef' password='xyqwer' sslmode=disable key='gid'
+            # estimatedmetadata=true srid=4326 type=MULTIPOLYGON table="t4"
+            # (geom) sql=
             s = re.sub(''' sslmode=.+''', '', str(layer.source()))
             ogrstr = 'PG:%s' % s
         else:
@@ -50,7 +55,7 @@ class OgrAlgorithm(GeoAlgorithm):
         return list
 
     def failure(self, pszDataSource):
-        out = ( "FAILURE:\n"
-                "Unable to open datasource `%s' with the following drivers.\n" % pszDataSource )
-        out = out + string.join(map(lambda d: "->"+d, self.drivers()), '\n')
+        out = ("FAILURE:\n"
+               "Unable to open datasource `%s' with the following drivers.\n" % pszDataSource)
+        out = out + string.join(map(lambda d: "->" + d, self.drivers()), '\n')
         return out

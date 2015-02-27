@@ -16,11 +16,12 @@ from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
+
 class IliOgr2Ogr(OgrAlgorithm):
 
-    #constants used to refer to parameters and outputs.
-    #They will be used when calling the algorithm from another algorithm,
-    #or when calling SEXTANTE from the QGIS console.
+    # constants used to refer to parameters and outputs.
+    # They will be used when calling the algorithm from another algorithm,
+    # or when calling SEXTANTE from the QGIS console.
     OUTPUT = "OUTPUT"
     ILI = "ILI"
     ITF = "ITF"
@@ -32,12 +33,12 @@ class IliOgr2Ogr(OgrAlgorithm):
         self.group = "Interlis"
 
         self.addParameter(ParameterFile(self.ILI, "Interlis model (.ili)"))
-        self.addParameter(ParameterFile(self.ITF, "Interlis tansfer file (.itf/.xtf)"))
+        self.addParameter(
+            ParameterFile(self.ITF, "Interlis tansfer file (.itf/.xtf)"))
         self.addParameter(ParameterDbConnection(self.DB, "Database"))
         self.addParameter(ParameterBoolean(self.APPEND, "Append"))
 
         #self.addOutput(OutputHTML(self.OUTPUT, "Ili2Pg result"))
-
 
     def processAlgorithm(self, progress):
         '''Here is where the processing itself takes place'''
@@ -49,13 +50,13 @@ class IliOgr2Ogr(OgrAlgorithm):
         append = self.getParameterValue(self.APPEND)
 
         srs = osr.SpatialReference()
-        srs.ImportFromEPSG( 21781 )
+        srs.ImportFromEPSG(21781)
 
         ogr2ogr(pszFormat=db.getOgrDriverName(),
-            pszDataSource=ogrinput,
-            pszDestDataSource=db.getOgrConnection(),
-            bAppend = append,
-            bOverwrite = not append,
-            poOutputSRS = srs,
-            poSourceSRS = srs,
-            errfunc=IliUtils.errfunc)
+                pszDataSource=ogrinput,
+                pszDestDataSource=db.getOgrConnection(),
+                bAppend=append,
+                bOverwrite=not append,
+                poOutputSRS=srs,
+                poSourceSRS=srs,
+                errfunc=IliUtils.errfunc)

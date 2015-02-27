@@ -26,9 +26,9 @@ GeomOperation = Enum(["NONE", "SEGMENTIZE", "SIMPLIFY_PRESERVE_TOPOLOGY"])
 
 class Ogr2Ogr(OgrAlgorithm):
 
-    #constants used to refer to parameters and outputs.
-    #They will be used when calling the algorithm from another algorithm,
-    #or when calling SEXTANTE from the QGIS console.
+    # constants used to refer to parameters and outputs.
+    # They will be used when calling the algorithm from another algorithm,
+    # or when calling SEXTANTE from the QGIS console.
     OUTPUT_LAYER = "OUTPUT_LAYER"
     INPUT_LAYER = "INPUT_LAYER"
     DEST_DS = "DEST_DS"
@@ -39,12 +39,16 @@ class Ogr2Ogr(OgrAlgorithm):
         self.name = "ogr2ogr"
         self.group = "Transformation"
 
-        #we add the input vector layer. It can have any kind of geometry
-        #It is a mandatory (not optional) one, hence the False argument
-        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
+        # we add the input vector layer. It can have any kind of geometry
+        # It is a mandatory (not optional) one, hence the False argument
+        self.addParameter(ParameterVector(
+            self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
         #self.addParameter(ParameterString(self.DEST_DS, "Output DS", "/tmp/out.sqlite"))
-        self.addParameter(ParameterString(self.DEST_FORMAT, "Destination Format", "ESRI Shapefile")) #SQLite
-        self.addParameter(ParameterString(self.DEST_DSCO, "Creation Options", "")) #SPATIALITE=YES
+        self.addParameter(ParameterString(
+            self.DEST_FORMAT, "Destination Format", "ESRI Shapefile"))  # SQLite
+        # SPATIALITE=YES
+        self.addParameter(
+            ParameterString(self.DEST_DSCO, "Creation Options", ""))
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, "Output layer"))
 
@@ -58,34 +62,35 @@ class Ogr2Ogr(OgrAlgorithm):
         #dst_ds = self.getParameterValue(self.DEST_DS)
         dst_ds = self.ogrConnectionString(output)
         dst_format = self.getParameterValue(self.DEST_FORMAT)
-        ogr_dsco = [self.getParameterValue(self.DEST_DSCO)] #TODO: split
+        ogr_dsco = [self.getParameterValue(self.DEST_DSCO)]  # TODO: split
         #dst_ds = "PG:dbname='glarus_np' options='-c client_encoding=LATIN9'"
         #dst_format ="PostgreSQL"
 
         qDebug("Opening data source '%s'" % ogrLayer)
-        poDS = ogr.Open( ogrLayer, False )
+        poDS = ogr.Open(ogrLayer, False)
         if poDS is None:
             SextanteLog.addToLog(SextanteLog.LOG_ERROR, self.failure(ogrLayer))
             return
 
         srs = osr.SpatialReference()
-        srs.ImportFromEPSG( 21781 ) #FIXME
+        srs.ImportFromEPSG(21781)  # FIXME
         qDebug("Creating output '%s'" % dst_ds)
         if dst_format == "SQLite" and os.path.isfile(dst_ds):
             os.remove(dst_ds)
         qDebug("Using driver '%s'" % dst_format)
         driver = ogr.GetDriverByName(dst_format)
-        poDstDS = driver.CreateDataSource(dst_ds, options = ogr_dsco)
+        poDstDS = driver.CreateDataSource(dst_ds, options=ogr_dsco)
         if poDstDS is None:
-            SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Error creating %s" % dst_ds)
+            SextanteLog.addToLog(
+                SextanteLog.LOG_ERROR, "Error creating %s" % dst_ds)
             return
-        self.ogrtransform(poDS, poDstDS, bOverwrite = True)
+        self.ogrtransform(poDS, poDstDS, bOverwrite=True)
         #ogr2ogr(pszFormat = dst_format, pszDataSource = poDS, pszDestDataSource = poDstDS, bOverwrite = True)
 
     def transformed_template(self, template, substitutions):
         vrt_templ = Template(open(template).read())
         vrt_xml = vrt_templ.substitute(substitutions)
-        vrt = tempfile.mktemp( '.vrt', 'ogr_', '/vsimem')
+        vrt = tempfile.mktemp('.vrt', 'ogr_', '/vsimem')
         # Create in-memory file
         gdal.FileFromMemBuffer(vrt, vrt_xml)
         return vrt
@@ -95,31 +100,31 @@ class Ogr2Ogr(OgrAlgorithm):
         ds = ogr.Open(vrt)
         return ds
 
-    def ogrtransform(self, 
+    def ogrtransform(self,
                      poSrcDS,
-                    poDstDS,
-                    papszLayers = [],
-                    papszLCO = [],
-                    bTransform = False,
-                    bAppend = False,
-                    bUpdate = False,
-                    bOverwrite = False,
-                    poOutputSRS = None,
-                    poSourceSRS = None,
-                    pszNewLayerName = None,
-                    pszWHERE = None,
-                    papszSelFields = None,
-                    eGType = -2,
-                    eGeomOp = GeomOperation.NONE,
-                    dfGeomOpParam = 0,
-                    papszFieldTypesToString = [],
-                    pfnProgress = None,
-                    pProgressData = None,
-                    nCountLayerFeatures = 0,
-                    poClipSrc = None,
-                    poClipDst = None,
-                    bExplodeCollections = False,
-                    pszZField = None):
+                     poDstDS,
+                     papszLayers=[],
+                     papszLCO=[],
+                     bTransform=False,
+                     bAppend=False,
+                     bUpdate=False,
+                     bOverwrite=False,
+                     poOutputSRS=None,
+                     poSourceSRS=None,
+                     pszNewLayerName=None,
+                     pszWHERE=None,
+                     papszSelFields=None,
+                     eGType=-2,
+                     eGeomOp=GeomOperation.NONE,
+                     dfGeomOpParam=0,
+                     papszFieldTypesToString=[],
+                     pfnProgress=None,
+                     pProgressData=None,
+                     nCountLayerFeatures=0,
+                     poClipSrc=None,
+                     poClipDst=None,
+                     bExplodeCollections=False,
+                     pszZField=None):
 
         # Process each data source layer
         if len(papszLayers) == 0:
@@ -131,7 +136,8 @@ class Ogr2Ogr(OgrAlgorithm):
                 poLayer = poSrcDS.GetLayer(iLayer)
 
                 if poLayer is None:
-                    SextanteLog.addToLog(SextanteLog.LOG_ERROR, "FAILURE: Couldn't fetch advertised layer %d!" % iLayer)
+                    SextanteLog.addToLog(
+                        SextanteLog.LOG_ERROR, "FAILURE: Couldn't fetch advertised layer %d!" % iLayer)
                     return False
 
                 papoLayers[iLayer] = poLayer
@@ -147,22 +153,24 @@ class Ogr2Ogr(OgrAlgorithm):
                 poLayer = poSrcDS.GetLayerByName(layername)
 
                 if poLayer is None:
-                    SextanteLog.addToLog(SextanteLog.LOG_ERROR, "FAILURE: Couldn't fetch advertised layer %s!" % layername)
+                    SextanteLog.addToLog(
+                        SextanteLog.LOG_ERROR, "FAILURE: Couldn't fetch advertised layer %s!" % layername)
                     return False
 
                 papoLayers[iLayer] = poLayer
                 iLayer = iLayer + 1
 
         for poSrcLayer in papoLayers:
-          qDebug(poSrcLayer.GetLayerDefn().GetName())
-          #TODO: poDstDS.GetLayerByName for VRT layer fails if name is not lower case
+            qDebug(poSrcLayer.GetLayerDefn().GetName())
+            # TODO: poDstDS.GetLayerByName for VRT layer fails if name is not
+            # lower case
 
-          ok = TranslateLayer( poSrcDS, poSrcLayer, poDstDS, papszLCO, pszNewLayerName, \
-                        bTransform, poOutputSRS, poSourceSRS, papszSelFields, \
-                        bAppend, eGType, bOverwrite, eGeomOp, dfGeomOpParam, \
-                        papszFieldTypesToString, nCountLayerFeatures, \
-                        poClipSrc, poClipDst, bExplodeCollections, pszZField, pszWHERE, \
-                        pfnProgress, pProgressData)
+            ok = TranslateLayer(poSrcDS, poSrcLayer, poDstDS, papszLCO, pszNewLayerName,
+                                bTransform, poOutputSRS, poSourceSRS, papszSelFields,
+                                bAppend, eGType, bOverwrite, eGeomOp, dfGeomOpParam,
+                                papszFieldTypesToString, nCountLayerFeatures,
+                                poClipSrc, poClipDst, bExplodeCollections, pszZField, pszWHERE,
+                                pfnProgress, pProgressData)
         return True
 
 
@@ -176,11 +184,17 @@ class Ogr2OgrVrt(Ogr2Ogr):
         self.name = "VRT transformation"
         self.group = "Transformation"
 
-        self.addParameter(ParameterString(self.INPUT_VRT, "VRT template", "/home/pi/code/gis/geodb-gl/import_np/NPGlarus.vrt"))
-        self.addParameter(ParameterString(self.BASE_DIR, "Base path for data", "/home/pi/code/gis/geodb-gl/import_np"))
-        self.addParameter(ParameterString(self.TEMPL_VARS, "Template variables (var1=value1;var2=value2,...)", "srcdata=NPRiedern.ITF,RaumPL_GL_v10304.ili;bfsnr=1625"))
-        self.addParameter(ParameterString(self.DEST_FORMAT, "Destination Format", "ESRI Shapefile")) #SQLite
-        self.addParameter(ParameterString(self.DEST_DSCO, "Creation Options", "")) #SPATIALITE=YES
+        self.addParameter(ParameterString(
+            self.INPUT_VRT, "VRT template", "/home/pi/code/gis/geodb-gl/import_np/NPGlarus.vrt"))
+        self.addParameter(ParameterString(
+            self.BASE_DIR, "Base path for data", "/home/pi/code/gis/geodb-gl/import_np"))
+        self.addParameter(ParameterString(
+            self.TEMPL_VARS, "Template variables (var1=value1;var2=value2,...)", "srcdata=NPRiedern.ITF,RaumPL_GL_v10304.ili;bfsnr=1625"))
+        self.addParameter(ParameterString(
+            self.DEST_FORMAT, "Destination Format", "ESRI Shapefile"))  # SQLite
+        # SPATIALITE=YES
+        self.addParameter(
+            ParameterString(self.DEST_DSCO, "Creation Options", ""))
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, "Output layer"))
 
@@ -199,13 +213,15 @@ class Ogr2OgrVrt(Ogr2Ogr):
 
         dst_ds = self.ogrConnectionString(output)
         dst_format = self.getParameterValue(self.DEST_FORMAT)
-        ogr_dsco = [self.getParameterValue(self.DEST_DSCO)] #TODO: split
+        ogr_dsco = [self.getParameterValue(self.DEST_DSCO)]  # TODO: split
 
         os.chdir(base_dir)
-        templ_vars['ds'] = self.transformed_template('custom-enums.vrt', templ_vars) #TODO: separate process step for nested templates
+        # TODO: separate process step for nested templates
+        templ_vars['ds'] = self.transformed_template(
+            'custom-enums.vrt', templ_vars)
         ogrLayer = self.transformed_template(input, templ_vars)
         qDebug("Opening data source '%s'" % ogrLayer)
-        poDS = ogr.Open( ogrLayer, False )
+        poDS = ogr.Open(ogrLayer, False)
         if poDS is None:
             SextanteLog.addToLog(SextanteLog.LOG_ERROR, self.failure(ogrLayer))
             return
@@ -214,11 +230,12 @@ class Ogr2OgrVrt(Ogr2Ogr):
         if dst_format == "SQLite" and os.path.isfile(dst_ds):
             os.remove(dst_ds)
         driver = ogr.GetDriverByName(dst_format)
-        poDstDS = driver.CreateDataSource(dst_ds, options = ogr_dsco)
+        poDstDS = driver.CreateDataSource(dst_ds, options=ogr_dsco)
         if poDstDS is None:
-            SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Error creating %s" % dst_ds)
+            SextanteLog.addToLog(
+                SextanteLog.LOG_ERROR, "Error creating %s" % dst_ds)
             return
-        self.ogrtransform(poDS, poDstDS, bOverwrite = True)
+        self.ogrtransform(poDS, poDstDS, bOverwrite=True)
 
         # Free memory associated with the in-memory file
         gdal.Unlink(templ_vars['ds'])

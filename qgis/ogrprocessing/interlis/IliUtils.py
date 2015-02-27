@@ -6,6 +6,7 @@ from sextante.core.SextanteConfig import Setting, SextanteConfig
 from sextante.core.SextanteUtils import SextanteUtils
 import os
 
+
 class IliUtils:
 
     JAVA_EXEC = "JAVA_EXEC"
@@ -22,8 +23,11 @@ class IliUtils:
         else:
             command = args
         SextanteLog.addToLog(SextanteLog.LOG_INFO, ' '.join(command))
-        fused_command = ' '.join(command) # java doesn't find quoted file on Win with: ''.join(['"%s" ' % c for c in command])
-        proc = subprocess.Popen(fused_command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=True).stdout
+        # java doesn't find quoted file on Win with: ''.join(['"%s" ' % c for c
+        # in command])
+        fused_command = ' '.join(command)
+        proc = subprocess.Popen(fused_command, shell=True, stdout=subprocess.PIPE,
+                                stdin=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True).stdout
         for line in iter(proc.readline, ""):
             loglines.append(line)
         SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
@@ -39,15 +43,16 @@ class IliUtils:
 
     @staticmethod
     def runJava(jar, args, progress):
-        args = [SextanteConfig.getSetting(IliUtils.JAVA_EXEC), "-jar",  jar] + args
+        args = [SextanteConfig.getSetting(
+            IliUtils.JAVA_EXEC), "-jar",  jar] + args
         IliUtils.runShellCmd(args, progress)
 
     @staticmethod
     def runIli2c(args, progress):
-        #ili2c USAGE
+        # ili2c USAGE
         #  ili2c [Options] file1.ili file2.ili ...
         #
-        #OPTIONS
+        # OPTIONS
         #
         #--no-auto             don't look automatically after required models.
         #-o0                   Generate no output (default).
@@ -70,7 +75,8 @@ class IliUtils:
         #-h|--help             Display this help text.
         #-u|--usage            Display short information about usage.
         #-v|--version          Display the version of ili2c.
-        IliUtils.runJava( SextanteConfig.getSetting(IliUtils.ILI2C_JAR), args, progress )
+        IliUtils.runJava(
+            SextanteConfig.getSetting(IliUtils.ILI2C_JAR), args, progress)
 
     @staticmethod
     def getConsoleOutput():
