@@ -493,9 +493,9 @@ class OgrConfig:
         vrt = self.generate_vrt(dst_format=format)
         # if debug:
         #    print prettify(vrt)
-        f = open("/tmp/transform.vrt", "w")
-        f.write(prettify(vrt))
-        f.close()
+        # f = open("/tmp/transform.vrt", "w")
+        # f.write(prettify(vrt))
+        # f.close()
         ds = self._tmp_datasource(vrt)
         dst_format = format or self.dst_format()
         dsco = []
