@@ -6,6 +6,7 @@ import json
 import string
 import re
 import sys
+import tempfile
 
 
 def prettify(rawxml, indent="  "):
@@ -40,6 +41,36 @@ class ImdParser():
         # {http://www.interlis.ch/INTERLIS2.3}TRANSFER
         self._ns = {
             'xmlns': re.match(r'^{(.+)}', self._tree.getroot().tag).group(1)}
+
+    def models(self):
+        modelnodes = self._tree.findall(
+            "xmlns:DATASECTION/xmlns:IlisMeta07.ModelData/xmlns:IlisMeta07.ModelData.Model", self._ns) or []
+        models = map(
+            lambda n: n.find("xmlns:Name", self._ns).text, modelnodes)
+        return models
+
+    def gen_empty_transfer(self, version=2.3):
+        models = self.models()
+        transfer = """<?xml version="1.0" encoding="UTF-8"?>
+        <TRANSFER xmlns="http://www.interlis.ch/INTERLIS{version}">
+        <HEADERSECTION SENDER="ogrtools" VERSION="{version}">
+        <MODELS>""".format(version=version)
+        for model in models:
+            transfer += """<MODEL NAME="{name}"></MODEL>""".format(name=model)
+        transfer += """</MODELS>
+        </HEADERSECTION>
+        <DATASECTION>
+        </DATASECTION>
+        </TRANSFER>"""
+        return transfer
+
+    def gen_empty_transfer_file(self, version=2.3):
+        transfer = self.gen_empty_transfer(version)
+        __, transferfn = tempfile.mkstemp(suffix='.xtf')
+        f = open(transferfn, "w")
+        f.write(transfer)
+        f.close()
+        return transferfn
 
     def extract_enums(self):
         """Extract Interlis Enumerations"""

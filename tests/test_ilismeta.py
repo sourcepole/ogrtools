@@ -44,3 +44,10 @@ def test_extract_extended_enums():
         {'enumtxt': 'prohibition.noparking',
             'enum': 'prohibition.noparking', 'id': 5},
         {'enumtxt': 'prohibition.other', 'enum': 'prohibition.other', 'id': 6}]
+
+
+def test_gen_empty_transfer():
+    parser = ImdParser("./tests/data/ili/Beispiel.imd")
+    transfer = parser.gen_empty_transfer()
+    print transfer
+    assert """<MODEL NAME="Beispiel">""" in transfer
