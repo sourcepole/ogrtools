@@ -22,7 +22,7 @@
 
 from PyQt4 import QtGui
 from PyQt4.QtCore import pyqtSignature, Qt, QSettings, QFileInfo, qDebug
-from PyQt4.QtGui import QFileDialog, QMessageBox, QDialog
+from PyQt4.QtGui import QFileDialog, QMessageBox, QDialog, QDockWidget
 from qgis.core import QGis, QgsMessageLog, QgsVectorLayer, QgsDataSourceURI
 from qgis.gui import QgsMessageBar
 from ui_interlis import Ui_Interlis
@@ -160,6 +160,9 @@ class InterlisDialog(QtGui.QDialog):
         imd = None
         try:
             loader = ModelLoader(self.ui.mDataLineEdit.text())
+            models = loader.detect_models()
+            model_names = map(lambda m: m.name, models)
+            self._log_output("Looking up models: " + ', '.join(model_names))
             ili = loader.gen_lookup_ili()
             qDebug(ili)
             wpsreq = self._create_wps_request(ili)
@@ -175,8 +178,10 @@ class InterlisDialog(QtGui.QDialog):
         except:
             qDebug("Exception during IlisModel download")
         if imd is None:
+            self._show_log_window()
             QgsMessageLog.logMessage(
-                "Couldn't download Ilismeta model", "Interlis", QgsMessageLog.WARNING)
+                "Couldn't download Ilismeta model", "Interlis",
+                QgsMessageLog.WARNING)
             self.ui.mModelLineEdit.setText("")
         else:
             fh, imdfn = tempfile.mkstemp(suffix='.imd')
@@ -280,8 +285,7 @@ class InterlisDialog(QtGui.QDialog):
             dest=self.pgDs(), skipfailures=self.ui.cbSkipFailures.isChecked(), debug=True)
         self._plugin.messageLogWidget().show()
         self._log_output(ogroutput)
-        QgsMessageLog.logMessage(
-            "Import finished", "Interlis", QgsMessageLog.INFO)
+        self._log_output("Import finished")
         self.ui.mExportButton.setEnabled(True)
 
         uri = self.pgUri()
@@ -313,6 +317,11 @@ class InterlisDialog(QtGui.QDialog):
         self._log_output(ogroutput)
         QgsMessageLog.logMessage("Export to '%s' finished" % self.ui.mDataLineEdit.text(),
                                  "Interlis", QgsMessageLog.INFO)
+
+    def _show_log_window(self):
+        logDock = self._plugin.iface.mainWindow().findChild(
+            QDockWidget, 'MessageLog')
+        logDock.show()
 
     def _log_output(self, output, lines_per_msg=None):
         if lines_per_msg is None:
