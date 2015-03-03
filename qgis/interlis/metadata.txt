@@ -2,11 +2,15 @@
 name=interlis
 qgisMinimumVersion=2.0
 description=Interlis Import/Export
-version=0.7.1
+version=0.7.2
 author=Pirmin Kalberer (Sourcepole)
 email=pka@sourcepole.ch
 
-changelog=0.7.1
+changelog=
+  0.7.2
+    - Fix OGR library import
+    - Show Log window on model lookup error
+  0.7.1
     - OGR and QGIS version checks
     - Wait cursor during import
   0.7.0

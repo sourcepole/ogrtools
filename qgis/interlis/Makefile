@@ -96,7 +96,7 @@ package: compile
 		rm -rf $(PLUGINNAME)
 		unzip $(PLUGINNAME).zip
 		rm $(PLUGINNAME)/ogrtools
-		cp -r ../ogrtools $(PLUGINNAME)/
+		cp -r ../../ogrtools $(PLUGINNAME)/
 		rm $(PLUGINNAME).zip
 		zip -r -q $(PLUGINNAME).zip $(PLUGINNAME) -x '*.pyc' '*.bak'
 		rm -rf $(PLUGINNAME)
