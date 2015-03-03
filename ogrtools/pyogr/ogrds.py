@@ -1,4 +1,7 @@
-import ogr
+try:
+    from osgeo import ogr
+except:
+    import ogr
 
 
 class OgrDs:
