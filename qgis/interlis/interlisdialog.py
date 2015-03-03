@@ -34,6 +34,7 @@ import codecs
 from xml.etree import ElementTree
 from ogrtools.ogrtransform.ogrconfig import OgrConfig
 from ogrtools.interlis.model_loader import ModelLoader
+from ogrtools.interlis.ilismeta import ImdParser
 
 
 class InterlisDialog(QtGui.QDialog):
@@ -65,6 +66,12 @@ class InterlisDialog(QtGui.QDialog):
             return self.ui.mDataLineEdit.text() + "," + self.ui.mModelLineEdit.text()
         else:
             return self.ui.mDataLineEdit.text()
+
+    def _empty_transfer_ds(self):
+        imd = ImdParser(self.ui.mModelLineEdit.text())
+        transferfn = imd.gen_empty_transfer_file()
+        ds = transferfn + "," + self.ui.mModelLineEdit.text()
+        return ds
 
     def pgDs(self):
         """OGR connection string for selected PostGIS DB"""
@@ -203,6 +210,8 @@ class InterlisDialog(QtGui.QDialog):
         settings.setValue(
             "/qgis/plugins/interlis/modeldir", QFileInfo(modelFilePath).absolutePath())
         self.ui.mModelLineEdit.setText(modelFilePath)
+        self.ui.mImportEnumsButton.setEnabled(True)
+        self.ui.mCreateSchemaButton.setEnabled(True)
 
     @pyqtSignature('')  # avoid two connections
     def on_mConfigButton_clicked(self):
@@ -233,16 +242,52 @@ class InterlisDialog(QtGui.QDialog):
             self.unsetCursor()
 
     @pyqtSignature('')  # avoid two connections
+    def on_mImportEnumsButton_clicked(self):
+        # TODO: check cbDbConnections is PostGIS
+        self.setCursor(Qt.WaitCursor)
+        try:
+            self.importenums()
+        finally:
+            self.unsetCursor()
+
+    @pyqtSignature('')  # avoid two connections
+    def on_mCreateSchemaButton_clicked(self):
+        # TODO: check cbDbConnections is PostGIS
+        self.setCursor(Qt.WaitCursor)
+        try:
+            self.createschema()
+        finally:
+            self.unsetCursor()
+
+    @pyqtSignature('')  # avoid two connections
     def on_mExportButton_clicked(self):
         self.exporttoxtf()
 
     def _ogr_config(self, ds):
         ogrconfig = self.ui.mConfigLineEdit.text()
+        self._log_output("_ogr_config ds: %s cfg: %s" % (ds, ogrconfig))
         if ogrconfig:
             cfg = OgrConfig(ds=ds, config=ogrconfig)
         else:
             cfg = OgrConfig(ds=ds, model=self.ui.mModelLineEdit.text())
         return cfg
+
+    def _ogr_config_tmp(self, ds):
+        self._ogrconfig_tmp = None
+        cfg = self._ogr_config(ds)
+        if not cfg.is_loaded():
+            __, self._ogrconfig_tmp = tempfile.mkstemp('.cfg', 'ogr_')
+            format = 'PostgreSQL'
+            cfgjson = cfg.generate_config(
+                format, outfile=self._ogrconfig_tmp, layer_list=[], srs="EPSG:21781")
+            qDebug(cfgjson)
+            self.ui.mConfigLineEdit.setText(self._ogrconfig_tmp)
+        return cfg
+
+    def _remove_ogrconfig_tmp(self):
+        if self._ogrconfig_tmp is not None:
+            os.remove(self._ogrconfig_tmp)
+            self.ui.mConfigLineEdit.setText("")
 
     def importtoqgis(self):
         dataSourceUri = self.iliDs()
@@ -268,21 +313,28 @@ class InterlisDialog(QtGui.QDialog):
         self._plugin.iface.messageBar().pushMessage("Interlis", "Import finished",
                                                     level=QgsMessageBar.INFO, duration=2)
 
-    def importtodb(self):
-        QgsMessageLog.logMessage(self.iliDs(), "Interlis", QgsMessageLog.INFO)
-        cfg = self._ogr_config(self.iliDs())
-        if not cfg.is_loaded():
-            __, ogrconfig = tempfile.mkstemp('.cfg', 'ogr_')
-            format = 'PostgreSQL'
-            cfgjson = cfg.generate_config(
-                format, outfile=ogrconfig, layer_list=[], srs="EPSG:21781")
-            QgsMessageLog.logMessage(cfgjson, "Interlis", QgsMessageLog.INFO)
-            self.ui.mConfigLineEdit.setText(ogrconfig)
-        if self.ui.cbImportEnums.isChecked():
-            cfg.write_enum_tables(
-                dest=self.pgDs(), skipfailures=self.ui.cbSkipFailures.isChecked(), debug=True)
+    def importenums(self):
+        cfg = self._ogr_config_tmp(self._empty_transfer_ds())
+        self._log_output("Import Enums from %s" % self.ui.mModelLineEdit.text())
+        cfg.write_enum_tables(
+            dest=self.pgDs(), skipfailures=self.ui.cbSkipFailures.isChecked(), debug=True)
+        self._remove_ogrconfig_tmp()
+        self._log_output("Import finished")
+
+    def createschema(self):
+        cfg = self._ogr_config_tmp(self._empty_transfer_ds())
+        self._log_output("Create schema from %s" % self.ui.mModelLineEdit.text())
         ogroutput = cfg.transform(
             dest=self.pgDs(), skipfailures=self.ui.cbSkipFailures.isChecked(), debug=True)
+        self._remove_ogrconfig_tmp()
+        self._log_output("Import finished")
+
+    def importtodb(self):
+        self._log_output("Import data from %s" % self.iliDs())
+        cfg = self._ogr_config_tmp(self.iliDs())
+        ogroutput = cfg.transform(
+            dest=self.pgDs(), skipfailures=self.ui.cbSkipFailures.isChecked(), debug=True)
+        self._remove_ogrconfig_tmp()
         self._plugin.messageLogWidget().show()
         self._log_output(ogroutput)
         self._log_output("Import finished")
