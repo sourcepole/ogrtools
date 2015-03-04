@@ -94,7 +94,7 @@
         </widget>
        </item>
        <item row="0" column="0" colspan="5">
-        <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_2">
+        <widget class="QgsCollapsibleGroupBoxBasic" name="mIliGroupBox">
          <property name="title">
           <string>Ili Modell</string>
          </property>
@@ -224,7 +224,7 @@
            </widget>
           </item>
           <item row="0" column="0" colspan="3">
-           <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
+           <widget class="QgsCollapsibleGroupBoxBasic" name="mCfgGroupBox">
             <property name="title">
              <string>OGR Config (mapping)</string>
             </property>

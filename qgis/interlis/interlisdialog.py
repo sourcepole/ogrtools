@@ -21,7 +21,7 @@
 """
 
 from PyQt4 import QtGui
-from PyQt4.QtCore import pyqtSlot, Qt, QSettings, QFileInfo, qDebug
+from PyQt4.QtCore import pyqtSlot, Qt, QSettings, qDebug
 from PyQt4.QtGui import QFileDialog, QMessageBox, QDialog, QDockWidget
 from qgis.core import QGis, QgsMessageLog, QgsVectorLayer, QgsDataSourceURI
 from qgis.gui import QgsMessageBar
@@ -32,6 +32,7 @@ import tempfile
 import urllib2
 import codecs
 from xml.etree import ElementTree
+from pyqtconfig import QSettingsManager
 from ogrtools.ogrtransform.ogrconfig import OgrConfig
 from ogrtools.interlis.model_loader import ModelLoader
 from ogrtools.interlis.ilismeta import ImdParser
@@ -45,9 +46,7 @@ class InterlisDialog(QtGui.QDialog):
         # Set up the user interface from Designer.
         self.ui = Ui_Interlis()
         self.ui.setupUi(self)
-        self.ui.mModelLookupButton.setEnabled(False)
-        # Not implemented yet:
-        self.ui.cbResetData.setEnabled(False)
+
         # Initialize DB connection drop-down
         self.ui.cbDbConnections.clear()
         # Bug in 2.0 causes crash when adding sublayers
@@ -55,8 +54,31 @@ class InterlisDialog(QtGui.QDialog):
             self.ui.cbDbConnections.addItem("QGIS Layer")
         self.ui.cbDbConnections.addItems(self.dbConnectionList())
 
+        self._add_settings_handlers()
+
+        self.ui.mIliGroupBox.setCollapsed(self.ui.mIliLineEdit.text() == "")
+        self.ui.mCfgGroupBox.setCollapsed(self.ui.mConfigLineEdit.text() == "")
+        self.ui.cbResetData.setEnabled(False)  # Not implemented yet
+
     def setup(self):
         self.ui.mDataLineEdit.setText("")
+
+    def _add_settings_handlers(self):
+        self._settings = QSettingsManager()
+        self._settings.add_handler(
+            'interlis/iliFile', self.ui.mIliLineEdit)
+        self._settings.add_handler(
+            'interlis/modelFile', self.ui.mModelLineEdit)
+        #self._settings.add_handler(
+        #    'interlis/dataFile', self.ui.mDataLineEdit)
+        self._settings.add_handler(
+            'interlis/dbConnection', self.ui.cbDbConnections)
+        self._settings.add_handler(
+            'interlis/configFile', self.ui.mConfigLineEdit)
+        self._settings.add_handler(
+            'interlis/ili2cPath', self.ui.mIli2cLineEdit)
+        self._settings.add_handler(
+            'interlis/skipFailures', self.ui.cbSkipFailures)
 
     def iliDs(self):
         """OGR connection string for selected Interlis transfer file + model"""
@@ -148,16 +170,11 @@ class InterlisDialog(QtGui.QDialog):
 
     @pyqtSlot()
     def on_mDataFileButton_clicked(self):
-        # show file dialog and remember last directory
-        settings = QSettings()
-        # settings.value("/qgis/plugins/interlis/datadir", type=str)
-        lastDirectoryString = None
-        dataFilePath = QFileDialog.getOpenFileName(None, "Open Interlis data file", lastDirectoryString,
-                                                   "Interlis transfer file (*.itf *.ITF *.xtf *.XTF *.xml);;All files (*.*)")
+        dataFilePath = QFileDialog.getOpenFileName(
+            None, "Open Interlis data file", self.ui.mDataLineEdit.text(),
+            "Interlis transfer file (*.itf *.ITF *.xtf *.XTF *.xml);;All files (*.*)")
         if not dataFilePath:
             return  # dialog canceled
-        settings.setValue(
-            "/qgis/plugins/interlis/datadir", QFileInfo(dataFilePath).absolutePath())
         self.ui.mDataLineEdit.setText(dataFilePath)
 
     @pyqtSlot(str)
@@ -218,16 +235,11 @@ class InterlisDialog(QtGui.QDialog):
 
     @pyqtSlot()
     def on_mModelFileButton_clicked(self):
-        # show file dialog and remember last directory
-        settings = QSettings()
-        # settings.value("/qgis/plugins/interlis2/modeldir", type=str)
-        lastDirectoryString = None
-        modelFilePath = QFileDialog.getOpenFileName(None, "Open Interlis model file", lastDirectoryString,
-                                                    "IlisMeta model (*.imd *.IMD);;All files (*.*)")
+        modelFilePath = QFileDialog.getOpenFileName(
+            None, "Open Interlis model file", self.ui.mModelLineEdit.text(),
+            "IlisMeta model (*.imd *.IMD);;All files (*.*)")
         if not modelFilePath:
             return  # dialog canceled
-        settings.setValue(
-            "/qgis/plugins/interlis/modeldir", QFileInfo(modelFilePath).absolutePath())
         self.ui.mModelLineEdit.setText(modelFilePath)
 
     @pyqtSlot(str)
@@ -249,16 +261,12 @@ class InterlisDialog(QtGui.QDialog):
 
     @pyqtSlot()
     def on_mConfigButton_clicked(self):
-        # show file dialog and remember last directory
-        settings = QSettings()
-        # settings.value("/qgis/plugins/interlis2/cfgdir", type=str)
-        lastDirectoryString = None
-        configPath = QFileDialog.getOpenFileName(None, "Open OGR mapping config file", lastDirectoryString,
-                                                 "OGR config (*.cfg *.CFG *.json *.JSON);;All files (*.*)")
+        configPath = QFileDialog.getOpenFileName(
+            None, "Open OGR mapping config file",
+            self.ui.mConfigLineEdit.text(),
+            "OGR config (*.cfg *.CFG *.json *.JSON);;All files (*.*)")
         if not configPath:
             return  # dialog canceled
-        settings.setValue(
-            "/qgis/plugins/interlis/cfgdir", QFileInfo(configPath).absolutePath())
         self.ui.mConfigLineEdit.setText(configPath)
 
     @pyqtSlot()
