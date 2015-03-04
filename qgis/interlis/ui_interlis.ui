@@ -20,24 +20,14 @@
       <bool>true</bool>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="modeltab">
       <attribute name="title">
        <string>Modell</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_7">
-       <item row="1" column="2" colspan="2">
-        <widget class="QPushButton" name="mModelLookupButton">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="text">
-          <string>Modell Lookup aus Transferfile</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
+       <item row="1" column="0">
         <widget class="QLabel" name="mModelFileLabel">
          <property name="maximumSize">
           <size>
@@ -53,17 +43,17 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="1" colspan="3">
+       <item row="1" column="1" colspan="3">
         <widget class="QLineEdit" name="mModelLineEdit"/>
        </item>
-       <item row="2" column="4">
+       <item row="1" column="4">
         <widget class="QPushButton" name="mModelFileButton">
          <property name="text">
           <string>...</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="0">
+       <item row="2" column="0">
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -76,7 +66,7 @@
          </property>
         </spacer>
        </item>
-       <item row="5" column="0" colspan="2">
+       <item row="4" column="0" colspan="2">
         <widget class="QPushButton" name="mCreateSchemaButton">
          <property name="enabled">
           <bool>false</bool>
@@ -86,7 +76,7 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="2" colspan="2">
+       <item row="4" column="2" colspan="2">
         <widget class="QPushButton" name="mImportEnumsButton">
          <property name="enabled">
           <bool>false</bool>
@@ -135,7 +125,7 @@
        <string>Import/Export</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout">
-       <item row="1" column="1" alignment="Qt::AlignVCenter">
+       <item row="4" column="1" alignment="Qt::AlignVCenter">
         <widget class="QComboBox" name="cbDbConnections">
          <item>
           <property name="text">
@@ -144,7 +134,7 @@
          </item>
         </widget>
        </item>
-       <item row="1" column="0">
+       <item row="4" column="0">
         <widget class="QLabel" name="label">
          <property name="text">
           <string>Speicherort:</string>
@@ -174,7 +164,7 @@
        <item row="0" column="1">
         <widget class="QLineEdit" name="mDataLineEdit"/>
        </item>
-       <item row="4" column="0" colspan="3">
+       <item row="7" column="0" colspan="3">
         <widget class="QFrame" name="frame">
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
@@ -183,7 +173,7 @@
           <enum>QFrame::Raised</enum>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
-          <item row="1" column="0">
+          <item row="2" column="0">
            <spacer name="verticalSpacer_2">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -196,7 +186,7 @@
             </property>
            </spacer>
           </item>
-          <item row="3" column="0" rowspan="2">
+          <item row="4" column="0" rowspan="2">
            <widget class="QPushButton" name="mImportButton">
             <property name="enabled">
              <bool>false</bool>
@@ -206,7 +196,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
+          <item row="3" column="0">
            <widget class="QCheckBox" name="cbResetData">
             <property name="text">
              <string>Daten ersetzen</string>
@@ -216,7 +206,7 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="1" rowspan="2">
+          <item row="4" column="1" rowspan="2">
            <widget class="QPushButton" name="mExportButton">
             <property name="enabled">
              <bool>false</bool>
@@ -226,7 +216,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="0" colspan="3">
+          <item row="1" column="0" colspan="3">
            <widget class="QgsCollapsibleGroupBoxBasic" name="mCfgGroupBox">
             <property name="title">
              <string>OGR Config (mapping)</string>
@@ -249,6 +239,16 @@
            </widget>
           </item>
          </layout>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QPushButton" name="mModelLookupButton">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Modell Lookup</string>
+         </property>
         </widget>
        </item>
       </layout>

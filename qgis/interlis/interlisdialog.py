@@ -81,12 +81,16 @@ class InterlisDialog(QtGui.QDialog):
 
     def iliDs(self):
         """OGR connection string for selected Interlis transfer file + model"""
-        if not self.ui.mDataLineEdit.text():
+        return self.iliFileDs(self.ui.mDataLineEdit.text())
+
+    def iliFileDs(self, fn):
+        """OGR connection string for Interlis transfer file + model"""
+        if not fn:
             return ""
         if self.ui.mModelLineEdit.text():
-            return self.ui.mDataLineEdit.text() + "," + self.ui.mModelLineEdit.text()
+            return fn + "," + self.ui.mModelLineEdit.text()
         else:
-            return self.ui.mDataLineEdit.text()
+            return fn
 
     def _empty_transfer_ds(self):
         imd = ImdParser(self.ui.mModelLineEdit.text())
@@ -204,7 +208,11 @@ class InterlisDialog(QtGui.QDialog):
     @pyqtSlot()
     def on_mCreateIlisMetaButton_clicked(self):
         loader = ModelLoader("")
-        outfile = self.ui.mIliLineEdit.text() + '.imd'  # TODO: ask user
+        outfile = QFileDialog.getSaveFileName(
+            None, "Save File", self.ui.mIliLineEdit.text(),
+            "IlisMeta model (*.imd *.IMD)")
+        if not outfile:
+            return
         os.environ['ILI2C'] = self.ui.mIli2cLineEdit.text()
         ret = loader.convert_model([self.ui.mIliLineEdit.text()], outfile)
         err = ("Error:" in ret)
@@ -284,6 +292,10 @@ class InterlisDialog(QtGui.QDialog):
         if not configPath:
             return  # dialog canceled
         self.ui.mConfigLineEdit.setText(configPath)
+
+    @pyqtSlot(str)
+    def on_mConfigLineEdit_textChanged(self, s):
+        self.ui.mExportButton.setEnabled(self.ui.mConfigLineEdit.text() != "")
 
     @pyqtSlot()
     def on_mImportButton_clicked(self):
@@ -396,11 +408,11 @@ class InterlisDialog(QtGui.QDialog):
         cfg = self._ogr_config_tmp(self.iliDs())
         ogroutput = cfg.transform(
             dest=self.pgDs(), skipfailures=self.ui.cbSkipFailures.isChecked(), debug=True)
-        self._remove_ogrconfig_tmp()
+        # Keep temp config for export
+        # self._remove_ogrconfig_tmp()
         self._plugin.messageLogWidget().show()
         self._log_output(ogroutput)
         self._log_output("Import finished")
-        self.ui.mExportButton.setEnabled(True)
 
         uri = self.pgUri()
         layer_infos = cfg.layer_infos()
@@ -426,11 +438,19 @@ class InterlisDialog(QtGui.QDialog):
 
     def exporttoxtf(self):
         cfg = self._ogr_config(self.pgDs())
+        fn = QFileDialog.getSaveFileName(
+            None, "Save File", "",
+            "Interlis 2 transfer (*.xtf *.XTF *.xml)")
+        if not fn:
+            return
+        ds = self.iliFileDs(fn)
         ogroutput = cfg.transform_reverse(
-            dest=self.iliDs(), skipfailures=self.ui.cbSkipFailures.isChecked(), debug=True)
+            dest=ds, skipfailures=self.ui.cbSkipFailures.isChecked(),
+            debug=True)
         self._log_output(ogroutput)
-        QgsMessageLog.logMessage("Export to '%s' finished" % self.ui.mDataLineEdit.text(),
-                                 "Interlis", QgsMessageLog.INFO)
+        QgsMessageLog.logMessage(
+            "Export to '%s' finished" % self.ui.mDataLineEdit.text(),
+            "Interlis", QgsMessageLog.INFO)
 
     def _show_log_window(self):
         logDock = self._plugin.iface.mainWindow().findChild(
