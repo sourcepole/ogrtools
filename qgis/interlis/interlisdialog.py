@@ -21,7 +21,7 @@
 """
 
 from PyQt4 import QtGui
-from PyQt4.QtCore import pyqtSignature, Qt, QSettings, QFileInfo, qDebug
+from PyQt4.QtCore import pyqtSlot, Qt, QSettings, QFileInfo, qDebug
 from PyQt4.QtGui import QFileDialog, QMessageBox, QDialog, QDockWidget
 from qgis.core import QGis, QgsMessageLog, QgsVectorLayer, QgsDataSourceURI
 from qgis.gui import QgsMessageBar
@@ -146,7 +146,7 @@ class InterlisDialog(QtGui.QDialog):
         else:
             return imd.text
 
-    @pyqtSignature('')  # avoid two connections
+    @pyqtSlot()
     def on_mDataFileButton_clicked(self):
         # show file dialog and remember last directory
         settings = QSettings()
@@ -159,10 +159,29 @@ class InterlisDialog(QtGui.QDialog):
         settings.setValue(
             "/qgis/plugins/interlis/datadir", QFileInfo(dataFilePath).absolutePath())
         self.ui.mDataLineEdit.setText(dataFilePath)
-        self.ui.mModelLookupButton.setEnabled(True)
-        self.ui.mImportButton.setEnabled(True)
 
-    @pyqtSignature('')  # avoid two connections
+    @pyqtSlot(str)
+    def on_mDataLineEdit_textChanged(self, s):
+        self.ui.mModelLookupButton.setEnabled(
+            self.ui.mDataLineEdit.text() != "")
+        self.ui.mImportButton.setEnabled(
+            self.ui.mDataLineEdit.text() != "")
+
+    @pyqtSlot()
+    def on_mIliButton_clicked(self):
+        iliFilePath = QFileDialog.getOpenFileName(
+            None, "Open Interlis data file", self.ui.mIliLineEdit.text(),
+            "Interlis model file (*.ili *.ILI);;All files (*.*)")
+        if not iliFilePath:
+            return  # dialog canceled
+        self.ui.mIliLineEdit.setText(iliFilePath)
+
+    @pyqtSlot(str)
+    def on_mIliLineEdit_textChanged(self, s):
+        self.ui.mCreateIlisMetaButton.setEnabled(
+            self.ui.mIliLineEdit.text() != "")
+
+    @pyqtSlot()
     def on_mModelLookupButton_clicked(self):
         imd = None
         try:
@@ -197,7 +216,7 @@ class InterlisDialog(QtGui.QDialog):
                 file.write(imd)
             self.ui.mModelLineEdit.setText(imdfn)
 
-    @pyqtSignature('')  # avoid two connections
+    @pyqtSlot()
     def on_mModelFileButton_clicked(self):
         # show file dialog and remember last directory
         settings = QSettings()
@@ -210,10 +229,25 @@ class InterlisDialog(QtGui.QDialog):
         settings.setValue(
             "/qgis/plugins/interlis/modeldir", QFileInfo(modelFilePath).absolutePath())
         self.ui.mModelLineEdit.setText(modelFilePath)
-        self.ui.mImportEnumsButton.setEnabled(True)
-        self.ui.mCreateSchemaButton.setEnabled(True)
 
-    @pyqtSignature('')  # avoid two connections
+    @pyqtSlot(str)
+    def on_mModelLineEdit_textChanged(self, s):
+        self.ui.mConfigLineEdit.clear()
+        self.update_model_import_buttons()
+
+    @pyqtSlot(int)
+    def on_cbDbConnections_currentIndexChanged(self, v):
+        self.update_model_import_buttons()
+
+    def update_model_import_buttons(self):
+        self.ui.mImportEnumsButton.setEnabled(
+            self.ui.mModelLineEdit.text() != "" and
+            self.ui.cbDbConnections.currentIndex() != 0)  # DB conn. selected
+        self.ui.mCreateSchemaButton.setEnabled(
+            self.ui.mModelLineEdit.text() != "" and
+            self.ui.cbDbConnections.currentIndex() != 0)  # DB conn. selected
+
+    @pyqtSlot()
     def on_mConfigButton_clicked(self):
         # show file dialog and remember last directory
         settings = QSettings()
@@ -227,10 +261,7 @@ class InterlisDialog(QtGui.QDialog):
             "/qgis/plugins/interlis/cfgdir", QFileInfo(configPath).absolutePath())
         self.ui.mConfigLineEdit.setText(configPath)
 
-    def on_mModelLineEdit_textChanged(self):
-        self.ui.mConfigLineEdit.clear()
-
-    @pyqtSignature('')  # avoid two connections
+    @pyqtSlot()
     def on_mImportButton_clicked(self):
         self.setCursor(Qt.WaitCursor)
         try:
@@ -241,27 +272,34 @@ class InterlisDialog(QtGui.QDialog):
         finally:
             self.unsetCursor()
 
-    @pyqtSignature('')  # avoid two connections
+    @pyqtSlot()
     def on_mImportEnumsButton_clicked(self):
-        # TODO: check cbDbConnections is PostGIS
         self.setCursor(Qt.WaitCursor)
         try:
             self.importenums()
         finally:
             self.unsetCursor()
 
-    @pyqtSignature('')  # avoid two connections
+    @pyqtSlot()
     def on_mCreateSchemaButton_clicked(self):
-        # TODO: check cbDbConnections is PostGIS
         self.setCursor(Qt.WaitCursor)
         try:
             self.createschema()
         finally:
             self.unsetCursor()
 
-    @pyqtSignature('')  # avoid two connections
+    @pyqtSlot()
     def on_mExportButton_clicked(self):
         self.exporttoxtf()
+
+    @pyqtSlot()
+    def on_mIli2cPathButton_clicked(self):
+        ili2c_path = QFileDialog.getExistingDirectory(
+            None, "Select directory containing  ili2.jar",
+            self.ui.mIli2cLineEdit.text())
+        if not ili2c_path:
+            return  # dialog canceled
+        self.ui.mIli2cLineEdit.setText(ili2c_path)
 
     def _ogr_config(self, ds):
         ogrconfig = self.ui.mConfigLineEdit.text()
@@ -343,9 +381,9 @@ class InterlisDialog(QtGui.QDialog):
         uri = self.pgUri()
         layer_infos = cfg.layer_infos()
         layer_names = cfg.layer_names()
-        if self.ui.cbImportEnums.isChecked():
-            layer_infos += cfg.enum_infos()
-            layer_names += cfg.enum_names()
+        # if self.ui.cbImportEnums.isChecked():
+        #     layer_infos += cfg.enum_infos()
+        #     layer_names += cfg.enum_names()
         subLayerDialog = SublayersDialog()
         subLayerDialog.setupLayerList(layer_names)
         if subLayerDialog.exec_() == QDialog.Accepted:

@@ -449,6 +449,6 @@ For running ogr commands from source tree:
 License
 -------
 
-ogrtools is Copyright © 2012-2014 Sourceepole AG. It is free software,
+ogrtools is Copyright © 2012-2015 Sourcepole AG. It is free software,
 and may be redistributed under the terms specified in the LICENSE.txt
 file.
