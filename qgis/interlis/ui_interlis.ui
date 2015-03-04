@@ -29,6 +29,9 @@
       <layout class="QGridLayout" name="gridLayout_7">
        <item row="1" column="2" colspan="2">
         <widget class="QPushButton" name="mModelLookupButton">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>Modell Lookup aus Transferfile</string>
          </property>

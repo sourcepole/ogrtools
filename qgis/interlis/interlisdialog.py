@@ -56,7 +56,6 @@ class InterlisDialog(QtGui.QDialog):
 
         self._add_settings_handlers()
 
-        self.ui.mIliGroupBox.setCollapsed(self.ui.mIliLineEdit.text() == "")
         self.ui.mCfgGroupBox.setCollapsed(self.ui.mConfigLineEdit.text() == "")
         self.ui.cbResetData.setEnabled(False)  # Not implemented yet
 
@@ -181,8 +180,12 @@ class InterlisDialog(QtGui.QDialog):
     def on_mDataLineEdit_textChanged(self, s):
         self.ui.mModelLookupButton.setEnabled(
             self.ui.mDataLineEdit.text() != "")
+        self._update_data_import_button()
+
+    def _update_data_import_button(self):
         self.ui.mImportButton.setEnabled(
-            self.ui.mDataLineEdit.text() != "")
+            self.ui.mDataLineEdit.text() != "" and
+            self.ui.mModelLineEdit.text() != "")
 
     @pyqtSlot()
     def on_mIliButton_clicked(self):
@@ -197,6 +200,18 @@ class InterlisDialog(QtGui.QDialog):
     def on_mIliLineEdit_textChanged(self, s):
         self.ui.mCreateIlisMetaButton.setEnabled(
             self.ui.mIliLineEdit.text() != "")
+
+    @pyqtSlot()
+    def on_mCreateIlisMetaButton_clicked(self):
+        loader = ModelLoader("")
+        outfile = self.ui.mIliLineEdit.text() + '.imd'  # TODO: ask user
+        os.environ['ILI2C'] = self.ui.mIli2cLineEdit.text()
+        ret = loader.convert_model([self.ui.mIliLineEdit.text()], outfile)
+        err = ("Error:" in ret)
+        self._show_log_window()
+        self._log_output("IlisMeta creation: " + str(ret))
+        if not err:
+            self.ui.mModelLineEdit.setText(outfile)
 
     @pyqtSlot()
     def on_mModelLookupButton_clicked(self):
@@ -245,13 +260,14 @@ class InterlisDialog(QtGui.QDialog):
     @pyqtSlot(str)
     def on_mModelLineEdit_textChanged(self, s):
         self.ui.mConfigLineEdit.clear()
-        self.update_model_import_buttons()
+        self._update_model_import_buttons()
+        self._update_data_import_button()
 
     @pyqtSlot(int)
     def on_cbDbConnections_currentIndexChanged(self, v):
-        self.update_model_import_buttons()
+        self._update_model_import_buttons()
 
-    def update_model_import_buttons(self):
+    def _update_model_import_buttons(self):
         self.ui.mImportEnumsButton.setEnabled(
             self.ui.mModelLineEdit.text() != "" and
             self.ui.cbDbConnections.currentIndex() != 0)  # DB conn. selected
@@ -302,9 +318,9 @@ class InterlisDialog(QtGui.QDialog):
 
     @pyqtSlot()
     def on_mIli2cPathButton_clicked(self):
-        ili2c_path = QFileDialog.getExistingDirectory(
-            None, "Select directory containing  ili2.jar",
-            self.ui.mIli2cLineEdit.text())
+        ili2c_path = QFileDialog.getOpenFileName(
+            None, "Select path to ili2.jar", self.ui.mIli2cLineEdit.text(),
+            "JAR file (*.jar *.JAR);;All files (*.*)")
         if not ili2c_path:
             return  # dialog canceled
         self.ui.mIli2cLineEdit.setText(ili2c_path)

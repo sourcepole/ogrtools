@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_interlis.ui'
 #
-# Created: Wed Mar  4 22:43:41 2015
+# Created: Wed Mar  4 23:30:41 2015
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -37,6 +37,7 @@ class Ui_Interlis(object):
         self.gridLayout_7 = QtGui.QGridLayout(self.modeltab)
         self.gridLayout_7.setObjectName(_fromUtf8("gridLayout_7"))
         self.mModelLookupButton = QtGui.QPushButton(self.modeltab)
+        self.mModelLookupButton.setEnabled(False)
         self.mModelLookupButton.setObjectName(_fromUtf8("mModelLookupButton"))
         self.gridLayout_7.addWidget(self.mModelLookupButton, 1, 2, 1, 2)
         self.mModelFileLabel = QtGui.QLabel(self.modeltab)
