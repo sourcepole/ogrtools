@@ -2,11 +2,15 @@
 name=interlis
 qgisMinimumVersion=2.0
 description=Interlis Import/Export
-version=0.7.2
+version=0.8.0
 author=Pirmin Kalberer (Sourcepole)
 email=pka@sourcepole.ch
 
 changelog=
+  0.8.0
+    - Model tab with schema creation and enum import buttons
+    - Create IlisMeta from Ili
+    - OGR config creation with default mapping
   0.7.2
     - Fix OGR library import
     - Show Log window on model lookup error
