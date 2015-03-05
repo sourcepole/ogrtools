@@ -268,6 +268,8 @@ class InterlisDialog(QtGui.QDialog):
     @pyqtSlot(str)
     def on_mModelLineEdit_textChanged(self, s):
         self.ui.mConfigLineEdit.clear()
+        self.ui.mCreateCfgButton.setEnabled(
+            self.ui.mModelLineEdit.text() != "")
         self._update_model_import_buttons()
         self._update_data_import_button()
 
@@ -275,13 +277,29 @@ class InterlisDialog(QtGui.QDialog):
     def on_cbDbConnections_currentIndexChanged(self, v):
         self._update_model_import_buttons()
 
+    @pyqtSlot()
+    def on_mCreateCfgButton_clicked(self):
+        outfile = QFileDialog.getSaveFileName(
+            None, "Save File", self.ui.mIliLineEdit.text(),
+            "OGR config (*.cfg *.CFG *.json *.JSON)")
+        if not outfile:
+            return
+        cfg = OgrConfig(ds=self._empty_transfer_ds(),
+                        model=self.ui.mModelLineEdit.text())
+        self._gen_ogr_config(cfg, outfile)
+        self.ui.mConfigLineEdit.setText(outfile)
+        self.ui.mCfgGroupBox.setCollapsed(self.ui.mConfigLineEdit.text() == "")
+
+    def _dbconn_selected(self):
+        return (self.ui.cbDbConnections.currentIndex() != 0)
+
     def _update_model_import_buttons(self):
         self.ui.mImportEnumsButton.setEnabled(
-            self.ui.mModelLineEdit.text() != "" and
-            self.ui.cbDbConnections.currentIndex() != 0)  # DB conn. selected
+            self.ui.mModelLineEdit.text() != "" and self._dbconn_selected())
         self.ui.mCreateSchemaButton.setEnabled(
-            self.ui.mModelLineEdit.text() != "" and
-            self.ui.cbDbConnections.currentIndex() != 0)  # DB conn. selected
+            self.ui.mModelLineEdit.text() != "" and self._dbconn_selected())
+        self.ui.mExportButton.setEnabled(
+            self.ui.mConfigLineEdit.text() != "" and self._dbconn_selected())
 
     @pyqtSlot()
     def on_mConfigButton_clicked(self):
@@ -295,7 +313,7 @@ class InterlisDialog(QtGui.QDialog):
 
     @pyqtSlot(str)
     def on_mConfigLineEdit_textChanged(self, s):
-        self.ui.mExportButton.setEnabled(self.ui.mConfigLineEdit.text() != "")
+        self._update_model_import_buttons()
 
     @pyqtSlot()
     def on_mImportButton_clicked(self):
@@ -351,17 +369,19 @@ class InterlisDialog(QtGui.QDialog):
         cfg = self._ogr_config(ds)
         if not cfg.is_loaded():
             __, self._ogrconfig_tmp = tempfile.mkstemp('.cfg', 'ogr_')
-            format = 'PostgreSQL'
-            cfgjson = cfg.generate_config(
-                format, outfile=self._ogrconfig_tmp, layer_list=[], srs="EPSG:21781")
-            qDebug(cfgjson)
-            self.ui.mConfigLineEdit.setText(self._ogrconfig_tmp)
+            self._gen_ogr_config(cfg, self._ogrconfig_tmp)
         return cfg
+
+    def _gen_ogr_config(self, cfg, fn):
+        format = 'PostgreSQL'
+        cfgjson = cfg.generate_config(
+            format, outfile=fn, layer_list=[], srs="EPSG:21781")
+        qDebug(cfgjson)
 
     def _remove_ogrconfig_tmp(self):
         if self._ogrconfig_tmp is not None:
             os.remove(self._ogrconfig_tmp)
-            self.ui.mConfigLineEdit.setText("")
+            self._ogrconfig_tmp = None
 
     def importtoqgis(self):
         dataSourceUri = self.iliDs()
@@ -408,8 +428,7 @@ class InterlisDialog(QtGui.QDialog):
         cfg = self._ogr_config_tmp(self.iliDs())
         ogroutput = cfg.transform(
             dest=self.pgDs(), skipfailures=self.ui.cbSkipFailures.isChecked(), debug=True)
-        # Keep temp config for export
-        # self._remove_ogrconfig_tmp()
+        self._remove_ogrconfig_tmp()
         self._plugin.messageLogWidget().show()
         self._log_output(ogroutput)
         self._log_output("Import finished")
