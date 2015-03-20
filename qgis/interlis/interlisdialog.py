@@ -380,7 +380,11 @@ class InterlisDialog(QtGui.QDialog):
 
     def _remove_ogrconfig_tmp(self):
         if self._ogrconfig_tmp is not None:
-            os.remove(self._ogrconfig_tmp)
+            try:
+                os.remove(self._ogrconfig_tmp)
+            except WindowsError:
+                qDebug("WindowsError: Couldn't delete %s" %
+                       self._ogrconfig_tmp)
             self._ogrconfig_tmp = None
 
     def importtoqgis(self):
