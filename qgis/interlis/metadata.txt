@@ -2,11 +2,13 @@
 name=interlis
 qgisMinimumVersion=2.0
 description=Interlis Import/Export
-version=0.8.1
+version=0.8.2
 author=Pirmin Kalberer (Sourcepole)
 email=pka@sourcepole.ch
 
 changelog=
+  0.8.2
+    - Compatibility with OGR 2.0
   0.8.1
     - Catch Windows file locking error when deleting temporary configuration
   0.8.0
