@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_interlis.ui'
 #
-# Created: Thu May 21 16:48:57 2015
+# Created: Thu May 21 16:54:25 2015
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -156,7 +156,6 @@ class Ui_Interlis(object):
         self.cbResetData.setObjectName(_fromUtf8("cbResetData"))
         self.gridLayout_8.addWidget(self.cbResetData, 4, 1, 1, 1)
         self.cbStrokeCurve = QtGui.QCheckBox(self.frame_2)
-        self.cbStrokeCurve.setEnabled(False)
         self.cbStrokeCurve.setChecked(True)
         self.cbStrokeCurve.setObjectName(_fromUtf8("cbStrokeCurve"))
         self.gridLayout_8.addWidget(self.cbStrokeCurve, 5, 1, 1, 1)
