@@ -37,6 +37,11 @@ from ogrtools.ogrtransform.ogrconfig import OgrConfig
 from ogrtools.interlis.model_loader import ModelLoader
 from ogrtools.interlis.ilismeta import ImdParser
 
+try:
+    from osgeo import gdal
+except ImportError:
+    import gdal
+
 
 class InterlisDialog(QtGui.QDialog):
 
@@ -78,6 +83,8 @@ class InterlisDialog(QtGui.QDialog):
             'interlis/ili2cPath', self.ui.mIli2cLineEdit)
         self._settings.add_handler(
             'interlis/skipFailures', self.ui.cbSkipFailures)
+        self._settings.add_handler(
+            'interlis/strokeCurve', self.ui.cbStrokeCurve)
 
     def iliDs(self):
         """OGR connection string for selected Interlis transfer file + model"""
@@ -318,6 +325,7 @@ class InterlisDialog(QtGui.QDialog):
     @pyqtSlot()
     def on_mImportButton_clicked(self):
         self.setCursor(Qt.WaitCursor)
+        self._set_stroke_curve_option()
         try:
             if self.ui.cbDbConnections.currentText() == "QGIS Layer":
                 self.importtoqgis()
@@ -377,6 +385,10 @@ class InterlisDialog(QtGui.QDialog):
         cfgjson = cfg.generate_config(
             format, outfile=fn, layer_list=[], srs="EPSG:21781")
         qDebug(cfgjson)
+
+    def _set_stroke_curve_option(self):
+        strokeCurve = self.ui.cbStrokeCurve.isChecked()
+        gdal.SetConfigOption('OGR_STROKE_CURVE', str(strokeCurve))
 
     def _remove_ogrconfig_tmp(self):
         if self._ogrconfig_tmp is not None:

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_interlis.ui'
 #
-# Created: Thu Mar  5 21:31:30 2015
+# Created: Thu May 21 14:20:23 2015
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -157,8 +157,13 @@ class Ui_Interlis(object):
         self.cbResetData.setChecked(True)
         self.cbResetData.setObjectName(_fromUtf8("cbResetData"))
         self.gridLayout_8.addWidget(self.cbResetData, 4, 1, 1, 1)
+        self.cbStrokeCurve = QtGui.QCheckBox(self.frame_2)
+        self.cbStrokeCurve.setEnabled(False)
+        self.cbStrokeCurve.setChecked(True)
+        self.cbStrokeCurve.setObjectName(_fromUtf8("cbStrokeCurve"))
+        self.gridLayout_8.addWidget(self.cbStrokeCurve, 5, 1, 1, 1)
         spacerItem2 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.gridLayout_8.addItem(spacerItem2, 5, 1, 1, 1)
+        self.gridLayout_8.addItem(spacerItem2, 6, 1, 1, 1)
         self.gridLayout_5.addWidget(self.frame_2, 1, 0, 1, 1)
         self.tabWidget.addTab(self.settingstab, _fromUtf8(""))
         self.gridLayout_2.addWidget(self.tabWidget, 0, 0, 1, 4)
@@ -222,6 +227,7 @@ class Ui_Interlis(object):
         self.mIlisMetaUrlLineEdit.setText(_translate("Interlis", "http://interlis.sourcepole.ch/wps", None))
         self.cbSkipFailures.setText(_translate("Interlis", "Import-Fehler überspringen", None))
         self.cbResetData.setText(_translate("Interlis", "Daten ersetzen", None))
+        self.cbStrokeCurve.setText(_translate("Interlis", "Kurven segmentieren", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.settingstab), _translate("Interlis", "Einstellungen", None))
         self.label.setText(_translate("Interlis", "Speicherort:", None))
         self.cbDbConnections.setItemText(0, _translate("Interlis", "QGIS Layers", None))
