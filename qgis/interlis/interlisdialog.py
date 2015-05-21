@@ -82,6 +82,8 @@ class InterlisDialog(QtGui.QDialog):
         self._settings.add_handler(
             'interlis/ili2cPath', self.ui.mIli2cLineEdit)
         self._settings.add_handler(
+            'interlis/ilisMetaUrl', self.ui.mIlisMetaUrlLineEdit)
+        self._settings.add_handler(
             'interlis/skipFailures', self.ui.cbSkipFailures)
         self._settings.add_handler(
             'interlis/strokeCurve', self.ui.cbStrokeCurve)
@@ -239,7 +241,8 @@ class InterlisDialog(QtGui.QDialog):
             ili = loader.gen_lookup_ili()
             qDebug(ili)
             wpsreq = self._create_wps_request(ili)
-            req = urllib2.Request(url="http://wps.sourcepole.ch/wps?",
+            url = self.ui.mIlisMetaUrlLineEdit.text()
+            req = urllib2.Request(url=url,
                                   data=wpsreq,
                                   headers={'Content-Type': 'application/xml'})
             # TODO: proxy support

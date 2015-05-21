@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_interlis.ui'
 #
-# Created: Thu May 21 14:20:23 2015
+# Created: Thu May 21 16:48:57 2015
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -142,11 +142,9 @@ class Ui_Interlis(object):
         self.mRepoUrlLineEdit.setObjectName(_fromUtf8("mRepoUrlLineEdit"))
         self.gridLayout_8.addWidget(self.mRepoUrlLineEdit, 1, 1, 1, 1)
         self.label_4 = QtGui.QLabel(self.frame_2)
-        self.label_4.setEnabled(False)
         self.label_4.setObjectName(_fromUtf8("label_4"))
         self.gridLayout_8.addWidget(self.label_4, 2, 0, 1, 1)
         self.mIlisMetaUrlLineEdit = QtGui.QLineEdit(self.frame_2)
-        self.mIlisMetaUrlLineEdit.setEnabled(False)
         self.mIlisMetaUrlLineEdit.setObjectName(_fromUtf8("mIlisMetaUrlLineEdit"))
         self.gridLayout_8.addWidget(self.mIlisMetaUrlLineEdit, 2, 1, 1, 1)
         self.cbSkipFailures = QtGui.QCheckBox(self.frame_2)

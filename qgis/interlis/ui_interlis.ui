@@ -267,9 +267,6 @@
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="label_4">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
             <property name="text">
              <string>IlisMeta Lookup:</string>
             </property>
@@ -280,9 +277,6 @@
           </item>
           <item row="2" column="1">
            <widget class="QLineEdit" name="mIlisMetaUrlLineEdit">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
             <property name="text">
              <string>http://interlis.sourcepole.ch/wps</string>
             </property>
