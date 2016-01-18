@@ -36,6 +36,7 @@ from pyqtconfig import QSettingsManager
 from ogrtools.ogrtransform.ogrconfig import OgrConfig
 from ogrtools.interlis.model_loader import ModelLoader
 from ogrtools.interlis.ilismeta import ImdParser
+from ogrtools.pyogr.singlegeomvrt import has_multi_geom_tables, ogr2vrt
 
 try:
     from osgeo import gdal
@@ -403,7 +404,13 @@ class InterlisDialog(QtGui.QDialog):
             self._ogrconfig_tmp = None
 
     def importtoqgis(self):
-        dataSourceUri = self.iliDs()
+        # QGIS OGR provider only supports one geometry column per table
+        if has_multi_geom_tables(self.iliDs()):
+            __, vrt_tmp = tempfile.mkstemp('.vrt', 'ogr_')
+            ogr2vrt(self.iliDs(), vrt_tmp)
+            dataSourceUri = vrt_tmp
+        else:
+            dataSourceUri = self.iliDs()
         subLayerVectorLayer = QgsVectorLayer(
             dataSourceUri, "interlis_sublayers", "ogr")
         subLayerProvider = subLayerVectorLayer.dataProvider()
