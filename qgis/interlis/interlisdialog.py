@@ -62,7 +62,6 @@ class InterlisDialog(QtGui.QDialog):
 
         self._add_settings_handlers()
 
-        self.ui.mCfgGroupBox.setCollapsed(self.ui.mConfigLineEdit.text() == "")
         self.ui.cbResetData.setEnabled(False)  # Not implemented yet
 
     def setup(self):
@@ -70,16 +69,10 @@ class InterlisDialog(QtGui.QDialog):
 
     def _add_settings_handlers(self):
         self._settings = QSettingsManager()
-        self._settings.add_handler(
-            'interlis/iliFile', self.ui.mIliLineEdit)
-        self._settings.add_handler(
-            'interlis/modelFile', self.ui.mModelLineEdit)
-        #self._settings.add_handler(
-        #    'interlis/dataFile', self.ui.mDataLineEdit)
+        # self._settings.add_handler(
+        #     'interlis/modelFile', self.ui.mModelLineEdit)
         self._settings.add_handler(
             'interlis/dbConnection', self.ui.cbDbConnections)
-        self._settings.add_handler(
-            'interlis/configFile', self.ui.mConfigLineEdit)
         self._settings.add_handler(
             'interlis/ili2cPath', self.ui.mIli2cLineEdit)
         self._settings.add_handler(
@@ -299,7 +292,6 @@ class InterlisDialog(QtGui.QDialog):
                         model=self.ui.mModelLineEdit.text())
         self._gen_ogr_config(cfg, outfile)
         self.ui.mConfigLineEdit.setText(outfile)
-        self.ui.mCfgGroupBox.setCollapsed(self.ui.mConfigLineEdit.text() == "")
 
     def _dbconn_selected(self):
         return (self.ui.cbDbConnections.currentIndex() != 0)
