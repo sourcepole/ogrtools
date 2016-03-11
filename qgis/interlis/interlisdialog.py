@@ -71,8 +71,6 @@ class InterlisDialog(QtGui.QDialog):
         self._settings.add_handler(
             'interlis/dbConnection', self.ui.cbDbConnections)
         self._settings.add_handler(
-            'interlis/ili2cPath', self.ui.mIli2cLineEdit)
-        self._settings.add_handler(
             'interlis/ilisMetaUrl', self.ui.mIlisMetaUrlLineEdit)
         self._settings.add_handler(
             'interlis/skipFailures', self.ui.cbSkipFailures)
@@ -194,22 +192,6 @@ class InterlisDialog(QtGui.QDialog):
             (self.ui.mModelAutoLoadCheckBox.isChecked() or
                 self.ui.mModelLineEdit.text() != ""))
 
-    @pyqtSlot()
-    def on_mCreateIlisMetaButton_clicked(self):
-        loader = ModelLoader("")
-        outfile = QFileDialog.getSaveFileName(
-            None, "Save File", self.ui.mIliLineEdit.text(),
-            "IlisMeta model (*.imd *.IMD)")
-        if not outfile:
-            return
-        os.environ['ILI2C'] = self.ui.mIli2cLineEdit.text()
-        ret = loader.convert_model([self.ui.mIliLineEdit.text()], outfile)
-        err = ("Error:" in ret)
-        self._show_log_window()
-        self._log_output("IlisMeta creation: " + str(ret))
-        if not err:
-            self.ui.mModelLineEdit.setText(outfile)
-
     def loadModel(self):
         imd = None
         try:
@@ -308,15 +290,6 @@ class InterlisDialog(QtGui.QDialog):
             self.createschema()
         finally:
             self.unsetCursor()
-
-    @pyqtSlot()
-    def on_mIli2cPathButton_clicked(self):
-        ili2c_path = QFileDialog.getOpenFileName(
-            None, "Select path to ili2.jar", self.ui.mIli2cLineEdit.text(),
-            "JAR file (*.jar *.JAR);;All files (*.*)")
-        if not ili2c_path:
-            return  # dialog canceled
-        self.ui.mIli2cLineEdit.setText(ili2c_path)
 
     def _ogr_config(self, ds):
         ogrconfig = None  # self.ui.mConfigLineEdit.text()

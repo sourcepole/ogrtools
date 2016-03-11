@@ -1,5 +1,0 @@
-<RCC>
-    <qresource prefix="/plugins/ogrprocessingplugin" >
-        <file>icon.png</file>
-    </qresource>
-</RCC>

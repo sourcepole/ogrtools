@@ -1,10 +1,9 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import subprocess
-from sextante.core.SextanteLog import SextanteLog
-from sextante.core.SextanteConfig import Setting, SextanteConfig
-from sextante.core.SextanteUtils import SextanteUtils
-import os
+from processing.core.ProcessingLog import ProcessingLog
+from processing.core.ProcessingConfig import ProcessingConfig
+from processing.tools.system import isWindows
 
 
 class IliUtils:
@@ -12,17 +11,16 @@ class IliUtils:
     JAVA_EXEC = "JAVA_EXEC"
     ILI2C_JAR = "ILI2C_JAR"
     ILI2PG_JAR = "ILI2PG_JAR"
-    CREATEDB_EXEC = "CREATEDB_EXEC"
 
     @staticmethod
     def runShellCmd(args, progress):
         loglines = []
         loglines.append("Ili execution console output")
-        if SextanteUtils.isWindows():
+        if isWindows():
             command = ["cmd.exe", "/C ", '"' + args[0] + '"'] + args[1:]
         else:
             command = args
-        SextanteLog.addToLog(SextanteLog.LOG_INFO, ' '.join(command))
+        ProcessingLog.addToLog(ProcessingLog.LOG_INFO, ' '.join(command))
         # java doesn't find quoted file on Win with: ''.join(['"%s" ' % c for c
         # in command])
         fused_command = ' '.join(command)
@@ -30,12 +28,12 @@ class IliUtils:
                                 stdin=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True).stdout
         for line in iter(proc.readline, ""):
             loglines.append(line)
-        SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
+        ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
         IliUtils.consoleOutput = loglines
 
     @staticmethod
     def java_exec_default():
-        if SextanteUtils.isWindows():
+        if isWindows():
             java = "java.exe"
         else:
             java = "java"
@@ -43,7 +41,7 @@ class IliUtils:
 
     @staticmethod
     def runJava(jar, args, progress):
-        args = [SextanteConfig.getSetting(
+        args = [ProcessingConfig.getSetting(
             IliUtils.JAVA_EXEC), "-jar",  jar] + args
         IliUtils.runShellCmd(args, progress)
 
@@ -76,7 +74,7 @@ class IliUtils:
         #-u|--usage            Display short information about usage.
         #-v|--version          Display the version of ili2c.
         IliUtils.runJava(
-            SextanteConfig.getSetting(IliUtils.ILI2C_JAR), args, progress)
+            ProcessingConfig.getSetting(IliUtils.ILI2C_JAR), args, progress)
 
     @staticmethod
     def getConsoleOutput():
@@ -84,4 +82,4 @@ class IliUtils:
 
     @staticmethod
     def errfunc(text):
-        SextanteLog.addToLog(SextanteLog.LOG_ERROR, text)
+        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, text)

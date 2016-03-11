@@ -30,90 +30,144 @@ __copyright__ = '(C) 2016 by Pirmin Kalberer'
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import QSettings
-from qgis.core import QgsVectorFileWriter
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+from processing.core.parameters import ParameterVector, ParameterFile, ParameterSelection
+from processing.core.outputs import OutputFile
+from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools import dataobjects, vector
 
+from IliUtils import IliUtils
 
-class InterlisAlgorithm(GeoAlgorithm):
-    """This is an example algorithm that takes a vector layer and
-    creates a new one just with just those features of the input
-    layer that are selected.
 
-    It is meant to be used as an example of how to create your own
-    algorithms and explain methods and variables used to do it. An
-    algorithm like this will be available in all elements, and there
-    is not need for additional work.
+def connectionOptions(connection):
+    settings = QSettings()
+    mySettings = '/PostgreSQL/connections/' + connection
+    try:
+        database = settings.value(mySettings + '/database')
+        username = settings.value(mySettings + '/username')
+        host = settings.value(mySettings + '/host')
+        port = settings.value(mySettings + '/port', type=int)
+        password = settings.value(mySettings + '/password')
+    except Exception:
+        raise GeoAlgorithmExecutionException(
+            'Wrong database connection name: %s' % connection)
+    connoptions = {
+        "-dbhost": host,
+        "-dbport": str(port),
+        "-dbdatabase": database,
+        "-dbusr": username,
+        "-dbpwd": password
+    }
+    ili2pgargs = []
+    for k, v in connoptions.items():
+        if len(v) > 0:
+            ili2pgargs.extend([k, v])
+    return ili2pgargs
 
-    All Processing algorithms should extend the GeoAlgorithm class.
-    """
 
-    # Constants used to refer to parameters and outputs. They will be
-    # used when calling the algorithm from another algorithm, or when
-    # calling from the QGIS console.
+def dbConnectionNames():
+    settings = QSettings()
+    settings.beginGroup('/PostgreSQL/connections/')
+    return settings.childGroups()
 
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
-    INPUT_LAYER = 'INPUT_LAYER'
+
+class Ili2PgAlgorithm(GeoAlgorithm):
+    OUTPUT = "OUTPUT"
+    ILI = "ILI"
+    DB = "DB"
 
     def defineCharacteristics(self):
-        """Here we define the inputs and output of the algorithm, along
-        with some other properties.
-        """
+        self.name = "ili2pg schemaimport"
+        self.group = "Interlis"
 
-        # The name that the user will see in the toolbox
-        self.name = 'Import Interlis Data'
+        self.addParameter(ParameterFile(
+            self.ILI,
+            self.tr('Interlis model file'), optional=False, ext='ili'))
+        #File extension filter not working in file dialg with current Processing 
+        self.DB_CONNECTIONS = dbConnectionNames()
+        self.addParameter(ParameterSelection(
+            self.DB,
+            self.tr('Database (connection name)'), self.DB_CONNECTIONS))
 
-        # The branch of the toolbox under which the algorithm will appear
-        self.group = 'ili2pg'
-
-        # We add the input vector layer. It can have any kind of geometry
-        # It is a mandatory (not optional) one, hence the False argument
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
-
-        # We add a vector layer as output
-        self.addOutput(OutputVector(self.OUTPUT_LAYER,
-            self.tr('Output layer with selected features')))
+        #self.addOutput(OutputHTML(self.OUTPUT, "Ili2Pg result"))
 
     def processAlgorithm(self, progress):
-        """Here is where the processing itself takes place."""
+        '''Here is where the processing itself takes place'''
 
-        # The first thing to do is retrieve the values of the parameters
-        # entered by the user
-        inputFilename = self.getParameterValue(self.INPUT_LAYER)
-        output = self.getOutputValue(self.OUTPUT_LAYER)
+        ili = self.getParameterValue(self.ILI)
+        db = self.DB_CONNECTIONS[self.getParameterValue(self.DB)]
+        ili2pgargs = ['-schemaimport']
+        ili2pgargs.extend(connectionOptions(db))
+        ili2pgargs.extend(["-models", ili])
 
-        # Input layers vales are always a string with its location.
-        # That string can be converted into a QGIS object (a
-        # QgsVectorLayer in this case) using the
-        # processing.getObjectFromUri() method.
-        vectorLayer = dataobjects.getObjectFromUri(inputFilename)
+        IliUtils.runJava(
+            ProcessingConfig.getSetting(IliUtils.ILI2PG_JAR),
+            ili2pgargs, progress)
 
-        # And now we can process
 
-        # First we create the output layer. The output value entered by
-        # the user is a string containing a filename, so we can use it
-        # directly
-        settings = QSettings()
-        systemEncoding = settings.value('/UI/encoding', 'System')
-        provider = vectorLayer.dataProvider()
-        writer = QgsVectorFileWriter(output, systemEncoding,
-                                     provider.fields(),
-                                     provider.geometryType(), provider.crs())
+class Pg2IliAlgorithm(GeoAlgorithm):
 
-        # Now we take the features from input layer and add them to the
-        # output. Method features() returns an iterator, considering the
-        # selection that might exist in layer and the configuration that
-        # indicates should algorithm use only selected features or all
-        # of them
-        features = vector.features(vectorLayer)
-        for f in features:
-            writer.addFeature(f)
+    OUTPUT = "OUTPUT"
+    ILI = "ILI"
+    XTF = "XTF"
+    DB = "DB"
 
-        # There is nothing more to do here. We do not have to open the
-        # layer that we have created. The framework will take care of
-        # that, or will handle it if this algorithm is executed within
-        # a complex model
+    def defineCharacteristics(self):
+        self.name = "ili2pg export"
+        self.group = "Interlis"
+
+        self.DB_CONNECTIONS = dbConnectionNames()
+        self.addParameter(ParameterSelection(
+            self.DB,
+            self.tr('Database (connection name)'), self.DB_CONNECTIONS))
+        self.addParameter(ParameterFile(
+            self.ILI,
+            self.tr('Interlis model file'), optional=False, ext='ili'))
+        self.addOutput(OutputFile(
+            self.XTF,
+            description="Ilismeta XML model output file", ext='xtf'))
+        # ext: xtf, xml, itf
+
+        #self.addOutput(OutputHTML(self.OUTPUT, "Ili2Pg result"))
+
+    def processAlgorithm(self, progress):
+        '''Here is where the processing itself takes place'''
+
+        db = self.DB_CONNECTIONS[self.getParameterValue(self.DB)]
+        ili = self.getParameterValue(self.ILI)
+        xtf = self.getOutputValue(self.XTF)
+
+        ili2pgargs = ['-export']
+        ili2pgargs.extend(connectionOptions(db))
+        ili2pgargs.extend(["-models", ili, xtf])
+
+        IliUtils.runJava(
+            ProcessingConfig.getSetting(IliUtils.ILI2PG_JAR),
+            ili2pgargs, progress)
+
+
+class Ili2ImdAlgorithm(GeoAlgorithm):
+
+    OUTPUT = "OUTPUT"
+    ILI = "ILI"
+    IMD = "IMD"
+
+    def defineCharacteristics(self):
+        self.name = "ili to XML metamodel"
+        self.group = "Interlis"
+
+        self.addParameter(ParameterFile(
+            self.ILI,
+            self.tr('Interlis model file'), optional=False, ext='ili'))
+        self.addOutput(OutputFile(
+            self.IMD,
+            description="Ilismeta XML model output file", ext='imd'))
+
+    def processAlgorithm(self, progress):
+        '''Here is where the processing itself takes place'''
+
+        ili = self.getParameterValue(self.ILI)
+        imd = self.getOutputValue(self.IMD)
+        IliUtils.runIli2c(["-oIMD", "--out", imd, ili], progress)

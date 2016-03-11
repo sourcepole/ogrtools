@@ -31,12 +31,11 @@ __revision__ = '$Format:%H$'
 
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingConfig import Setting, ProcessingConfig
-from interlis_algorithm import InterlisAlgorithm
+from IliUtils import IliUtils
+from interlis_algorithm import Ili2PgAlgorithm, Pg2IliAlgorithm, Ili2ImdAlgorithm
 
 
 class InterlisProvider(AlgorithmProvider):
-
-    MY_DUMMY_SETTING = 'MY_DUMMY_SETTING'
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
@@ -45,7 +44,9 @@ class InterlisProvider(AlgorithmProvider):
         self.activate = False
 
         # Load algorithms
-        self.alglist = [InterlisAlgorithm()]
+        self.alglist = [
+            Ili2PgAlgorithm(), Pg2IliAlgorithm(), Ili2ImdAlgorithm()
+        ]
         for alg in self.alglist:
             alg.provider = self
 
@@ -58,9 +59,12 @@ class InterlisProvider(AlgorithmProvider):
         deactivating the algorithms in the provider.
         """
         AlgorithmProvider.initializeSettings(self)
-        ProcessingConfig.addSetting(Setting('Example algorithms',
-            InterlisProvider.MY_DUMMY_SETTING,
-            'Example setting', 'Default value'))
+        ProcessingConfig.addSetting(Setting(
+            self.getDescription(), IliUtils.JAVA_EXEC, "Java executable",  IliUtils.java_exec_default()))
+        ProcessingConfig.addSetting(
+            Setting(self.getDescription(), IliUtils.ILI2C_JAR, "ili2c.jar path", "ili2c.jar"))
+        ProcessingConfig.addSetting(Setting(
+            self.getDescription(), IliUtils.ILI2PG_JAR, "ili2pg.jar path", "ili2pg.jar"))
 
     def unload(self):
         """Setting should be removed here, so they do not appear anymore
@@ -68,7 +72,11 @@ class InterlisProvider(AlgorithmProvider):
         """
         AlgorithmProvider.unload(self)
         ProcessingConfig.removeSetting(
-            InterlisProvider.MY_DUMMY_SETTING)
+            InterlisProvider.JAVA_EXEC)
+        ProcessingConfig.removeSetting(
+            InterlisProvider.ILI2C_JAR)
+        ProcessingConfig.removeSetting(
+            InterlisProvider.ILI2PG_JAR)
 
     def getName(self):
         """This is the name that will appear on the toolbox group.
@@ -81,7 +89,7 @@ class InterlisProvider(AlgorithmProvider):
     def getDescription(self):
         """This is the provired full name.
         """
-        return 'Interlis'
+        return 'Interlis algorithms'
 
     def getIcon(self):
         """We return the default icon.

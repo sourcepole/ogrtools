@@ -32,12 +32,6 @@ from interlisdialog import InterlisDialog
 import os.path
 
 
-# cmd_folder = os.path.split(inspect.getfile(inspect.currentframe()))[0]
-
-# if cmd_folder not in sys.path:
-#     sys.path.insert(0, cmd_folder)
-
-
 class Interlis:
 
     def __init__(self, iface):
@@ -57,8 +51,8 @@ class Interlis:
             if qVersion() > '4.3.3':
                 QCoreApplication.installTranslator(self.translator)
 
-        if ogr_version_num() < 1110000:
-            raise ImportError("OGR library 1.11 or newer needed")
+        if ogr_version_num() < 2000200:
+            raise ImportError("GDAL/OGR 2.0.2 or newer required")
 
         # Create the dialog (after translation) and keep reference
         self.dlg = InterlisDialog(self)
