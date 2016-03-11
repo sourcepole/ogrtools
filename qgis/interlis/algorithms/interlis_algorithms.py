@@ -36,9 +36,8 @@ from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecution
 from processing.core.parameters import ParameterVector, ParameterFile, ParameterSelection
 from processing.core.outputs import OutputFile
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.tools import dataobjects, vector
 
-from IliUtils import IliUtils
+from interlis_utils import IliUtils
 
 
 def connectionOptions(connection):

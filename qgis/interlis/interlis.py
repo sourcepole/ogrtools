@@ -27,7 +27,7 @@ from PyQt4.QtGui import QAction, QIcon, QDockWidget
 import resources_rc
 from ogrtools.pyogr.ogrinfo import ogr_version_num
 from processing.core.Processing import Processing
-from interlis_provider import InterlisProvider
+from algorithms.interlis_provider import InterlisProvider
 from interlisdialog import InterlisDialog
 import os.path
 

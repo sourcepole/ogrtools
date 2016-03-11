@@ -31,8 +31,8 @@ __revision__ = '$Format:%H$'
 
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingConfig import Setting, ProcessingConfig
-from IliUtils import IliUtils
-from interlis_algorithm import Ili2PgAlgorithm, Pg2IliAlgorithm, Ili2ImdAlgorithm
+from interlis_utils import IliUtils
+from interlis_algorithms import Ili2PgAlgorithm, Pg2IliAlgorithm, Ili2ImdAlgorithm
 
 
 class InterlisProvider(AlgorithmProvider):
