@@ -26,8 +26,16 @@ from PyQt4.QtGui import QAction, QIcon, QDockWidget
 # Initialize Qt resources from file resources.py
 import resources_rc
 from ogrtools.pyogr.ogrinfo import ogr_version_num
+from processing.core.Processing import Processing
+from interlis_provider import InterlisProvider
 from interlisdialog import InterlisDialog
 import os.path
+
+
+# cmd_folder = os.path.split(inspect.getfile(inspect.currentframe()))[0]
+
+# if cmd_folder not in sys.path:
+#     sys.path.insert(0, cmd_folder)
 
 
 class Interlis:
@@ -54,6 +62,8 @@ class Interlis:
 
         # Create the dialog (after translation) and keep reference
         self.dlg = InterlisDialog(self)
+        # Processing provider
+        self.provider = InterlisProvider()
 
     def initGui(self):
         # Create action that will start plugin configuration
@@ -67,7 +77,10 @@ class Interlis:
         self.iface.addToolBarIcon(self.action)
         self.iface.addPluginToMenu(u"&Interlis", self.action)
 
+        Processing.addProvider(self.provider)
+
     def unload(self):
+        Processing.removeProvider(self.provider)
         # Remove the plugin menu item and icon
         self.iface.removePluginMenu(u"&Interlis", self.action)
         self.iface.removeToolBarIcon(self.action)
