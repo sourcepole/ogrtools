@@ -52,27 +52,30 @@ class IliUtils:
         #
         # OPTIONS
         #
-        #--no-auto             don't look automatically after required models.
-        #-o0                   Generate no output (default).
-        #-o1                   Generate INTERLIS-1 output.
-        #-o2                   Generate INTERLIS-2 output.
-        #-oXSD                 Generate an XML-Schema.
-        #-oFMT                 Generate an INTERLIS-1 Format.
-        #-oIMD                 Generate Model as IlisMeta INTERLIS-Transfer (XTF).
-        #-oIOM                 (deprecated) Generate Model as INTERLIS-Transfer (XTF).
-        #--out file/dir        file or folder for output.
-        #--ilidirs %ILI_DIR;http://models.interlis.ch/;%JAR_DIR list of directories with ili-files.
-        #--proxy host          proxy server to access model repositories.
-        #--proxyPort port      proxy port to access model repositories.
-        #--with-predefined     Include the predefined MODEL INTERLIS in
-        #                      the output. Usually, this is omitted.
-        #--without-warnings    Report only errors, no warnings. Usually,
-        #                      warnings are generated as well.
-        #--trace               Display detailed trace messages.
-        #--quiet               Suppress info messages.
-        #-h|--help             Display this help text.
-        #-u|--usage            Display short information about usage.
-        #-v|--version          Display the version of ili2c.
+        # --no-auto             don't look automatically after required models.
+        # -o0                   Generate no output (default).
+        # -o1                   Generate INTERLIS-1 output.
+        # -o2                   Generate INTERLIS-2 output.
+        # -oXSD                 Generate an XTF XML-Schema.
+        # -oFMT                 Generate an INTERLIS-1 Format.
+        # -oIMD                 Generate Model as IlisMeta INTERLIS-Transfer (XTF).
+        # -oUML                 Generate Model as UML2/XMI-Transfer (eclipse flavour).
+        # -oIOM                 (deprecated) Generate Model as INTERLIS-Transfer (XTF).
+        # --check-repo-ilis uri   check all ili files in the given repository.
+        # --out file/dir        file or folder for output (folder must exist).
+        # --ilidirs %ILI_DIR;http://models.interlis.ch/;%JAR_DIR list of directories with ili-files.
+        # --proxy host          proxy server to access model repositories.
+        # --proxyPort port      proxy port to access model repositories.
+        # --with-predefined     Include the predefined MODEL INTERLIS in
+        #                       the output. Usually, this is omitted.
+        # --without-warnings    Report only errors, no warnings. Usually,
+        #                       warnings are generated as well.
+        # --trace               Display detailed trace messages.
+        # --quiet               Suppress info messages.
+        # -h|--help             Display this help text.
+        # -u|--usage            Display short information about usage.
+        # -v|--version          Display the version of ili2c.
+
         IliUtils.runJava(
             ProcessingConfig.getSetting(IliUtils.ILI2C_JAR), args, progress)
 

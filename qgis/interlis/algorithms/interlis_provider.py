@@ -21,18 +21,11 @@
  ***************************************************************************/
 """
 
-__author__ = 'Pirmin Kalberer'
-__date__ = '2016-03-11'
-__copyright__ = '(C) 2016 by Pirmin Kalberer'
-
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingConfig import Setting, ProcessingConfig
 from interlis_utils import IliUtils
 from interlis_algorithms import Ili2PgAlgorithm, Pg2IliAlgorithm, Ili2ImdAlgorithm
+import os
 
 
 class InterlisProvider(AlgorithmProvider):
@@ -59,12 +52,19 @@ class InterlisProvider(AlgorithmProvider):
         deactivating the algorithms in the provider.
         """
         AlgorithmProvider.initializeSettings(self)
+        jarpath = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), '..', 'jars'))
         ProcessingConfig.addSetting(Setting(
-            self.getDescription(), IliUtils.JAVA_EXEC, "Java executable",  IliUtils.java_exec_default()))
+            self.getDescription(), IliUtils.JAVA_EXEC,
+            "Java executable",  IliUtils.java_exec_default()))
         ProcessingConfig.addSetting(
-            Setting(self.getDescription(), IliUtils.ILI2C_JAR, "ili2c.jar path", "ili2c.jar"))
+            Setting(self.getDescription(), IliUtils.ILI2C_JAR,
+                    "ili2c.jar path",
+                    os.path.join(jarpath, "ili2c.jar")))
         ProcessingConfig.addSetting(Setting(
-            self.getDescription(), IliUtils.ILI2PG_JAR, "ili2pg.jar path", "ili2pg.jar"))
+            self.getDescription(), IliUtils.ILI2PG_JAR,
+                    "ili2pg.jar path",
+                    os.path.join(jarpath, "ili2pg.jar")))
 
     def unload(self):
         """Setting should be removed here, so they do not appear anymore
