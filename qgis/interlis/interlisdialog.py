@@ -55,9 +55,6 @@ class InterlisDialog(QtGui.QDialog):
 
         # Initialize DB connection drop-down
         self.ui.cbDbConnections.clear()
-        # Bug in 2.0 causes crash when adding sublayers
-        if QGis.QGIS_VERSION_INT >= 20200:
-            self.ui.cbDbConnections.addItem("QGIS Layer")
         self.ui.cbDbConnections.addItems(self.dbConnectionList())
 
         self._add_settings_handlers()
@@ -185,28 +182,17 @@ class InterlisDialog(QtGui.QDialog):
 
     @pyqtSlot(str)
     def on_mDataLineEdit_textChanged(self, s):
-        self.ui.mModelLookupButton.setEnabled(
-            self.ui.mDataLineEdit.text() != "")
+        self._update_data_import_button()
+
+    @pyqtSlot(bool)
+    def on_mModelAutoLoadCheckBox_toggled(self, checked):
         self._update_data_import_button()
 
     def _update_data_import_button(self):
         self.ui.mImportButton.setEnabled(
             self.ui.mDataLineEdit.text() != "" and
-            self.ui.mModelLineEdit.text() != "")
-
-    @pyqtSlot()
-    def on_mIliButton_clicked(self):
-        iliFilePath = QFileDialog.getOpenFileName(
-            None, "Open Interlis data file", self.ui.mIliLineEdit.text(),
-            "Interlis model file (*.ili *.ILI);;All files (*.*)")
-        if not iliFilePath:
-            return  # dialog canceled
-        self.ui.mIliLineEdit.setText(iliFilePath)
-
-    @pyqtSlot(str)
-    def on_mIliLineEdit_textChanged(self, s):
-        self.ui.mCreateIlisMetaButton.setEnabled(
-            self.ui.mIliLineEdit.text() != "")
+            (self.ui.mModelAutoLoadCheckBox.isChecked() or
+                self.ui.mModelLineEdit.text() != ""))
 
     @pyqtSlot()
     def on_mCreateIlisMetaButton_clicked(self):
@@ -224,8 +210,7 @@ class InterlisDialog(QtGui.QDialog):
         if not err:
             self.ui.mModelLineEdit.setText(outfile)
 
-    @pyqtSlot()
-    def on_mModelLookupButton_clicked(self):
+    def loadModel(self):
         imd = None
         try:
             loader = ModelLoader(self.ui.mDataLineEdit.text())
@@ -271,59 +256,37 @@ class InterlisDialog(QtGui.QDialog):
 
     @pyqtSlot(str)
     def on_mModelLineEdit_textChanged(self, s):
-        self.ui.mConfigLineEdit.clear()
-        self.ui.mCreateCfgButton.setEnabled(
-            self.ui.mModelLineEdit.text() != "")
         self._update_model_import_buttons()
         self._update_data_import_button()
+        self.ui.mModelAutoLoadCheckBox.setChecked(s == "")
+
+    @pyqtSlot(bool)
+    def on_mQgisLayer_toggled(self, checked):
+        self.ui.cbDbConnections.setEnabled(not checked)
+        self._update_model_import_buttons()
 
     @pyqtSlot(int)
     def on_cbDbConnections_currentIndexChanged(self, v):
         self._update_model_import_buttons()
 
-    @pyqtSlot()
-    def on_mCreateCfgButton_clicked(self):
-        outfile = QFileDialog.getSaveFileName(
-            None, "Save File", self.ui.mIliLineEdit.text(),
-            "OGR config (*.cfg *.CFG *.json *.JSON)")
-        if not outfile:
-            return
-        cfg = OgrConfig(ds=self._empty_transfer_ds(),
-                        model=self.ui.mModelLineEdit.text())
-        self._gen_ogr_config(cfg, outfile)
-        self.ui.mConfigLineEdit.setText(outfile)
-
     def _dbconn_selected(self):
-        return (self.ui.cbDbConnections.currentIndex() != 0)
+        return (not self.ui.mQgisLayer.isChecked() and
+                self.ui.cbDbConnections.currentIndex() != 0)
 
     def _update_model_import_buttons(self):
         self.ui.mImportEnumsButton.setEnabled(
             self.ui.mModelLineEdit.text() != "" and self._dbconn_selected())
         self.ui.mCreateSchemaButton.setEnabled(
             self.ui.mModelLineEdit.text() != "" and self._dbconn_selected())
-        self.ui.mExportButton.setEnabled(
-            self.ui.mConfigLineEdit.text() != "" and self._dbconn_selected())
-
-    @pyqtSlot()
-    def on_mConfigButton_clicked(self):
-        configPath = QFileDialog.getOpenFileName(
-            None, "Open OGR mapping config file",
-            self.ui.mConfigLineEdit.text(),
-            "OGR config (*.cfg *.CFG *.json *.JSON);;All files (*.*)")
-        if not configPath:
-            return  # dialog canceled
-        self.ui.mConfigLineEdit.setText(configPath)
-
-    @pyqtSlot(str)
-    def on_mConfigLineEdit_textChanged(self, s):
-        self._update_model_import_buttons()
 
     @pyqtSlot()
     def on_mImportButton_clicked(self):
         self.setCursor(Qt.WaitCursor)
         self._set_stroke_curve_option()
         try:
-            if self.ui.cbDbConnections.currentText() == "QGIS Layer":
+            if self.ui.mModelAutoLoadCheckBox.isChecked():
+                self.loadModel()
+            if self.ui.mQgisLayer.isChecked():
                 self.importtoqgis()
             else:
                 self.importtodb()
@@ -347,10 +310,6 @@ class InterlisDialog(QtGui.QDialog):
             self.unsetCursor()
 
     @pyqtSlot()
-    def on_mExportButton_clicked(self):
-        self.exporttoxtf()
-
-    @pyqtSlot()
     def on_mIli2cPathButton_clicked(self):
         ili2c_path = QFileDialog.getOpenFileName(
             None, "Select path to ili2.jar", self.ui.mIli2cLineEdit.text(),
@@ -360,8 +319,8 @@ class InterlisDialog(QtGui.QDialog):
         self.ui.mIli2cLineEdit.setText(ili2c_path)
 
     def _ogr_config(self, ds):
-        ogrconfig = self.ui.mConfigLineEdit.text()
-        self._log_output("_ogr_config ds: %s cfg: %s" % (ds, ogrconfig))
+        ogrconfig = None  # self.ui.mConfigLineEdit.text()
+        #self._log_output("_ogr_config ds: %s cfg: %s" % (ds, ogrconfig))
         if ogrconfig:
             cfg = OgrConfig(ds=ds, config=ogrconfig)
         else:
@@ -473,21 +432,21 @@ class InterlisDialog(QtGui.QDialog):
             self._plugin.iface.messageBar().pushMessage("Interlis", "Import finished",
                                                         level=QgsMessageBar.INFO, duration=2)
 
-    def exporttoxtf(self):
-        cfg = self._ogr_config(self.pgDs())
-        fn = QFileDialog.getSaveFileName(
-            None, "Save File", "",
-            "Interlis 2 transfer (*.xtf *.XTF *.xml)")
-        if not fn:
-            return
-        ds = self.iliFileDs(fn)
-        ogroutput = cfg.transform_reverse(
-            dest=ds, skipfailures=self.ui.cbSkipFailures.isChecked(),
-            debug=True)
-        self._log_output(ogroutput)
-        QgsMessageLog.logMessage(
-            "Export to '%s' finished" % self.ui.mDataLineEdit.text(),
-            "Interlis", QgsMessageLog.INFO)
+    # def exporttoxtf(self):
+    #     cfg = self._ogr_config(self.pgDs())
+    #     fn = QFileDialog.getSaveFileName(
+    #         None, "Save File", "",
+    #         "Interlis 2 transfer (*.xtf *.XTF *.xml)")
+    #     if not fn:
+    #         return
+    #     ds = self.iliFileDs(fn)
+    #     ogroutput = cfg.transform_reverse(
+    #         dest=ds, skipfailures=self.ui.cbSkipFailures.isChecked(),
+    #         debug=True)
+    #     self._log_output(ogroutput)
+    #     QgsMessageLog.logMessage(
+    #         "Export to '%s' finished" % self.ui.mDataLineEdit.text(),
+    #         "Interlis", QgsMessageLog.INFO)
 
     def _show_log_window(self):
         logDock = self._plugin.iface.mainWindow().findChild(
