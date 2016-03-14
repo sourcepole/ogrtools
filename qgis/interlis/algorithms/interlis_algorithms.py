@@ -33,7 +33,7 @@ from PyQt4.QtCore import QSettings
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector, ParameterFile, ParameterSelection
+from processing.core.parameters import ParameterVector, ParameterFile, ParameterString, ParameterSelection
 from processing.core.outputs import OutputFile
 from processing.core.ProcessingConfig import ProcessingConfig
 
@@ -132,17 +132,24 @@ def dbConnectionNames():
 
 class Ili2PgAlgorithm(GeoAlgorithm):
     OUTPUT = "OUTPUT"
-    ILI = "ILI"
+    ILIDIR = "ILIDIR"
+    ILIMODELS = "ILIMODELS"
+    XTF = "XTF"
     DB = "DB"
 
     def defineCharacteristics(self):
-        self.name = "ili2pg schemaimport"
-        self.group = "Interlis"
+        self.name = "Import into PostGIS"
+        self.group = "ili2c / ili2pg"
 
         self.addParameter(ParameterFile(
-            self.ILI,
-            self.tr('Interlis model file'), optional=False, ext='ili'))
-        #File extension filter not working in file dialg with current Processing 
+            self.XTF,
+            self.tr('Interlis transfer input file'), optional=False))
+        self.addParameter(ParameterFile(
+            self.ILIDIR,
+            self.tr('Interlis model directory'), isFolder=True))
+        self.addParameter(ParameterString(
+            self.ILIMODELS,
+            self.tr('Interlis models'), optional=True))
         self.DB_CONNECTIONS = dbConnectionNames()
         self.addParameter(ParameterSelection(
             self.DB,
@@ -151,13 +158,17 @@ class Ili2PgAlgorithm(GeoAlgorithm):
         #self.addOutput(OutputHTML(self.OUTPUT, "Ili2Pg result"))
 
     def processAlgorithm(self, progress):
-        '''Here is where the processing itself takes place'''
-
-        ili = self.getParameterValue(self.ILI)
+        xtf = self.getParameterValue(self.XTF)
+        modeldir = self.getParameterValue(self.ILIDIR)
+        models = self.getParameterValue(self.ILIMODELS)
         db = self.DB_CONNECTIONS[self.getParameterValue(self.DB)]
-        ili2pgargs = ['--schemaimport']
+        ili2pgargs = ['--import']
         ili2pgargs.extend(connectionOptions(db))
-        ili2pgargs.extend(["--models", ili])
+        if modeldir:
+            ili2pgargs.extend(["--modeldir", modeldir])
+        if models:
+            ili2pgargs.extend(["--models", models])
+        ili2pgargs.append(xtf)
 
         IliUtils.runJava(
             ProcessingConfig.getSetting(IliUtils.ILI2PG_JAR),
@@ -167,38 +178,44 @@ class Ili2PgAlgorithm(GeoAlgorithm):
 class Pg2IliAlgorithm(GeoAlgorithm):
 
     OUTPUT = "OUTPUT"
-    ILI = "ILI"
+    ILIDIR = "ILIDIR"
+    ILIMODELS = "ILIMODELS"
     XTF = "XTF"
     DB = "DB"
 
     def defineCharacteristics(self):
-        self.name = "ili2pg export"
-        self.group = "Interlis"
+        self.name = "PostGIS Export"
+        self.group = "ili2c / ili2pg"
 
         self.DB_CONNECTIONS = dbConnectionNames()
         self.addParameter(ParameterSelection(
             self.DB,
             self.tr('Database (connection name)'), self.DB_CONNECTIONS))
         self.addParameter(ParameterFile(
-            self.ILI,
-            self.tr('Interlis model file'), optional=False, ext='ili'))
+            self.ILIDIR,
+            self.tr('Interlis model directory'), isFolder=True))
+        self.addParameter(ParameterString(
+            self.ILIMODELS,
+            self.tr('Interlis models')))
         self.addOutput(OutputFile(
             self.XTF,
-            description="Ilismeta XML model output file", ext='xtf'))
+            description="Interlis transfer output file"))
         # ext: xtf, xml, itf
 
         #self.addOutput(OutputHTML(self.OUTPUT, "Ili2Pg result"))
 
     def processAlgorithm(self, progress):
-        '''Here is where the processing itself takes place'''
-
         db = self.DB_CONNECTIONS[self.getParameterValue(self.DB)]
-        ili = self.getParameterValue(self.ILI)
+        modeldir = self.getParameterValue(self.ILIDIR)
+        models = self.getParameterValue(self.ILIMODELS)
         xtf = self.getOutputValue(self.XTF)
 
         ili2pgargs = ['--export']
         ili2pgargs.extend(connectionOptions(db))
-        ili2pgargs.extend(["--models", ili, xtf])
+        if modeldir:
+            ili2pgargs.extend(["--modeldir", modeldir])
+        ili2pgargs.extend(["--models", models])
+        ili2pgargs.append(xtf)
 
         IliUtils.runJava(
             ProcessingConfig.getSetting(IliUtils.ILI2PG_JAR),
@@ -212,15 +229,15 @@ class Ili2ImdAlgorithm(GeoAlgorithm):
     IMD = "IMD"
 
     def defineCharacteristics(self):
-        self.name = "ili to XML metamodel"
-        self.group = "Interlis"
+        self.name = "Ili Model -> IlisMeta"
+        self.group = "ili2c / ili2pg"
 
         self.addParameter(ParameterFile(
             self.ILI,
             self.tr('Interlis model file'), optional=False, ext='ili'))
         self.addOutput(OutputFile(
             self.IMD,
-            description="Ilismeta XML model output file", ext='imd'))
+            description="IlisMeta XML model output file", ext='imd'))
 
     def processAlgorithm(self, progress):
         '''Here is where the processing itself takes place'''
