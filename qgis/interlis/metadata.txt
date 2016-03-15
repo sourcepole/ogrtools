@@ -1,12 +1,19 @@
 [general]
 name=interlis
-qgisMinimumVersion=2.0
+qgisMinimumVersion=2.14
+# 2.14 is technically not required, but the first version on Windows with OGR 2.0
 description=Interlis Import/Export
-version=0.8.2
+about=Load Interlis data into QGIS layer and import/export functionality for PostGIS.
+  Contains a GUI and Processing algorithms for additional tasks requiring a Java.
+version=0.9.0
 author=Pirmin Kalberer (Sourcepole)
 email=pka@sourcepole.ch
 
 changelog=
+  0.9.0
+    - Simplified GUI
+    - Processing algorithms for operations requiring Java
+    - Support for multiple geometries per layer
   0.8.2
     - Compatibility with OGR 2.0
   0.8.1
