@@ -444,7 +444,7 @@ For running ogr commands from source tree:
 
 ::
 
-    alias ogr="PYTHONPATH=$(pwd) $(pwd)/bin/ogr"
+    alias ogr="PYTHONPATH=$(pwd) $(pwd)/ogr_cli/ogr.py"
 
 License
 -------

@@ -2,14 +2,14 @@ from distutils.core import setup
 
 setup(
     name='ogrtools',
-    version='0.7.2',
+    version='0.7.3',
     author='Pirmin Kalberer',
     author_email='pka@sourcepole.ch',
     packages=['ogrtools', 'ogrtools.interlis',
               'ogrtools.ogrtransform', 'ogrtools.pyogr',
-              'ogr_cli',],
+              'ogr_cli'],
     url='https://github.com/sourcepole/ogrtools',
-    download_url='https://github.com/sourcepole/mypackage/tarball/0.7.2',
+    download_url='https://github.com/sourcepole/mypackage/tarball/0.7.3',
     license='LICENSE.txt',
     description='Collection of libraries and tools built with the Python API of OGR.',
     long_description=open('README.rst').read(),
@@ -25,7 +25,7 @@ setup(
         'Programming Language :: Python :: 2',
         'Topic :: Scientific/Engineering :: GIS',
     ],
-    entry_points = {
+    entry_points={
         'console_scripts': ['ogr = ogr_cli.ogr:main'],
-    } 
+    }
     )
