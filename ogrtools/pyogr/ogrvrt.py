@@ -132,31 +132,9 @@ def ogr2vrt(infile,
         # Process all the fields.
         for fld_index in range(layerdef.GetFieldCount()):
             src_fd = layerdef.GetFieldDefn(fld_index)
-            if src_fd.GetType() == ogr.OFTInteger:
-                type = 'Integer'
-            elif src_fd.GetType() == ogr.OFTString:
-                type = 'String'
-            elif src_fd.GetType() == ogr.OFTReal:
-                type = 'Real'
-            elif src_fd.GetType() == ogr.OFTStringList:
-                type = 'StringList'
-            elif src_fd.GetType() == ogr.OFTIntegerList:
-                type = 'IntegerList'
-            elif src_fd.GetType() == ogr.OFTRealList:
-                type = 'RealList'
-            elif src_fd.GetType() == ogr.OFTBinary:
-                type = 'Binary'
-            elif src_fd.GetType() == ogr.OFTDate:
-                type = 'Date'
-            elif src_fd.GetType() == ogr.OFTTime:
-                type = 'Time'
-            elif src_fd.GetType() == ogr.OFTDateTime:
-                type = 'DateTime'
-            else:
-                type = 'String'
-
+            ftype = ogr.GetFieldTypeName(src_fd.GetType())
             vrt += '    <Field name="%s" type="%s"' \
-                   % (Esc(src_fd.GetName()), type)
+                   % (Esc(src_fd.GetName()), ftype)
             if not schema:
                 vrt += ' src="%s"' % Esc(src_fd.GetName())
             if src_fd.GetWidth() > 0:

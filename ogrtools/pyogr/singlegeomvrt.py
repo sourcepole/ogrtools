@@ -1,4 +1,7 @@
-from osgeo import ogr
+try:
+    from osgeo import ogr
+except:
+    import ogr
 from ogrvrt import GeomType2Name, Esc
 
 
@@ -13,6 +16,7 @@ def has_multi_geom_tables(infile):
             if poLayer.GetLayerDefn().GetGeomFieldCount() > 1:
                 has_multi = True
                 break
+    ds = None
     return has_multi
 
 
@@ -27,17 +31,19 @@ def ogr2vrt(infile,
 
     vrt = '<OGRVRTDataSource>\n'
 
-    for iLayer in range(src_ds.GetLayerCount()):
-        layer = src_ds.GetLayer(iLayer)
+    # Sort layers by name as a workaround for mysterious order
+    layers = sorted(list(src_ds), key=lambda l: l.GetLayerDefn().GetName())
+    for layer in layers:
         nGeomFieldCount = layer.GetLayerDefn().GetGeomFieldCount()
         if nGeomFieldCount > 0:
             for iGeomField in range(nGeomFieldCount):
-                vrt += vrt_layer(layer, infile, nGeomFieldCount > 1,
+                vrt += vrt_layer(layer, infile, nGeomFieldCount,
                                  iGeomField)
         else:
-            vrt += vrt_layer(layer, infile, False, None)
+            vrt += vrt_layer(layer, infile, nGeomFieldCount, None)
 
     vrt += '</OGRVRTDataSource>\n'
+    src_ds = None
 
     if outfile is not None:
         f = open(outfile, "w")
@@ -49,20 +55,22 @@ def ogr2vrt(infile,
 
 def vrt_layer(layer,
               infile,
-              multiGeom,
+              geomFieldCount,
               iGeom,
               relative="0"):
     layerdef = layer.GetLayerDefn()
     name = layerdef.GetName()
-    if multiGeom:
+    poGFldDefn = None
+    nameSuffix = ''
+    if geomFieldCount == 1:
+        gFldType = GeomType2Name(layerdef.GetGeomType())
+    elif geomFieldCount > 1:
         poGFldDefn = layerdef.GetGeomFieldDefn(iGeom)
         gFldType = GeomType2Name(poGFldDefn.GetType())
         gFldName = poGFldDefn.GetNameRef()
-        nameSuffix = '_%s' % gFldName
+        nameSuffix = '__%s' % gFldName
     else:
-        poGFldDefn = None
-        gFldType = 'wkbUnknown'
-        nameSuffix = ''
+        gFldType = 'wkbNone'
 
     vrt = ''
     vrt += '  <OGRVRTLayer name="%s">\n' % Esc(name+nameSuffix)
@@ -70,6 +78,8 @@ def vrt_layer(layer,
            % (relative, True, Esc(str(infile)))
     vrt += '    <SrcLayer>%s</SrcLayer>\n' % Esc(name)
     vrt += '    <GeometryType>%s</GeometryType>\n' % gFldType
+    # Add FeatureCount for QGIS layer selection
+    vrt += '    <FeatureCount>%d</FeatureCount>\n' % layer.GetFeatureCount()
     if poGFldDefn is not None:
         vrt += '    <GeometryField name="%s"/>\n' % gFldName
         if poGFldDefn.GetSpatialRef() is not None:
