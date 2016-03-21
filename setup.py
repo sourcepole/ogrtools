@@ -9,7 +9,6 @@ setup(
               'ogrtools.ogrtransform', 'ogrtools.pyogr',
               'ogr_cli'],
     url='https://github.com/sourcepole/ogrtools',
-    download_url='https://github.com/sourcepole/mypackage/tarball/0.7.3',
     license='LICENSE.txt',
     description='Collection of libraries and tools built with the Python API of OGR.',
     long_description=open('README.rst').read(),
