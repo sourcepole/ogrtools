@@ -5,11 +5,13 @@ qgisMinimumVersion=2.14
 description=Interlis Import/Export
 about=Load Interlis data into QGIS layer and import/export functionality for PostGIS.
   Contains a GUI and Processing algorithms for additional tasks requiring a Java.
-version=0.9.0
+version=0.9.1
 author=Pirmin Kalberer (Sourcepole)
 email=pka@sourcepole.ch
 
 changelog=
+  0.9.1
+    - Improved layer selection list
   0.9.0
     - Simplified GUI
     - Processing algorithms for operations requiring Java
