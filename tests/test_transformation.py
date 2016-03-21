@@ -24,7 +24,7 @@ def test_shape_to_geojson():
     assert '{ "osm_type": "rail"' in result
     geojsonstart = """{
 "type": "FeatureCollection",
-                                                                                
+                                                                                                                                  
 "features": [
 { "type": "Feature", "properties": {"""
     assert geojsonstart in result

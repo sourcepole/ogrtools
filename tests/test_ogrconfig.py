@@ -36,7 +36,7 @@ def test_shape_config():
         }, 
         "osm_id": {
           "src": "osm_id", 
-          "type": "Real", 
+          "type": "Integer64", 
           "width": 11
         }
       }, 

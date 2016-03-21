@@ -22,8 +22,18 @@ GEOMETRY_TYPES = {
     5: 'MultiLineString',
     6: 'MultiPolygon',
     7: 'GeometryCollection',
+    8: 'LineString',  # wkbCircularString
+    9: 'MultiLineString',  # wkbCompoundCurve
+    10: 'Polygon',  # wkbCurvePolygon
+    11: 'MultiLineString',  # wkbMultiCurve
+    12: 'MultiPolygon',  # wkbMultiSurface
     100: 'None',
     101: 'LinearRing',
+    1008: 'LineString',  # wkbCircularStringZ
+    1009: 'MultiLineString',  # wkbCompoundCurveZ
+    1010: 'Polygon',  # wkbCurvePolygonZ
+    1011: 'MultiLineString',  # wkbMultiCurveZ
+    1012: 'MultiPolygon',  # wkbMultiSurfaceZ
     0x80000001: '3D Point',
     0x80000002: '3D LineString',
     0x80000003: '3D Polygon',
@@ -47,7 +57,9 @@ FIELD_TYPES = [
     'Binary',       # OFTBinary, Raw Binary data
     'Date',         # OFTDate, Date
     'Time',         # OFTTime, Time
-    'DateTime'      # OFTDateTime, Date and Time
+    'DateTime',     # OFTDateTime, Date and Time
+    'Integer64',    # OFTInteger64
+    'Integer64List'  # OFTInteger64List
 ]
 
 
