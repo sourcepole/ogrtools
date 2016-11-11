@@ -25,7 +25,7 @@ from PyQt4.QtGui import QIcon
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingConfig import Setting, ProcessingConfig
 from interlis_utils import IliUtils
-from interlis_algorithms import Ili2PgAlgorithm, Pg2IliAlgorithm, Ili2ImdAlgorithm
+from interlis_algorithms import Ili2DbSchemaAlgorithm, Ili2DbImportAlgorithm, Ili2DbExportAlgorithm, Ili2ImdAlgorithm
 import os
 
 
@@ -40,7 +40,7 @@ class InterlisProvider(AlgorithmProvider):
 
         # Load algorithms
         self.alglist = [
-            Ili2PgAlgorithm(), Pg2IliAlgorithm(), Ili2ImdAlgorithm()
+            Ili2DbSchemaAlgorithm(), Ili2DbImportAlgorithm(), Ili2DbExportAlgorithm(), Ili2ImdAlgorithm()
         ]
         for alg in self.alglist:
             alg.provider = self
@@ -61,12 +61,17 @@ class InterlisProvider(AlgorithmProvider):
             Setting(self.getDescription(), IliUtils.ILI2PG_JAR,
                     "ili2pg.jar path",
                     os.path.join(jarpath, "ili2pg.jar")))
+        ProcessingConfig.addSetting(
+            Setting(self.getDescription(), IliUtils.ILI2GPKG_JAR,
+                    "ili2gpkg.jar path",
+                    os.path.join(jarpath, "ili2gpkg.jar")))
 
     def unload(self):
         AlgorithmProvider.unload(self)
         ProcessingConfig.removeSetting(InterlisProvider.JAVA_EXEC)
         ProcessingConfig.removeSetting(InterlisProvider.ILI2C_JAR)
         ProcessingConfig.removeSetting(InterlisProvider.ILI2PG_JAR)
+        ProcessingConfig.removeSetting(InterlisProvider.ILI2GPKG_JAR)
 
     def getName(self):
         """This is the name that will appear on the toolbox group.

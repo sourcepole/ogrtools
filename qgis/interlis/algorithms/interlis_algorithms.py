@@ -33,7 +33,7 @@ from PyQt4.QtCore import QSettings
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector, ParameterFile, ParameterString, ParameterSelection
+from processing.core.parameters import ParameterVector, ParameterFile, ParameterString, ParameterBoolean, ParameterSelection
 from processing.core.outputs import OutputFile
 from processing.core.ProcessingConfig import ProcessingConfig
 
@@ -72,6 +72,8 @@ def connectionOptions(connection):
 #
 # --import               do an import.
 # --update               do an update.
+# --replace              do a replace.
+# --delete               do a delete.
 # --export               do an export.
 # --schemaimport         do an schema import.
 # --dbhost  host         The host name of the server. Defaults to localhost.
@@ -79,17 +81,21 @@ def connectionOptions(connection):
 # --dbdatabase database  The database name.
 # --dbusr  username      User name to access database.
 # --dbpwd  password      Password of user used to access database.
+# --validConfig file     Config file for validation.
+# --disableValidation    Disable validation of data.
 # --deleteData           on schema/data import, delete existing data from existing tables.
 # --defaultSrsAuth  auth Default SRS authority EPSG
 # --defaultSrsCode  code Default SRS code 21781
 # --modeldir  path       Path(s) of directories containing ili-files.
 # --models modelname     Name(s) of ili-models to generate an db schema for.
+# --dataset name         Name of dataset.
 # --baskets BID          Basket-Id(s) of ili-baskets to export.
 # --topics topicname     Name(s) of ili-topics to export.
 # --createscript filename  Generate a sql script that creates the db schema.
 # --dropscript filename  Generate a sql script that drops the generated db schema.
 # --noSmartMapping       disable all smart mappings
-# --smartInheritance     enable smart mapping of class/structure inheritance
+# --smart1Inheritance     enable smart1 mapping of class/structure inheritance
+# --smart2Inheritance     enable smart2 mapping of class/structure inheritance
 # --coalesceCatalogueRef enable smart mapping of CHBase:CatalogueReference
 # --coalesceMultiSurface enable smart mapping of CHBase:MultiSurface
 # --expandMultilingual   enable smart mapping of CHBase:MultilingualText
@@ -100,6 +106,8 @@ def connectionOptions(connection):
 # --createSingleEnumTab  generate all enum definitions in a single table.
 # --createStdCols        generate T_User, T_CreateDate, T_LastChange columns.
 # --t_id_Name name       change name of t_id column (T_Id)
+# --idSeqMin minValue    sets the minimum value of the id sequence generator.
+# --idSeqMax maxValue    sets the maximum value of the id sequence generator.
 # --createTypeDiscriminator  generate always a type discriminaor colum.
 # --structWithGenericRef  generate one generic reference to parent in struct tables.
 # --disableNameOptimization disable use of unqualified class name as table name.
@@ -130,23 +138,159 @@ def dbConnectionNames():
     return settings.childGroups()
 
 
-class Ili2PgAlgorithm(GeoAlgorithm):
+class Ili2DbSchemaAlgorithm(GeoAlgorithm):
     OUTPUT = "OUTPUT"
     ILIDIR = "ILIDIR"
     ILIMODELS = "ILIMODELS"
     XTF = "XTF"
     DB = "DB"
+    TABLE_NAMING = [
+        'unqualified',
+        'nameByTopic',
+        'disableNameOptimization']
+    INHERTIANCE_MAPPINGS = [
+        'smart1Inheritance',
+        'smart2Inheritance',
+        'noSmartMapping']
+
 
     def defineCharacteristics(self):
-        self.name = "Import into PostGIS"
-        self.group = "ili2c / ili2pg"
+        self.name = "Create Schema from Model"
+        self.group = "ili2pg / ili2gpkg"
 
+        self.addParameter(ParameterString(
+            self.ILIMODELS,
+            self.tr('Interlis models'), optional=False))
+        self.addParameter(ParameterString(
+            self.ILIDIR,
+            self.tr('Interlis model search path'),
+            default='http://models.geo.admin.ch/'))
+        self.addParameter(ParameterFile(
+            'iliLocalPath',
+            self.tr('Local model directory'), isFolder=True))
+        self.addParameter(ParameterBoolean(
+            'nameByTopic',
+            self.tr('Use topic+class name as table name'), default=True))
+        self.addParameter(ParameterSelection(
+            'tableNaming',
+            self.tr('Table naming convention:'),
+            options=self.TABLE_NAMING, default=1))
+        self.addParameter(ParameterSelection(
+            'inheritanceMapping',
+            self.tr('Inheritance mapping strategy:'),
+            options=self.INHERTIANCE_MAPPINGS, default=0))
+        self.addParameter(ParameterBoolean(
+            'sqlNotNull',
+            self.tr('Create NOT NULL constraints in db schema'), default=False))
+        self.addParameter(ParameterBoolean(
+            'createBasketCol',
+            self.tr('Generate T_basket column'), default=False))
+        self.addParameter(ParameterBoolean(
+            'createFk',
+            self.tr('Generate foreign key constraints'), default=True))
+        self.addParameter(ParameterBoolean(
+            'createFkIdx',
+            self.tr('Create an index on foreign key columns'), default=True))
+        self.addParameter(ParameterBoolean(
+            'createGeomIdx',
+            self.tr('Create a spatial index on geometry columns'), default=True))
+        self.addParameter(ParameterBoolean(
+            'strokeArcs',
+            self.tr('Stroke ARCS on import'), default=False))
+        self.addParameter(ParameterBoolean(
+            'createEnumTabs',
+            self.tr('Generate tables with enum definitions'), default=True))
+        self.addParameter(ParameterString(
+            'defaultSrsCode',
+            self.tr('Default SRS code (EPSG)'), default='21781'))
+        self.DB_CONNECTIONS = dbConnectionNames()
+        self.addParameter(ParameterSelection(
+            self.DB,
+            self.tr('Database (connection name)'), self.DB_CONNECTIONS))
+        self.addParameter(ParameterString(
+            'dbschema',
+            self.tr('Database schema name'), default='public'))
+
+    def processAlgorithm(self, progress):
+        ili2pgargs = ['--schemaimport']
+
+        models = self.getParameterValue(self.ILIMODELS)
+        ili2pgargs.extend(["--models", models])
+
+        modeldir = self.getParameterValue(self.ILIDIR)
+        localmodeldir = self.getParameterValue('iliLocalPath')
+        if localmodeldir:
+            modeldir = "%s;%s" % (localmodeldir, modeldir)
+        ili2pgargs.append("--modeldir '%s'" % modeldir)
+
+        naming = self.TABLE_NAMING[self.getParameterValue('tableNaming')]
+        if naming != 'unqualified':
+            ili2pgargs.append("--%s" % naming)
+
+        mapping = self.INHERTIANCE_MAPPINGS[self.getParameterValue('inheritanceMapping')]
+        ili2pgargs.append("--%s" % mapping)
+
+        if not self.getParameterValue('sqlNotNull'):
+            ili2pgargs.append('--sqlEnableNull')
+
+        if self.getParameterValue('createFk'):
+            ili2pgargs.append('--createFk')
+
+        if self.getParameterValue('createFkIdx'):
+            ili2pgargs.append('--createFkIdx')
+
+        if self.getParameterValue('createGeomIdx'):
+            ili2pgargs.append('--createGeomIdx')
+
+        if self.getParameterValue('strokeArcs'):
+            ili2pgargs.append('--strokeArcs')
+
+        if self.getParameterValue('createEnumTabs'):
+            ili2pgargs.append('--createEnumTabs')
+
+        defaultSrsCode = self.getParameterValue('defaultSrsCode')
+        ili2pgargs.extend(["--defaultSrsCode", defaultSrsCode])
+
+        db = self.DB_CONNECTIONS[self.getParameterValue(self.DB)]
+        ili2pgargs.extend(connectionOptions(db))
+
+        dbschema = self.getParameterValue('dbschema')
+        ili2pgargs.extend(["--dbschema", dbschema])
+
+        IliUtils.runJava(
+            ProcessingConfig.getSetting(IliUtils.ILI2PG_JAR),
+            ili2pgargs, progress)
+
+
+class Ili2DbImportAlgorithm(GeoAlgorithm):
+    OUTPUT = "OUTPUT"
+    ILIDIR = "ILIDIR"
+    ILIMODELS = "ILIMODELS"
+    XTF = "XTF"
+    DB = "DB"
+    IMPORT_MODE = [
+        'import',
+        'update',
+        'replace']
+
+    def defineCharacteristics(self):
+        self.name = "Import into DB"
+        self.group = "ili2pg / ili2gpkg"
+
+        self.addParameter(ParameterSelection(
+            'importMode',
+            self.tr('Import mode:'),
+            options=self.IMPORT_MODE, default=0))
+        self.addParameter(ParameterString(
+            'dataset',
+            self.tr('Name of dataset'), optional=True))
         self.addParameter(ParameterFile(
             self.XTF,
             self.tr('Interlis transfer input file'), optional=False))
-        self.addParameter(ParameterFile(
+        self.addParameter(ParameterString(
             self.ILIDIR,
-            self.tr('Interlis model directory'), isFolder=True))
+            self.tr('Interlis model search path'),
+            default='%ILI_FROM_DB;%XTF_DIR;http://models.geo.admin.ch/'))
         self.addParameter(ParameterString(
             self.ILIMODELS,
             self.tr('Interlis models'), optional=True))
@@ -154,20 +298,36 @@ class Ili2PgAlgorithm(GeoAlgorithm):
         self.addParameter(ParameterSelection(
             self.DB,
             self.tr('Database (connection name)'), self.DB_CONNECTIONS))
+        self.addParameter(ParameterString(
+            'dbschema',
+            self.tr('Database schema name'), default='public'))
 
         #self.addOutput(OutputHTML(self.OUTPUT, "Ili2Pg result"))
 
     def processAlgorithm(self, progress):
-        xtf = self.getParameterValue(self.XTF)
-        modeldir = self.getParameterValue(self.ILIDIR)
-        models = self.getParameterValue(self.ILIMODELS)
+        ili2pgargs = []
+
+        mode = self.IMPORT_MODE[self.getParameterValue('importMode')]
+        ili2pgargs.append("--%s" % mode)
+
+        dataset = self.getParameterValue('dataset')
+        if dataset:
+            ili2pgargs.extend(["--dataset", dataset])
+
         db = self.DB_CONNECTIONS[self.getParameterValue(self.DB)]
-        ili2pgargs = ['--import']
         ili2pgargs.extend(connectionOptions(db))
-        if modeldir:
-            ili2pgargs.extend(["--modeldir", modeldir])
+
+        modeldir = self.getParameterValue(self.ILIDIR)
+        ili2pgargs.append("--modeldir '%s'" % modeldir)
+
+        models = self.getParameterValue(self.ILIMODELS)
         if models:
             ili2pgargs.extend(["--models", models])
+
+        dbschema = self.getParameterValue('dbschema')
+        ili2pgargs.extend(["--dbschema", dbschema])
+
+        xtf = self.getParameterValue(self.XTF)
         ili2pgargs.append(xtf)
 
         IliUtils.runJava(
@@ -175,7 +335,7 @@ class Ili2PgAlgorithm(GeoAlgorithm):
             ili2pgargs, progress)
 
 
-class Pg2IliAlgorithm(GeoAlgorithm):
+class Ili2DbExportAlgorithm(GeoAlgorithm):
 
     OUTPUT = "OUTPUT"
     ILIDIR = "ILIDIR"
@@ -184,16 +344,23 @@ class Pg2IliAlgorithm(GeoAlgorithm):
     DB = "DB"
 
     def defineCharacteristics(self):
-        self.name = "PostGIS Export"
-        self.group = "ili2c / ili2pg"
+        self.name = "Export from DB"
+        self.group = "ili2pg / ili2gpkg"
 
         self.DB_CONNECTIONS = dbConnectionNames()
         self.addParameter(ParameterSelection(
             self.DB,
             self.tr('Database (connection name)'), self.DB_CONNECTIONS))
-        self.addParameter(ParameterFile(
+        self.addParameter(ParameterString(
+            'dbschema',
+            self.tr('Database schema name'), default='public'))
+        self.addParameter(ParameterString(
+            'dataset',
+            self.tr('Name of dataset'), optional=True))
+        self.addParameter(ParameterString(
             self.ILIDIR,
-            self.tr('Interlis model directory'), isFolder=True))
+            self.tr('Interlis model search path'),
+            default='%ILI_FROM_DB;%XTF_DIR;http://models.geo.admin.ch/'))
         self.addParameter(ParameterString(
             self.ILIMODELS,
             self.tr('Interlis models')))
@@ -205,16 +372,25 @@ class Pg2IliAlgorithm(GeoAlgorithm):
         #self.addOutput(OutputHTML(self.OUTPUT, "Ili2Pg result"))
 
     def processAlgorithm(self, progress):
-        db = self.DB_CONNECTIONS[self.getParameterValue(self.DB)]
-        modeldir = self.getParameterValue(self.ILIDIR)
-        models = self.getParameterValue(self.ILIMODELS)
-        xtf = self.getOutputValue(self.XTF)
-
         ili2pgargs = ['--export']
+
+        db = self.DB_CONNECTIONS[self.getParameterValue(self.DB)]
         ili2pgargs.extend(connectionOptions(db))
-        if modeldir:
-            ili2pgargs.extend(["--modeldir", modeldir])
+
+        dbschema = self.getParameterValue('dbschema')
+        ili2pgargs.extend(["--dbschema", dbschema])
+
+        dataset = self.getParameterValue('dataset')
+        if dataset:
+            ili2pgargs.extend(["--dataset", dataset])
+
+        modeldir = self.getParameterValue(self.ILIDIR)
+        ili2pgargs.append("--modeldir '%s'" % modeldir)
+
+        models = self.getParameterValue(self.ILIMODELS)
         ili2pgargs.extend(["--models", models])
+
+        xtf = self.getOutputValue(self.XTF)
         ili2pgargs.append(xtf)
 
         IliUtils.runJava(
@@ -230,7 +406,7 @@ class Ili2ImdAlgorithm(GeoAlgorithm):
 
     def defineCharacteristics(self):
         self.name = "Ili Model -> IlisMeta"
-        self.group = "ili2c / ili2pg"
+        self.group = "ili2c"
 
         self.addParameter(ParameterFile(
             self.ILI,
