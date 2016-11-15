@@ -29,5 +29,5 @@ def java_exec():
 
 
 def run_java(jar, args):
-    args = [java_exec(), "-jar", jar] + args
+    args = [java_exec(), "-Djava.net.useSystemProxies=true", "-jar", jar] + args
     return run_shell_cmd(args)
