@@ -215,3 +215,128 @@ class Ili2GpkgSchemaAlgorithm(GeoAlgorithm):
         IliUtils.runJava(
             ProcessingConfig.getSetting(IliUtils.ILI2GPKG_JAR),
             ili2dbargs, progress)
+
+
+class Ili2GpkgImportAlgorithm(GeoAlgorithm):
+    OUTPUT = "OUTPUT"
+    ILIDIR = "ILIDIR"
+    ILIMODELS = "ILIMODELS"
+    XTF = "XTF"
+    DB = "DB"
+    IMPORT_MODE = [
+        'import',
+        'update',
+        'replace']
+
+    def defineCharacteristics(self):
+        self.name = "Import into GPKG"
+        self.group = "ili2gpkg"
+
+        self.addParameter(ParameterSelection(
+            'importMode',
+            self.tr('Import mode:'),
+            options=self.IMPORT_MODE, default=0))
+        self.addParameter(ParameterString(
+            'dataset',
+            self.tr('Name of dataset'), optional=True))
+        self.addParameter(ParameterBoolean(
+            'deleteData',
+            self.tr('Delete existing data from existing tables'), default=False))
+        self.addParameter(ParameterFile(
+            self.XTF,
+            self.tr('Interlis transfer input file'), optional=False))
+        self.addParameter(ParameterString(
+            self.ILIDIR,
+            self.tr('Interlis model search path'),
+            default='%ILI_FROM_DB;%XTF_DIR;http://models.geo.admin.ch/'))
+        self.addParameter(ParameterString(
+            self.ILIMODELS,
+            self.tr('Interlis models'), optional=True))
+        self.addParameter(ParameterFile(
+            self.DB,
+            self.tr('GPKG database file'), optional=False, ext='gpkg'))
+
+    def processAlgorithm(self, progress):
+        ili2dbargs = []
+
+        mode = self.IMPORT_MODE[self.getParameterValue('importMode')]
+        ili2dbargs.append("--%s" % mode)
+
+        dataset = self.getParameterValue('dataset')
+        if dataset:
+            ili2dbargs.extend(["--dataset", dataset])
+
+        if self.getParameterValue('deleteData'):
+            ili2dbargs.append('--deleteData')
+
+        db = self.getParameterValue(self.DB)
+        ili2dbargs.extend(["--dbfile", db])
+
+        modeldir = self.getParameterValue(self.ILIDIR)
+        ili2dbargs.append("--modeldir '%s'" % modeldir)
+
+        models = self.getParameterValue(self.ILIMODELS)
+        if models:
+            ili2dbargs.extend(["--models", models])
+
+        xtf = self.getParameterValue(self.XTF)
+        ili2dbargs.append(xtf)
+
+        IliUtils.runJava(
+            ProcessingConfig.getSetting(IliUtils.ILI2GPKG_JAR),
+            ili2dbargs, progress)
+
+
+class Ili2GpkgExportAlgorithm(GeoAlgorithm):
+
+    OUTPUT = "OUTPUT"
+    ILIDIR = "ILIDIR"
+    ILIMODELS = "ILIMODELS"
+    XTF = "XTF"
+    DB = "DB"
+
+    def defineCharacteristics(self):
+        self.name = "Export from GPKG"
+        self.group = "ili2gpkg"
+
+        self.addParameter(ParameterFile(
+            self.DB,
+            self.tr('GPKG database file'), optional=False, ext='gpkg'))
+        self.addParameter(ParameterString(
+            'dataset',
+            self.tr('Name of dataset'), optional=True))
+        self.addParameter(ParameterString(
+            self.ILIDIR,
+            self.tr('Interlis model search path'),
+            default='%ILI_FROM_DB;%XTF_DIR;http://models.geo.admin.ch/'))
+        self.addParameter(ParameterString(
+            self.ILIMODELS,
+            self.tr('Interlis models'), optional=True))
+        self.addOutput(OutputFile(
+            self.XTF,
+            description="Interlis transfer output file"))
+        # ext: xtf, xml, itf
+
+    def processAlgorithm(self, progress):
+        ili2dbargs = ['--export']
+
+        db = self.getParameterValue(self.DB)
+        ili2dbargs.extend(["--dbfile", db])
+
+        dataset = self.getParameterValue('dataset')
+        if dataset:
+            ili2dbargs.extend(["--dataset", dataset])
+
+        modeldir = self.getParameterValue(self.ILIDIR)
+        ili2dbargs.append("--modeldir '%s'" % modeldir)
+
+        models = self.getParameterValue(self.ILIMODELS)
+        if models:
+            ili2dbargs.extend(["--models", models])
+
+        xtf = self.getOutputValue(self.XTF)
+        ili2dbargs.append(xtf)
+
+        IliUtils.runJava(
+            ProcessingConfig.getSetting(IliUtils.ILI2GPKG_JAR),
+            ili2dbargs, progress)

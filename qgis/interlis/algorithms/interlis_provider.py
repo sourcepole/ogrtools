@@ -26,7 +26,7 @@ from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingConfig import Setting, ProcessingConfig
 from interlis_utils import IliUtils
 from ili2pg_algorithms import Ili2PgSchemaAlgorithm, Ili2PgImportAlgorithm, Ili2PgExportAlgorithm
-from ili2gpkg_algorithms import Ili2GpkgSchemaAlgorithm
+from ili2gpkg_algorithms import Ili2GpkgSchemaAlgorithm, Ili2GpkgImportAlgorithm, Ili2GpkgExportAlgorithm
 from ili2c_algorithms import Ili2ImdAlgorithm
 import os
 
@@ -43,7 +43,7 @@ class InterlisProvider(AlgorithmProvider):
         # Load algorithms
         self.alglist = [
             Ili2PgSchemaAlgorithm(), Ili2PgImportAlgorithm(), Ili2PgExportAlgorithm(),
-            Ili2GpkgSchemaAlgorithm(),
+            Ili2GpkgSchemaAlgorithm(), Ili2GpkgImportAlgorithm(), Ili2GpkgExportAlgorithm(),
             Ili2ImdAlgorithm()
         ]
         for alg in self.alglist:
