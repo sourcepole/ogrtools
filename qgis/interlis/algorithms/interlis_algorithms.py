@@ -159,7 +159,7 @@ class Ili2DbSchemaAlgorithm(GeoAlgorithm):
 
         self.addParameter(ParameterString(
             self.ILIMODELS,
-            self.tr('Interlis models'), optional=False))
+            self.tr('Interlis models')))
         self.addParameter(ParameterString(
             self.ILIDIR,
             self.tr('Interlis model search path'),
@@ -224,7 +224,8 @@ class Ili2DbSchemaAlgorithm(GeoAlgorithm):
         ili2pgargs = ['--schemaimport']
 
         models = self.getParameterValue(self.ILIMODELS)
-        ili2pgargs.extend(["--models", models])
+        if models:
+            ili2pgargs.extend(["--models", models])
 
         modeldir = self.getParameterValue(self.ILIDIR)
         localmodeldir = self.getParameterValue('iliLocalPath')
@@ -382,7 +383,7 @@ class Ili2DbExportAlgorithm(GeoAlgorithm):
             default='%ILI_FROM_DB;%XTF_DIR;http://models.geo.admin.ch/'))
         self.addParameter(ParameterString(
             self.ILIMODELS,
-            self.tr('Interlis models')))
+            self.tr('Interlis models'), optional=True))
         self.addOutput(OutputFile(
             self.XTF,
             description="Interlis transfer output file"))
@@ -415,7 +416,8 @@ class Ili2DbExportAlgorithm(GeoAlgorithm):
         ili2pgargs.append("--modeldir '%s'" % modeldir)
 
         models = self.getParameterValue(self.ILIMODELS)
-        ili2pgargs.extend(["--models", models])
+        if models:
+            ili2pgargs.extend(["--models", models])
 
         xtf = self.getOutputValue(self.XTF)
         ili2pgargs.append(xtf)
