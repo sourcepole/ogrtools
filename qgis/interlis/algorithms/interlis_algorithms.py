@@ -153,7 +153,6 @@ class Ili2DbSchemaAlgorithm(GeoAlgorithm):
         'smart2Inheritance',
         'noSmartMapping']
 
-
     def defineCharacteristics(self):
         self.name = "Create Schema from Model"
         self.group = "ili2pg / ili2gpkg"
@@ -203,13 +202,23 @@ class Ili2DbSchemaAlgorithm(GeoAlgorithm):
         self.addParameter(ParameterString(
             'defaultSrsCode',
             self.tr('Default SRS code (EPSG)'), default='21781'))
-        self.DB_CONNECTIONS = dbConnectionNames()
+        self.db_connections = dbConnectionNames()
         self.addParameter(ParameterSelection(
             self.DB,
-            self.tr('Database (connection name)'), self.DB_CONNECTIONS))
+            self.tr('Database (connection name)'), self.db_connections))
         self.addParameter(ParameterString(
             'dbschema',
             self.tr('Database schema name'), default='public'))
+
+    def checkBeforeOpeningParametersDialog(self):
+        # Update connections
+        for i, param in enumerate(self.parameters):
+            if param.name == self.DB:
+                self.db_connections = dbConnectionNames()
+                self.parameters[i] = ParameterSelection(
+                    self.DB,
+                    self.tr('Database (connection name)'), self.db_connections)
+        return None
 
     def processAlgorithm(self, progress):
         ili2pgargs = ['--schemaimport']
@@ -251,7 +260,7 @@ class Ili2DbSchemaAlgorithm(GeoAlgorithm):
         defaultSrsCode = self.getParameterValue('defaultSrsCode')
         ili2pgargs.extend(["--defaultSrsCode", defaultSrsCode])
 
-        db = self.DB_CONNECTIONS[self.getParameterValue(self.DB)]
+        db = self.db_connections[self.getParameterValue(self.DB)]
         ili2pgargs.extend(connectionOptions(db))
 
         dbschema = self.getParameterValue('dbschema')
@@ -294,15 +303,25 @@ class Ili2DbImportAlgorithm(GeoAlgorithm):
         self.addParameter(ParameterString(
             self.ILIMODELS,
             self.tr('Interlis models'), optional=True))
-        self.DB_CONNECTIONS = dbConnectionNames()
+        self.db_connections = dbConnectionNames()
         self.addParameter(ParameterSelection(
             self.DB,
-            self.tr('Database (connection name)'), self.DB_CONNECTIONS))
+            self.tr('Database (connection name)'), self.db_connections))
         self.addParameter(ParameterString(
             'dbschema',
             self.tr('Database schema name'), default='public'))
 
-        #self.addOutput(OutputHTML(self.OUTPUT, "Ili2Pg result"))
+        # self.addOutput(OutputHTML(self.OUTPUT, "Ili2Pg result"))
+
+    def checkBeforeOpeningParametersDialog(self):
+        # Update connections
+        for i, param in enumerate(self.parameters):
+            if param.name == self.DB:
+                self.db_connections = dbConnectionNames()
+                self.parameters[i] = ParameterSelection(
+                    self.DB,
+                    self.tr('Database (connection name)'), self.db_connections)
+        return None
 
     def processAlgorithm(self, progress):
         ili2pgargs = []
@@ -314,7 +333,7 @@ class Ili2DbImportAlgorithm(GeoAlgorithm):
         if dataset:
             ili2pgargs.extend(["--dataset", dataset])
 
-        db = self.DB_CONNECTIONS[self.getParameterValue(self.DB)]
+        db = self.db_connections[self.getParameterValue(self.DB)]
         ili2pgargs.extend(connectionOptions(db))
 
         modeldir = self.getParameterValue(self.ILIDIR)
@@ -347,10 +366,10 @@ class Ili2DbExportAlgorithm(GeoAlgorithm):
         self.name = "Export from DB"
         self.group = "ili2pg / ili2gpkg"
 
-        self.DB_CONNECTIONS = dbConnectionNames()
+        self.db_connections = dbConnectionNames()
         self.addParameter(ParameterSelection(
             self.DB,
-            self.tr('Database (connection name)'), self.DB_CONNECTIONS))
+            self.tr('Database (connection name)'), self.db_connections))
         self.addParameter(ParameterString(
             'dbschema',
             self.tr('Database schema name'), default='public'))
@@ -369,12 +388,20 @@ class Ili2DbExportAlgorithm(GeoAlgorithm):
             description="Interlis transfer output file"))
         # ext: xtf, xml, itf
 
-        #self.addOutput(OutputHTML(self.OUTPUT, "Ili2Pg result"))
+    def checkBeforeOpeningParametersDialog(self):
+        # Update connections
+        for i, param in enumerate(self.parameters):
+            if param.name == self.DB:
+                self.db_connections = dbConnectionNames()
+                self.parameters[i] = ParameterSelection(
+                    self.DB,
+                    self.tr('Database (connection name)'), self.db_connections)
+        return None
 
     def processAlgorithm(self, progress):
         ili2pgargs = ['--export']
 
-        db = self.DB_CONNECTIONS[self.getParameterValue(self.DB)]
+        db = self.db_connections[self.getParameterValue(self.DB)]
         ili2pgargs.extend(connectionOptions(db))
 
         dbschema = self.getParameterValue('dbschema')
