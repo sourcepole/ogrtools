@@ -25,7 +25,7 @@ from PyQt4.QtGui import QIcon
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingConfig import Setting, ProcessingConfig
 from interlis_utils import IliUtils
-from interlis_algorithms import Ili2DbSchemaAlgorithm, Ili2DbImportAlgorithm, Ili2DbExportAlgorithm, Ili2ImdAlgorithm
+from interlis_algorithms import Ili2PgSchemaAlgorithm, Ili2PgImportAlgorithm, Ili2PgExportAlgorithm, Ili2ImdAlgorithm, Ili2GpkgSchemaAlgorithm
 import os
 
 
@@ -40,7 +40,9 @@ class InterlisProvider(AlgorithmProvider):
 
         # Load algorithms
         self.alglist = [
-            Ili2DbSchemaAlgorithm(), Ili2DbImportAlgorithm(), Ili2DbExportAlgorithm(), Ili2ImdAlgorithm()
+            Ili2PgSchemaAlgorithm(), Ili2PgImportAlgorithm(), Ili2PgExportAlgorithm(),
+            Ili2GpkgSchemaAlgorithm(),
+            Ili2ImdAlgorithm()
         ]
         for alg in self.alglist:
             alg.provider = self
