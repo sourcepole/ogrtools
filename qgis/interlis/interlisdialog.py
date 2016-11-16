@@ -335,16 +335,16 @@ class InterlisDialog(QtGui.QDialog):
             dataSourceUri = vrt_tmp
         else:
             dataSourceUri = self.iliDs()
-        subLayerVectorLayer = QgsVectorLayer(
-            dataSourceUri, "interlis_sublayers", "ogr")
-        subLayerProvider = subLayerVectorLayer.dataProvider()
-        if not subLayerProvider:
-            QMessageBox.critical(None, "Error accessing interlis sublayers",
-                                 "A problem occured during access of the sublayers")
-            return
         # QGIS 1.8:
-        #subLayerList = subLayerProvider.subLayers()
-        #subLayerDialog = SublayersDialog()
+        # subLayerVectorLayer = QgsVectorLayer(
+        #     dataSourceUri, "interlis_sublayers", "ogr")
+        # subLayerProvider = subLayerVectorLayer.dataProvider()
+        # if not subLayerProvider:
+        #     QMessageBox.critical(None, "Error accessing interlis sublayers",
+        #                         "A problem occured during access of the sublayers")
+        #    return
+        # subLayerList = subLayerProvider.subLayers()
+        # subLayerDialog = SublayersDialog()
         # subLayerDialog.setupSublayerList(subLayerList)
         # if subLayerDialog.exec_() == QDialog.Accepted:
         #    for layername in subLayerDialog.subLayerNames():
