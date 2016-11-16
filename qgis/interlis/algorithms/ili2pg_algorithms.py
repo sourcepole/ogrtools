@@ -167,9 +167,6 @@ class Ili2PgSchemaAlgorithm(GeoAlgorithm):
         self.addParameter(ParameterFile(
             'iliLocalPath',
             self.tr('Local model directory'), isFolder=True))
-        self.addParameter(ParameterBoolean(
-            'nameByTopic',
-            self.tr('Use topic+class name as table name'), default=True))
         self.addParameter(ParameterSelection(
             'tableNaming',
             self.tr('Table naming convention:'),
@@ -389,7 +386,7 @@ class Ili2PgExportAlgorithm(GeoAlgorithm):
             default='%ILI_FROM_DB;%XTF_DIR;http://models.geo.admin.ch/'))
         self.addParameter(ParameterString(
             self.ILIMODELS,
-            self.tr('Interlis models'), optional=True))
+            self.tr('Interlis models')))
         self.addOutput(OutputFile(
             self.XTF,
             description="Interlis transfer output file"))
