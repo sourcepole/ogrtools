@@ -248,7 +248,7 @@ class Ili2GpkgImportAlgorithm(GeoAlgorithm):
             default='%ILI_FROM_DB;%XTF_DIR;http://models.geo.admin.ch/'))
         self.addParameter(ParameterString(
             self.ILIMODELS,
-            self.tr('Interlis models')))
+            self.tr('Interlis models'), optional=True))
         self.addParameter(ParameterFile(
             self.DB,
             self.tr('GPKG database file'), optional=False, ext='gpkg'))
@@ -308,7 +308,7 @@ class Ili2GpkgExportAlgorithm(GeoAlgorithm):
             default='%ILI_FROM_DB;%XTF_DIR;http://models.geo.admin.ch/'))
         self.addParameter(ParameterString(
             self.ILIMODELS,
-            self.tr('Interlis models'), optional=True))
+            self.tr('Interlis models')))
         self.addOutput(OutputFile(
             self.XTF,
             description="Interlis transfer output file"))
