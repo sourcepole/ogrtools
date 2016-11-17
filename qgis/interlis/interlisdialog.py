@@ -329,12 +329,12 @@ class InterlisDialog(QtGui.QDialog):
 
     def importtoqgis(self):
         # QGIS OGR provider only supports one geometry column per table
-        if has_multi_geom_tables(self.iliDs()):
-            __, vrt_tmp = tempfile.mkstemp('.vrt', 'ogr_')
-            ogr2vrt(self.iliDs(), vrt_tmp)
-            dataSourceUri = vrt_tmp
-        else:
-            dataSourceUri = self.iliDs()
+        # We create a VRT with separate layers for each geometry
+        # This is also a workaround for a random sublayer order
+        # in QGIS 2.18 using "file.xtf,model.imd" as dataSourceUri.
+        __, vrt_tmp = tempfile.mkstemp('.vrt', 'ogr_')
+        ogr2vrt(self.iliDs(), vrt_tmp)
+        dataSourceUri = vrt_tmp
         # QGIS 1.8:
         # subLayerVectorLayer = QgsVectorLayer(
         #     dataSourceUri, "interlis_sublayers", "ogr")
