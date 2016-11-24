@@ -58,10 +58,6 @@ class InterlisProvider(AlgorithmProvider):
             self.getDescription(), IliUtils.JAVA_EXEC,
             "Java executable",  IliUtils.java_exec_default()))
         ProcessingConfig.addSetting(
-            Setting(self.getDescription(), IliUtils.ILI2C_JAR,
-                    "ili2c.jar path",
-                    os.path.join(jarpath, "ili2c.jar")))
-        ProcessingConfig.addSetting(
             Setting(self.getDescription(), IliUtils.ILI2PG_JAR,
                     "ili2pg.jar path",
                     os.path.join(jarpath, "ili2pg.jar")))
@@ -73,7 +69,6 @@ class InterlisProvider(AlgorithmProvider):
     def unload(self):
         AlgorithmProvider.unload(self)
         ProcessingConfig.removeSetting(InterlisProvider.JAVA_EXEC)
-        ProcessingConfig.removeSetting(InterlisProvider.ILI2C_JAR)
         ProcessingConfig.removeSetting(InterlisProvider.ILI2PG_JAR)
         ProcessingConfig.removeSetting(InterlisProvider.ILI2GPKG_JAR)
 

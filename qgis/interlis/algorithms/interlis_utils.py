@@ -1,6 +1,7 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import subprocess
+import os
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import isWindows
@@ -9,7 +10,6 @@ from processing.tools.system import isWindows
 class IliUtils:
 
     JAVA_EXEC = "JAVA_EXEC"
-    ILI2C_JAR = "ILI2C_JAR"
     ILI2PG_JAR = "ILI2PG_JAR"
     ILI2GPKG_JAR = "ILI2GPKG_JAR"
 
@@ -77,8 +77,11 @@ class IliUtils:
         # -u|--usage            Display short information about usage.
         # -v|--version          Display the version of ili2c.
 
-        IliUtils.runJava(
-            ProcessingConfig.getSetting(IliUtils.ILI2C_JAR), args, progress)
+        jarpath = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), '..', 'jars'))
+        args = [ProcessingConfig.getSetting(IliUtils.JAVA_EXEC),
+                "-cp", '"%s/libs/*"' % jarpath, "ch.interlis.ili2c.Main"] + args
+        IliUtils.runShellCmd(args, progress)
 
     @staticmethod
     def getConsoleOutput():
