@@ -71,7 +71,7 @@ class ModelLoader:
         return self.models
 
     def ilidirs(self):
-        return "%ILI_DIR;http://models.interlis.ch/;http://www.kogis.ch"
+        return "%ILI_DIR;http://models.interlis.ch/"
 
     def ili2c(self):
         return os.getenv("ILI2C", "ili2c.jar")
