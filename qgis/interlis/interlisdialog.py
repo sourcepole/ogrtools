@@ -20,16 +20,17 @@
  ***************************************************************************/
 """
 
-from PyQt4 import QtGui
-from PyQt4.QtCore import pyqtSlot, Qt, QSettings, qDebug
+from PyQt4 import QtCore, QtGui
+from PyQt4.QtCore import pyqtSlot, Qt, QSettings, QEventLoop, QTimer, qDebug
 from PyQt4.QtGui import QFileDialog, QMessageBox, QDialog, QDockWidget
-from qgis.core import QGis, QgsMessageLog, QgsVectorLayer, QgsDataSourceURI
+from PyQt4.QtNetwork import QNetworkRequest, QNetworkReply
+from qgis.core import QGis, QgsMessageLog, QgsVectorLayer, QgsDataSourceURI, \
+                      QgsNetworkAccessManager
 from qgis.gui import QgsMessageBar
 from ui_interlis import Ui_Interlis
 from sublayersdialog import SublayersDialog
 import os.path
 import tempfile
-import urllib2
 import codecs
 from xml.etree import ElementTree
 from pyqtconfig import QSettingsManager
@@ -203,15 +204,19 @@ class InterlisDialog(QtGui.QDialog):
             qDebug(ili)
             wpsreq = self._create_wps_request(ili)
             url = self.ui.mIlisMetaUrlLineEdit.text()
-            req = urllib2.Request(url=url,
-                                  data=wpsreq,
-                                  headers={'Content-Type': 'application/xml'})
-            # TODO: proxy support
-            response = urllib2.urlopen(req)  # timeout=int(TIMEOUT)
-            result = response.read()
-            imd = self._parse_wps_response(result)
-        except urllib2.HTTPError, err:
-            qDebug("HTTPError %d" % err.code)
+            req = QNetworkRequest(QtCore.QUrl(url))
+            req.setHeader(QNetworkRequest.ContentTypeHeader, 'application/xml')
+            reply = QgsNetworkAccessManager.instance().post(req, wpsreq)
+
+            # Wait for reply or timeout
+            loop = QEventLoop()
+            reply.finished.connect(loop.quit)
+            QTimer.singleShot(15000, reply.abort)
+            loop.exec_()
+
+            if reply.isFinished() and reply.error() == QNetworkReply.NoError:
+                result = reply.readAll()
+                imd = self._parse_wps_response(result)
         except:
             qDebug("Exception during IlisModel download")
         if imd is None:
