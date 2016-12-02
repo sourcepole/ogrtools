@@ -56,7 +56,7 @@ class InterlisProvider(AlgorithmProvider):
             os.path.join(os.path.dirname(__file__), '..', 'jars'))
         ProcessingConfig.addSetting(Setting(
             self.getDescription(), IliUtils.JAVA_EXEC,
-            "Java executable",  IliUtils.java_exec_default()))
+            "Java executable", IliUtils.java_exec_default()))
         ProcessingConfig.addSetting(
             Setting(self.getDescription(), IliUtils.ILI2PG_JAR,
                     "ili2pg.jar path",

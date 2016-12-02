@@ -126,5 +126,5 @@ class ModelLoader:
         #-v|--version          Display the version of ili2c.
         return run_java(self.ili2c(),
                         ["-oIMD", "--ilidirs", "'" +
-                            self.ilidirs() + "'", "--out", outfile]
+                         self.ilidirs() + "'", "--out", outfile]
                         + ilifiles)

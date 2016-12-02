@@ -18,7 +18,7 @@ class IliUtils:
         loglines = []
         loglines.append("Ili execution console output")
         if isWindows():
-            command = ["cmd.exe", "/C ", '"' + args[0] + '"'] + args[1:]
+            command = ["cmd.exe", "/C ", '""' + args[0] + '"'] + args[1:] + ['"']
         else:
             command = args
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO, ' '.join(command))
@@ -42,8 +42,7 @@ class IliUtils:
 
     @staticmethod
     def runJava(jar, args, progress):
-        args = [ProcessingConfig.getSetting(
-            IliUtils.JAVA_EXEC), "-jar",  jar] + args
+        args = [ProcessingConfig.getSetting(IliUtils.JAVA_EXEC), "-jar", jar] + args
         IliUtils.runShellCmd(args, progress)
 
     @staticmethod

@@ -35,7 +35,7 @@ from processing.core.parameters import ParameterVector, ParameterFile, Parameter
 from processing.core.outputs import OutputFile
 from processing.core.ProcessingConfig import ProcessingConfig
 
-from interlis_utils import IliUtils
+from interlis.algorithms.interlis_utils import IliUtils
 
 
 # USAGE

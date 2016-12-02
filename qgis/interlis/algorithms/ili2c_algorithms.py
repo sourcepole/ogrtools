@@ -33,7 +33,7 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterFile
 from processing.core.outputs import OutputFile
 
-from interlis_utils import IliUtils
+from interlis.algorithms.interlis_utils import IliUtils
 
 
 class Ili2ImdAlgorithm(GeoAlgorithm):
