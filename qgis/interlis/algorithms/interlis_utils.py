@@ -42,7 +42,8 @@ class IliUtils:
 
     @staticmethod
     def runJava(jar, args, progress):
-        args = [ProcessingConfig.getSetting(IliUtils.JAVA_EXEC), "-jar", jar] + args
+        args = [ProcessingConfig.getSetting(IliUtils.JAVA_EXEC),
+                "-Djava.net.useSystemProxies=true", "-jar", jar] + args
         IliUtils.runShellCmd(args, progress)
 
     @staticmethod
@@ -79,7 +80,9 @@ class IliUtils:
         jarpath = os.path.abspath(
             os.path.join(os.path.dirname(__file__), '..', 'jars'))
         args = [ProcessingConfig.getSetting(IliUtils.JAVA_EXEC),
-                "-cp", '"%s/libs/*"' % jarpath, "ch.interlis.ili2c.Main"] + args
+                "-Djava.net.useSystemProxies=true",
+                "-cp", '"%s/libs/*"' % jarpath,
+                "ch.interlis.ili2c.Main"] + args
         IliUtils.runShellCmd(args, progress)
 
     @staticmethod
