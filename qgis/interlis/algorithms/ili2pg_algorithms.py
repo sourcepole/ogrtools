@@ -228,7 +228,7 @@ class Ili2PgSchemaAlgorithm(GeoAlgorithm):
         localmodeldir = self.getParameterValue('iliLocalPath')
         if localmodeldir:
             modeldir = "%s;%s" % (localmodeldir, modeldir)
-        ili2dbargs.append("--modeldir '%s'" % modeldir)
+        ili2dbargs.append('--modeldir "%s"' % modeldir)
 
         naming = self.TABLE_NAMING[self.getParameterValue('tableNaming')]
         if naming != 'unqualified':
@@ -341,7 +341,7 @@ class Ili2PgImportAlgorithm(GeoAlgorithm):
         ili2dbargs.extend(connectionOptions(db))
 
         modeldir = self.getParameterValue(self.ILIDIR)
-        ili2dbargs.append("--modeldir '%s'" % modeldir)
+        ili2dbargs.append('--modeldir "%s"' % modeldir)
 
         models = self.getParameterValue(self.ILIMODELS)
         if models:
@@ -416,7 +416,7 @@ class Ili2PgExportAlgorithm(GeoAlgorithm):
             ili2dbargs.extend(["--dataset", dataset])
 
         modeldir = self.getParameterValue(self.ILIDIR)
-        ili2dbargs.append("--modeldir '%s'" % modeldir)
+        ili2dbargs.append('--modeldir "%s"' % modeldir)
 
         models = self.getParameterValue(self.ILIMODELS)
         if models:
