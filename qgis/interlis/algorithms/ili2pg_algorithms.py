@@ -83,6 +83,8 @@ def connectionOptions(connection):
 # --dbpwd  password      Password of user used to access database.
 # --validConfig file     Config file for validation.
 # --disableValidation    Disable validation of data.
+# --disableAreaValidation Disable AREA validation.
+# --forceTypeValidation  restrict customization of validation related to "multiplicity"
 # --deleteData           on schema/data import, delete existing data from existing tables.
 # --defaultSrsAuth  auth Default SRS authority EPSG
 # --defaultSrsCode  code Default SRS code 21781
@@ -104,6 +106,7 @@ def connectionOptions(connection):
 # --createEnumTxtCol     create an additional column with the text of the enumeration value.
 # --createEnumTabs       generate tables with enum definitions.
 # --createSingleEnumTab  generate all enum definitions in a single table.
+# --beautifyEnumDispName replace underscore with space in dispName of enum table entries
 # --createStdCols        generate T_User, T_CreateDate, T_LastChange columns.
 # --t_id_Name name       change name of t_id column (T_Id)
 # --idSeqMin minValue    sets the minimum value of the id sequence generator.
@@ -116,15 +119,22 @@ def connectionOptions(connection):
 # --sqlEnableNull        create no NOT NULL constraints in db schema.
 # --strokeArcs           stroke ARCS on import.
 # --skipPolygonBuilding  keep linetables; don't build polygons on import.
-# --skipPolygonBuildingErrors  report build polygon errors as info.
+# --skipGeometryErrors   ignore/do not report geometry errors.
 # --keepAreaRef          keep arreaRef as additional column on import.
 # --importTid            read TID into additional column T_Ili_Tid
 # --createBasketCol      generate T_basket column.
+# --createDatasetCol     generate T_datasetname column (Requires --dataset)
 # --createFk             generate foreign key constraints.
 # --createFkIdx          create an index on foreign key columns.
 # --createUnique         create UNIQUE db constraints.
+# --createNumChecks      create CHECK db constraints for numeric data types.
+# --ILIGML20             use eCH-0118-2.0 as transferformat
+# --ver4-translation     supports TRANSLATION OF in ili2db 4.x mode (incompatible with ili2db 3.x versions).
+# --translation translatedModel=originModel assigns a translated model to its orginal language equivalent.
 # --dbschema  schema     The name of the schema in the database. Defaults to not set.
 # --oneGeomPerTable      If more than one geometry per table, create secondary table.
+# --proxy host           proxy server to access model repositories.
+# --proxyPort port       proxy port to access model repositories.
 # --log filename         log message to given file.
 # --gui                  start GUI.
 # --trace                enable trace messages.
@@ -177,10 +187,16 @@ class Ili2PgSchemaAlgorithm(GeoAlgorithm):
             options=self.INHERTIANCE_MAPPINGS, default=0))
         self.addParameter(ParameterBoolean(
             'sqlNotNull',
-            self.tr('Create NOT NULL constraints in db schema'), default=False))
+            self.tr('Create NOT NULL constraints'), default=True))
+        self.addParameter(ParameterBoolean(
+            'createNumChecks',
+            self.tr('Create constraints for numeric data types'), default=True))
         self.addParameter(ParameterBoolean(
             'createBasketCol',
             self.tr('Generate T_basket column'), default=False))
+        self.addParameter(ParameterBoolean(
+            'createDatasetCol',
+            self.tr('Generate T_datasetname column'), default=False))
         self.addParameter(ParameterBoolean(
             'createFk',
             self.tr('Generate foreign key constraints'), default=True))
@@ -239,6 +255,15 @@ class Ili2PgSchemaAlgorithm(GeoAlgorithm):
 
         if not self.getParameterValue('sqlNotNull'):
             ili2dbargs.append('--sqlEnableNull')
+
+        if self.getParameterValue('createNumChecks'):
+            ili2dbargs.append('--createNumChecks')
+
+        if self.getParameterValue('createBasketCol') or self.getParameterValue('createDatasetCol'):
+            ili2dbargs.append('--createBasketCol')
+
+        if self.getParameterValue('createDatasetCol'):
+            ili2dbargs.append('--createDatasetCol')
 
         if self.getParameterValue('createFk'):
             ili2dbargs.append('--createFk')
