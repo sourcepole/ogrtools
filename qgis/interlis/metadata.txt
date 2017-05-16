@@ -12,6 +12,8 @@ email=pka@sourcepole.ch
 changelog=
   0.13.1
     - Update Jars to ili2pg/ili2gpkg 3.8.1
+    - Enable NOT NULL and numeric data type constrains by default
+    - Support for BascetCol/DatasetCol
   0.13.0
     - Update Jars to ili2pg/ili2gpkg 3.6.0
     - Fix modeldir path on Windows
