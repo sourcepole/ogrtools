@@ -80,6 +80,10 @@ def vrt_layer(layer,
     vrt += '    <GeometryType>%s</GeometryType>\n' % gFldType
     # Add FeatureCount for QGIS layer selection
     vrt += '    <FeatureCount>%d</FeatureCount>\n' % layer.GetFeatureCount()
+    # OGR sometimes doesn't detect FID of source (Ili2 only?).
+    # Workaround: We explicitly add TID as FID, when available
+    if layer.GetFIDColumn() == '' and layerdef.GetFieldIndex("TID") != -1:
+        vrt += '    <FID>TID</FID>\n'
     if poGFldDefn is not None:
         vrt += '    <GeometryField name="%s"/>\n' % gFldName
         if poGFldDefn.GetSpatialRef() is not None:
