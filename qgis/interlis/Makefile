@@ -56,19 +56,19 @@ compile: $(UI_FILES) $(RESOURCE_FILES)
 %.qm : %.ts
 	lrelease $<
 
-# Update ili2db JARs (e.g. VERSION=3.8.1)
+# Update ili2db JARs (e.g. VERSIONPG=3.11.2 VERSIONGPKG=3.10.5)
 ili2dbjars:
-	wget -O /tmp/ili2pg.zip http://www.eisenhutinformatik.ch/interlis/ili2pg/ili2pg-$(VERSION).zip
+	wget -O /tmp/ili2pg.zip http://www.eisenhutinformatik.ch/interlis/ili2pg/ili2pg-$(VERSIONPG).zip
 	unzip -d /tmp/ili2db /tmp/ili2pg.zip
+	wget -O /tmp/ili2gpkg.zip http://www.eisenhutinformatik.ch/interlis/ili2gpkg/ili2gpkg-$(VERSIONGPKG).zip
+	unzip -d /tmp/ili2db /tmp/ili2gpkg.zip
 	rm -rf jars/libs
 	mkdir jars/libs
-	cp /tmp/ili2db/ili2pg-*/ili2pg.jar jars/
-	cp /tmp/ili2db/ili2pg-*/libs/* jars/libs/
-	wget -O /tmp/ili2gpkg.zip http://www.eisenhutinformatik.ch/interlis/ili2gpkg/ili2gpkg-$(VERSION).zip
-	unzip -d /tmp/ili2db /tmp/ili2gpkg.zip
 	cp /tmp/ili2db/ili2gpkg-*/ili2gpkg.jar jars/
 	cp /tmp/ili2db/ili2gpkg-*/libs/* jars/libs/
-	wget -O /tmp/ili2pg-src.tgz https://github.com/claeis/ili2db/archive/ili2pg-$(VERSION).tar.gz
+	cp /tmp/ili2db/ili2pg-*/ili2pg.jar jars/
+	cp /tmp/ili2db/ili2pg-*/libs/* jars/libs/
+	wget -O /tmp/ili2pg-src.tgz https://github.com/claeis/ili2db/archive/ili2pg-$(VERSIONPG).tar.gz
 	tar -C /tmp -xzf /tmp/ili2pg-src.tgz
 	cp /tmp/ili2db-ili2pg-*/docs/CHANGELOG.txt jars/
 

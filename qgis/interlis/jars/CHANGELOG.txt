@@ -12,6 +12,113 @@ ideas/open issues/questions
 - einfache Liste mit den neu erzeugten Vertexpunkte (aufgrund der Overlap-Bereinigung)
 - Schalter für das "disablen" der Overlaps-Bereinigung. Bei vorhandenen gueltigen Overlaps erfolgen: a) Import mit NULL als Polygon, ohne Fehlermeldung, b) Import mit NULL als Polygon, mit Warning, c) kein Import, Fehlermeldung
 
+LATEST
+---------------------------
+
+ili2pg 3.11.2 (2018-02-08)
+-----------------------------
+- added new option --iliMetaAttrs
+- read all ili-meta-attributes into a new table t_ili2db_meta_attrs
+- iox-ili-1.20.2
+- ili2c-4.7.7
+- ehisqlgen-1.13.3
+
+ili2pg 3.11.1 (2017-12-29)
+-----------------------------
+- fixed export of TIDs if CLASS is without OID but --importTid was used
+- ili2c-4.7.6
+- iox-ili-1.20.1
+
+ili2pg 3.11.0 (2017-11-28)
+-----------------------------
+- added MultiPoint smart mapping
+- added ARRAY smart mapping
+- read CRS from ili
+- create datasetName on --import
+- ili2c-4.7.5
+- iox-ili-1.20.0
+- ehisqlgen-1.12.0
+
+ili2pg 3.10.10 (2017-11-03)
+-----------------------------
+- added mssql support
+- added mssql keywords to list of reserved words
+
+ili2fgdb 3.10.9 (2017-10-26)
+-----------------------------
+- ili2db: new option --exportModels to export according to a base model
+- ili2pg: fixed --setupPgExt if external connection
+- ili2db: log current date/time
+- ili2db: add geometry extent info to t_ili2db_column_prop 
+- ili2fgdb: fixed schema import of 3D shapes (z-values)
+- ili2fgdb: hardcoded XYFalseOrigin values for LV03/LV95 
+- iox-ili 1.19.8
+
+ili2fgdb 3.10.8 (2017-09-14)
+-----------------------------
+- ili2fgdb: fixed import/export of NULL shapes
+- ili2fgdb: fixed export of classes with multiple geometries
+- ili2fgdb: fixed export of curve section (ignore Spiral, Bezier3Curve, EllipticArc)
+- ili2fgdb: close boundaries of polygons, if not yet closed
+- ili2fgdb: fixed export of Dates (if user stored timestamps)
+- ili2fgdb: fixed setting of xyResolution and xyTolerance
+- iox-ili 1.19.7
+
+ili2pg/ili2fgdb 3.10.7 (2017-08-23)
+-----------------------------
+- fixed import of references to existing objects in db
+- fixed statistics
+
+ili2pg 3.10.6 (2017-08-21)
+-----------------------------
+- fixed import of forward references
+- iox-ili 1.19.5
+- fixed missing origin model of TRANSLATION OF in t_ili2db_model.modelname 
+
+ili2gpkg 3.10.5 (2017-08-18)
+-----------------------------
+- ehisqlgen-1.11.2
+- fixed export of models with identical column names in different secondary tables
+- fixed read/write of java class names to t_ili2db_settings
+
+ili2fgdb 3.10.4 (2017-08-16) BETA
+-----------------------------
+- ili2fgdb: fixed JVM crash
+- ili2fgdb: fixed sub-selects in prepared stmts
+- ili2fgdb: fixed NULL literal in select value list
+
+ili2fgdb 3.10.3 (2017-08-15) BETA
+-----------------------------
+- ili2fgdb: fixed "failed to create folder jdbc:ili2fgdb:../file.gdb" if using forward slashes in --dbfile arg
+
+ili2fgdb 3.10.2 (2017-08-14) BETA
+-----------------------------
+- ili2fgdb: fixed time import/export
+- ili2fgdb: added --fgdbXyResolution
+- ili2fgdb: added --fgdbXyTolerance
+- ili2fgdb: fixed NPE while --import
+
+ili2fgdb 3.10.1 (2017-08-14) BETA
+-----------------------------
+- ili2fgdb: support all datatypes
+- ili2fgdb: support export of structures
+- iox-ili 1.19.5
+- fixed --preScript/--postScript argument handling
+
+ili2fgdb 3.10.0 (2017-07-06) BETA
+-----------------------------
+- initial support of ESRI FileGDB API 1.5
+- read ilidoc as enum element description
+
+ili2pg/ili2gpkg 3.9.1 (2017-06-27)
+-----------------------------
+- added metaInfo/textKind=MTEXT
+- read/use @ili2db.dispName from enum elements
+- PostGIS: unique constraints changed to ST_AsBinary() for geometries 
+- fixed "Unexpected WKB type 2" if MULTILINESTRING 
+- iox-ili-1.19.4
+- ehisqlgen-1.11.1
+
 ili2pg/ili2gpkg 3.9.0 (2017-06-19)
 -----------------------------
 - added list of reserved sqlite and postgresql keywords
